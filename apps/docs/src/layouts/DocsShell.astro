@@ -1,0 +1,13 @@
+---
+/* Thin content wrapper. Site-wide navigation is the global left sidebar in
+ * Base.astro; the per-page `nav` prop is accepted for backwards compatibility
+ * but no longer rendered. */
+import Base from './Base.astro';
+interface Props { title: string; nav?: unknown }
+const { title } = Astro.props;
+---
+<Base title={title}>
+  <main class="docs-main fds-on-media">
+    <slot />
+  </main>
+</Base>

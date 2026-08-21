@@ -1,0 +1,263 @@
+---
+import DocsShell from '../../layouts/DocsShell.astro';
+import TemplateFrame from '../../components/TemplateFrame.astro';
+import { productNav } from '../../product/productNav';
+
+const CHAPTERS = [
+  { n: 1, title: 'The Flat List',            len: '18:24', state: 'done' },
+  { n: 2, title: 'Three Tiers',              len: '24:10', state: 'done' },
+  { n: 3, title: 'Pairings, Not Colours',    len: '31:47', state: 'playing', at: '12:38' },
+  { n: 4, title: 'The Inversion Test',       len: '22:05', state: 'next' },
+  { n: 5, title: 'Governance as Deliverable',len: '27:52', state: 'next' },
+  { n: 6, title: 'Measuring Adoption',       len: '19:33', state: 'next' },
+];
+/* A deterministic waveform: same shape every render, no Math.random, so the
+ * screenshot baseline is stable across builds. */
+const BARS = Array.from({ length: 64 }, (_, i) =>
+  28 + Math.round(34 * Math.abs(Math.sin(i * 0.7)) + 22 * Math.abs(Math.cos(i * 0.31))));
+const extraStrings = {
+  continue2:  { en: 'Continue listening', es: 'Seguir escuchando', zh: '继续收听', de: 'Weiterhören', ar: 'متابعة الاستماع' },
+  finish:     { en: 'Finish in', es: 'Termina en', zh: '还需', de: 'Fertig in', ar: 'ينتهي خلال' },
+  speed:      { en: 'Speed', es: 'Velocidad', zh: '倍速', de: 'Tempo', ar: 'السرعة' },
+  sleepTimer: { en: 'Sleep timer', es: 'Temporizador', zh: '睡眠定时', de: 'Sleeptimer', ar: 'مؤقت النوم' },
+  bookmark:   { en: 'Bookmark', es: 'Marcador', zh: '书签', de: 'Lesezeichen', ar: 'إشارة مرجعية' },
+};
+---
+<DocsShell title="Audiobook reader" nav={productNav}>
+  <h1 style="font-family: var(--font-display); font-size: var(--font-size-9);">Audiobook reader</h1>
+  <p style="color: var(--text-secondary); max-inline-size: 640px;">
+    Listening view with cover, waveform scrubber, skip controls, speed and sleep timer, plus a
+    chapter list showing played, playing and upcoming states. The waveform is drawn from tokens,
+    so it stays visible on every surface including the accent-colour and photo backgrounds.
+  </p>
+
+  <TemplateFrame title="reader" extraStrings={extraStrings}>
+    <div class="fds-statusbar" aria-hidden="true"><span>9:41</span><span>●●●</span></div>
+    <div class="rd">
+      <section class="rd-player">
+        <span class="rd-cover" aria-hidden="true">
+          <span class="rd-cover-title">Design<br />Systems</span>
+          <span class="rd-cover-rule"></span>
+          <span class="rd-cover-author">T. Rosenberg</span>
+        </span>
+
+        <div class="rd-meta">
+          <span class="fds-badge" data-variant="subtle" data-i18n="nowPlaying">Now playing</span>
+          <h2 class="rd-title">Design Systems at Scale</h2>
+          <p class="rd-author"><span data-i18n="narratedBy">Narrated by</span> Maya Kim</p>
+          <p class="rd-chapter">3 · Pairings, Not Colours</p>
+        </div>
+
+        <div class="rd-wave-wrap">
+          <span class="rd-wave" role="slider" aria-label="Seek"
+                aria-valuemin="0" aria-valuemax="1907" aria-valuenow="758" tabindex="0">
+            {BARS.map((h, i) => (
+              <i class={i < 25 ? 'rd-bar rd-bar-played' : 'rd-bar'} style={`--h:${h}%`}></i>
+            ))}
+          </span>
+          <div class="rd-times">
+            <span data-numeric>12:38</span>
+            <span class="rd-remaining"><span data-numeric>19:09</span> <span data-i18n="remaining">remaining</span></span>
+          </div>
+        </div>
+
+        <div class="rd-controls">
+          <button class="fds-icon-button rd-skip" aria-label="Back 15 seconds">
+            <svg class="fds-icon" data-icon data-variant="outline" data-directional aria-hidden="true"><use href="/icons/sprite.svg#hi-arrow-uturn-left-outline"></use></svg>
+            <span class="rd-skip-n" data-numeric>15</span>
+          </button>
+          <button class="rd-play" aria-label="Pause">
+            <svg class="fds-icon" data-icon data-variant="solid" aria-hidden="true"><use href="/icons/sprite.svg#hi-pause-solid"></use></svg>
+          </button>
+          <button class="fds-icon-button rd-skip" aria-label="Forward 30 seconds">
+            <svg class="fds-icon" data-icon data-variant="outline" data-directional aria-hidden="true"><use href="/icons/sprite.svg#hi-arrow-uturn-right-outline"></use></svg>
+            <span class="rd-skip-n" data-numeric>30</span>
+          </button>
+        </div>
+
+        <div class="rd-opts">
+          <button class="fds-chip"><span data-i18n="speed">Speed</span> <strong data-numeric>1.25×</strong></button>
+          <button class="fds-chip"><span data-i18n="sleepTimer">Sleep timer</span> <strong data-numeric>20m</strong></button>
+          <button class="fds-chip">
+            <svg class="fds-icon" data-icon data-variant="outline" aria-hidden="true"><use href="/icons/sprite.svg#hi-bookmark-outline"></use></svg>
+            <span data-i18n="bookmark">Bookmark</span>
+          </button>
+        </div>
+      </section>
+
+      <aside class="rd-chapters" aria-label="Chapters">
+        <header class="rd-ch-head">
+          <h3 class="rd-ch-title" data-i18n="chapters">Chapters</h3>
+          <span class="fds-hint"><span data-numeric>6</span> · <span data-numeric>2h 23m</span></span>
+        </header>
+        <ol class="rd-ch-list">
+          {CHAPTERS.map((c) => (
+            <li>
+              <button class={`rd-ch rd-ch-${c.state}`} aria-current={c.state === 'playing' ? 'true' : undefined}>
+                <span class="rd-ch-n" aria-hidden="true">
+                  {c.state === 'done'
+                    ? <svg class="fds-icon" data-icon data-variant="outline"><use href="/icons/sprite.svg#hi-check-outline"></use></svg>
+                    : c.state === 'playing'
+                      ? <svg class="fds-icon" data-icon data-variant="solid" data-directional><use href="/icons/sprite.svg#hi-play-solid"></use></svg>
+                      : <span data-numeric>{c.n}</span>}
+                </span>
+                <span class="rd-ch-meta">
+                  <span class="rd-ch-name">{c.title}</span>
+                  {c.state === 'playing' && (
+                    <span class="rd-ch-prog" aria-hidden="true"><span style="inline-size:40%"></span></span>
+                  )}
+                </span>
+                <span class="rd-ch-len" data-numeric>{c.state === 'playing' ? c.at : c.len}</span>
+              </button>
+            </li>
+          ))}
+        </ol>
+      </aside>
+    </div>
+  </TemplateFrame>
+
+  <style>
+    .rd { display: flex; block-size: 620px; background: var(--surface-page); }
+
+    /* On the Media background --surface-page is transparent by design, so the photo
+       shows through. An app shell is not a photo-facing surface: its text is dark ink
+       (the frame is a declared surface), so leaving it transparent puts dark type on a
+       photograph. Paint the shell opaque there — the photo still surrounds the device. */
+    :global([data-bg="media"]) .rd { background: var(--surface-1); }
+    .rd-player {
+      flex: 1; min-inline-size: 0;
+      display: flex; flex-direction: column; align-items: center;
+      gap: var(--space-4);
+      padding: var(--space-7) var(--space-6);
+      overflow-y: auto;
+    }
+    /* Cover art from tokens: it re-themes with the hue and keeps its contrast pairing,
+       unlike a fixed jacket image which would clash in most of the sixteen hues. */
+    .rd-cover {
+      inline-size: 190px; block-size: 190px; flex-shrink: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: var(--space-3);
+      background: linear-gradient(160deg, var(--accent-bg), var(--accent-bg-active));
+      color: var(--accent-fg);
+      border-radius: var(--radius-media);
+      box-shadow: var(--elevation-3);
+      text-align: center;
+      font-family: var(--font-display);
+    }
+    .rd-cover-title { font-size: var(--font-size-7); font-weight: 700; line-height: 1.1; }
+    .rd-cover-rule { inline-size: 40px; block-size: 2px; background: currentColor; opacity: 0.7; }
+    .rd-cover-author { font-size: var(--font-size-2); opacity: 0.9; font-family: var(--font-text); }
+
+    .rd-meta { text-align: center; max-inline-size: 46ch; }
+    .rd-title { font-family: var(--font-display); font-size: var(--font-size-7); margin: var(--space-2) 0 var(--space-1); }
+    .rd-author { margin: 0; color: var(--text-secondary); font-size: var(--font-size-2); }
+    .rd-chapter { margin: var(--space-1) 0 0; color: var(--text-tertiary); font-size: var(--font-size-2); }
+
+    .rd-wave-wrap { inline-size: 100%; max-inline-size: 460px; }
+    .rd-wave {
+      display: flex; align-items: center; gap: 2px;
+      block-size: 56px; inline-size: 100%;
+      cursor: pointer;
+    }
+    .rd-bar {
+      flex: 1; block-size: var(--h);
+      background: var(--border-default);
+      border-radius: var(--radius-round);
+      min-inline-size: 2px;
+    }
+    .rd-bar-played { background: var(--accent-bg); }
+    .rd-times {
+      display: flex; justify-content: space-between;
+      margin-block-start: var(--space-2);
+      font-size: var(--font-size-1); color: var(--text-tertiary);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .rd-controls { display: flex; align-items: center; gap: var(--space-5); }
+    .rd-skip { position: relative; }
+    .rd-skip svg { inline-size: 26px; block-size: 26px; }
+    .rd-skip-n {
+      position: absolute; inset-block-start: 55%; inset-inline-start: 50%;
+      translate: -50% -50%;
+      font-size: var(--font-size-1); font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      pointer-events: none;
+    }
+    .rd-play {
+      inline-size: max(var(--control-height-lg), 48px); block-size: max(var(--control-height-lg), 48px);
+      display: inline-flex; align-items: center; justify-content: center;
+      border: none; cursor: pointer;
+      border-radius: var(--radius-round);
+      background: var(--accent-bg); color: var(--accent-fg);
+      box-shadow: var(--elevation-2);
+      transition-property: scale, background-color;
+      transition-duration: var(--duration-2);
+      transition-timing-function: var(--ease-standard);
+    }
+    .rd-play:hover { background: var(--accent-bg-hover); }
+    .rd-play:active { scale: var(--press-scale); }
+    .rd-play svg { inline-size: 26px; block-size: 26px; }
+
+    .rd-opts { display: flex; gap: var(--space-2); flex-wrap: wrap; justify-content: center; }
+    .rd-opts svg { inline-size: 14px; block-size: 14px; }
+
+    .rd-chapters {
+      inline-size: 320px; flex-shrink: 0;
+      background: var(--surface-1);
+      border-inline-start: 1px solid var(--border-subtle);
+      display: flex; flex-direction: column;
+      overflow-y: auto;
+    }
+    .rd-ch-head {
+      display: flex; align-items: baseline; justify-content: space-between;
+      padding: var(--space-5) var(--space-5) var(--space-3);
+    }
+    .rd-ch-title { font-family: var(--font-display); font-size: var(--font-size-5); margin: 0; }
+    .rd-ch-list { list-style: none; margin: 0; padding: 0; }
+    .rd-ch {
+      inline-size: 100%;
+      min-block-size: var(--control-height-md);     /* a row is a target: touch floor applies */
+      display: flex; align-items: center; gap: var(--space-3);
+      padding: var(--space-3) var(--space-5);
+      background: none; border: none; cursor: pointer; font: inherit;
+      color: var(--text-primary); text-align: start;
+      border-block-start: 1px solid var(--border-subtle);
+    }
+    .rd-ch:hover { background: var(--surface-tint); }
+    .rd-ch-playing { background: var(--accent-subtle); color: var(--text-on-accent-subtle); }
+    .rd-ch-done .rd-ch-name { color: var(--text-tertiary); }
+    .rd-ch-n {
+      inline-size: var(--space-6); block-size: var(--space-6); flex-shrink: 0;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: var(--font-size-1); color: var(--text-tertiary);
+      font-variant-numeric: tabular-nums;
+    }
+    .rd-ch-done .rd-ch-n { color: var(--success-text); }
+    .rd-ch-playing .rd-ch-n { color: inherit; }
+    .rd-ch-n svg { inline-size: 16px; block-size: 16px; }
+    .rd-ch-meta { flex: 1; min-inline-size: 0; display: flex; flex-direction: column; gap: var(--space-1); }
+    .rd-ch-name { font-size: var(--font-size-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .rd-ch-prog { display: block; block-size: 3px; background: var(--border-default); border-radius: var(--radius-round); }
+    .rd-ch-prog span { display: block; block-size: 100%; background: var(--accent-bg); border-radius: var(--radius-round); }
+    .rd-ch-len { font-size: var(--font-size-1); color: var(--text-tertiary); font-variant-numeric: tabular-nums; flex-shrink: 0; }
+    .rd-ch-playing .rd-ch-len { color: inherit; }
+
+    @container (max-width: 767px) {
+      .rd-chapters { inline-size: 260px; }
+      .rd-cover { inline-size: 150px; block-size: 150px; }
+    }
+    @container (max-width: 480px) {
+      .rd { block-size: 620px; flex-direction: column; }
+      .rd-player { padding: var(--space-5) var(--space-4); gap: var(--space-3); }
+      .rd-cover { inline-size: 128px; block-size: 128px; }
+      .rd-cover-title { font-size: var(--font-size-5); }
+      .rd-title { font-size: var(--font-size-6); }
+      .rd-chapters {
+        inline-size: 100%;
+        border-inline-start: none;
+        border-block-start: 1px solid var(--border-subtle);
+        max-block-size: 200px;
+      }
+    }
+  </style>
+</DocsShell>

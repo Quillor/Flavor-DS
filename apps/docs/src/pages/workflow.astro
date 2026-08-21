@@ -1,0 +1,136 @@
+---
+import DocsShell from '../layouts/DocsShell.astro';
+import { siteNav } from '../siteNav';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+/* Workflow — two flowcharts. Left-to-right, built from tokens (no images), so they re-theme with the site.
+ *  A. How an agent uses Flavor through the MCP, from "connect" to "verified UI".
+ *  B. How the system itself changes: source → generators → guards → published artefacts → agents.
+ * The rules list is read from the built index so it can never disagree with rules.md. */
+const index = JSON.parse(readFileSync(join(process.cwd(), 'public/agent/index.json'), 'utf8'));
+const rules = (index.chunks.find((c: any) => c.id === 'rules').text as string).split('\n').filter((l) => /^\d+\. /.test(l))
+  .map((l) => { const m = l.match(/^\d+\.\s*\*\*(.+?)\*\*\s*(.*?)(?:\s*\(([^)]+)\))?$/) || []; return { title: (m[1] || l).replace(/`/g, ''), body: (m[2] || '').replace(/`/g, ''), guard: m[3] || '' }; });
+
+type Node = { id: string; title: string; detail: string; tool?: string; kind?: 'start' | 'end' | 'gate' | 'loop' };
+const MCP: Node[] = [
+  { id: 'connect', title: 'Connect', detail: 'Agent registers the server', tool: 'claude mcp add --transport http flavor-ds https://flavor-ds.vercel.app/api/mcp', kind: 'start' },
+  { id: 'recall', title: 'Recall memory', detail: 'Rules first — always. Then the chunks ranked for the task, budgeted; omitted ids listed.', tool: 'flavor_recall({ task })' },
+  { id: 'fetch', title: 'Fetch specifics', detail: 'Only what the task still needs.', tool: 'flavor_recall({ ids }) · flavor_get_component · flavor_find_icon · flavor_get_theme · flavor_get_contrast_pairs' },
+  { id: 'adapt', title: 'Adapt to the stack', detail: 'Stack-aware install steps; tokens as CSS, DTCG, Swift or Kotlin.', tool: 'flavor_adapt_project · flavor_get_tokens' },
+  { id: 'build', title: 'Build', detail: 'Semantic tokens only · nine <html> attributes · documented component markup · behaviors.js for keyboard.' },
+  { id: 'verify', title: 'Verify', detail: 'The guards falsify the work. Red → back to Build.', tool: 'npm test', kind: 'gate' },
+  { id: 'review', title: 'Human review', detail: 'Reviewer pins selector-scoped, token-named tweaks on Canvas; the agent applies them.', tool: 'flavor_canvas_feedback', kind: 'loop' },
+  { id: 'ship', title: 'Ship', detail: 'Themed across all 1,152 colour combos × radius × density × type × direction.', kind: 'end' },
+];
+const INTERNAL: Node[] = [
+  { id: 'change', title: 'Proposal', detail: 'Rule of three: a third real use case, or it stays product-local. Issue/PR against GOVERNANCE.md.', kind: 'start' },
+  { id: 'source', title: 'Edit the source', detail: 'One place per concern: packages/tokens/build.mjs (ramps, semantic map, axes) · packages/ui/src (components.css, components.tsx, behaviors.js) · componentDocs.ts / productNav.ts (docs = index).' },
+  { id: 'generate', title: 'Generate', detail: 'flavor.css · tokens.json (DTCG) · contrast.json (34,560 pairings) · meta.json · figma.json · i18n · FlavorTokens.swift/.kt · icons sprite · agent index (rules.md, index.json, llms.txt)', tool: 'npm run build:tokens · build:icons' },
+  { id: 'guard', title: 'Guards', detail: 'test-tokens (golden + contrast floors) · wcag-qa · lint:tokens · check-templates · check-polish · test-native (Swift typecheck) · test-behaviors · check-canvas-utilities · test-recall · adoption --check', tool: 'npm test', kind: 'gate' },
+  { id: 'release', title: 'Version + deprecate', detail: 'Semver with a written definition of breaking; deprecations alias for one minor, removed next major; CHANGELOG entry.', tool: 'GOVERNANCE.md' },
+  { id: 'publish', title: 'Publish', detail: 'Docs site (82 pages, /agent/*, /llms.txt) · @flavor-ds/tokens · @flavor-ds/ui · @flavor-ds/mcp · Figma variables', tool: 'npm run ci · flavor_figma_sync' },
+  { id: 'agents', title: 'Agents see it', detail: 'Next flavor_recall reads the new index — no hand-written summary to update.', kind: 'end' },
+  { id: 'feedback', title: 'Feedback loop', detail: 'Canvas comments (.canvas/feedback.json) and adoption metrics feed the next proposal.', kind: 'loop' },
+];
+---
+<DocsShell title="Workflow" nav={siteNav}>
+  <span class="fds-badge" data-variant="accent">Workflow</span>
+  <h1 style="font-family: var(--font-display); font-size: var(--font-size-9); margin-block: var(--space-2) var(--space-3);">How Flavor works</h1>
+  <p style="color: var(--text-secondary); max-inline-size: 680px; font-size: var(--font-size-4);">
+    Two loops. The outer one is how an agent consumes the system through the MCP; the inner one is how the
+    system itself changes and reaches every agent without anyone rewriting a manual. Both end in the same place:
+    a guard that fails loudly.
+  </p>
+
+  <h2 style="font-family: var(--font-display); margin-block-start: var(--space-8);">A · An agent, via MCP</h2>
+  <p style="color: var(--text-secondary); max-inline-size: 680px;">Read left to right. Blue is a tool call; the gate loops back to Build until it is green; the review loop runs as often as a human wants.</p>
+  <ol class="wf-flow" aria-label="MCP workflow">
+    {MCP.map((n, i) => (
+      <li class="wf-node" data-kind={n.kind || 'step'} data-node={n.id}>
+        <span class="wf-i" data-numeric>{i + 1}</span>
+        <div>
+          <b>{n.title}</b>
+          <p>{n.detail}</p>
+          {n.tool && <code>{n.tool}</code>}
+        </div>
+      </li>
+    ))}
+  </ol>
+  <p class="wf-legend"><span data-kind="gate">gate — red returns to Build</span><span data-kind="loop">loop — repeats with the reviewer</span><span data-kind="end">end</span></p>
+
+  <h2 style="font-family: var(--font-display); margin-block-start: var(--space-9);">B · How the system updates itself</h2>
+  <p style="color: var(--text-secondary); max-inline-size: 680px;">A change is made once, at the source; every artefact — CSS, DTCG, native, Figma, the docs, and the agent index — is regenerated, gated, and published together. Agents get the update on their next recall.</p>
+  <ol class="wf-flow" aria-label="Internal update workflow">
+    {INTERNAL.map((n, i) => (
+      <li class="wf-node" data-kind={n.kind || 'step'} data-node={n.id}>
+        <span class="wf-i" data-numeric>{i + 1}</span>
+        <div>
+          <b>{n.title}</b>
+          <p>{n.detail}</p>
+          {n.tool && <code>{n.tool}</code>}
+        </div>
+      </li>
+    ))}
+  </ol>
+  <p class="wf-legend"><span data-kind="gate">gate — red blocks the release</span><span data-kind="loop">loop — feeds the next proposal</span><span data-kind="end">end</span></p>
+
+  <div class="fds-card wf-map">
+    <h3 class="fds-card-title">Where the two loops touch</h3>
+    <ul>
+      <li><b>Index</b> — B step 3 writes <code>/agent/index.json</code>; A step 2 reads it. Rebuilt on every <code>build:tokens</code>, never hand-edited.</li>
+      <li><b>Guards</b> — the same <code>npm test</code> gates a release (B 4) and an agent's generated UI (A 6).</li>
+      <li><b>Canvas</b> — a reviewer's pins are applied by the agent (A 7) and, when they ask for a token change, become a proposal (B 1) — never a hardcoded value.</li>
+      <li><b>Adoption</b> — <code>scripts/adoption.mjs</code> measures token coverage, hardcoded values, component/icon/behaviour usage; the baseline may only rise.</li>
+    </ul>
+  </div>
+
+  <h2 id="rules" style="font-family: var(--font-display); margin-block-start: var(--space-9);">The rules it follows</h2>
+  <p style="color: var(--text-secondary); max-inline-size: 680px;">Priority 0 in the memory index: returned first on every recall, and each one names the guard that enforces it. Source of truth: <a class="fds-link" href="/agent/rules.md">/agent/rules.md</a>.</p>
+  <ol class="wf-rules">
+    {rules.map((r) => (
+      <li>
+        <div>
+          <b>{r.title}</b>
+          <span>{r.body}</span>
+          {r.guard && <code>{r.guard}</code>}
+        </div>
+      </li>
+    ))}
+  </ol>
+
+  <style>
+    .wf-flow { list-style: none; padding: 0; margin: var(--space-5) 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--space-6) var(--space-7); position: relative; }
+    .wf-node { position: relative; display: grid; grid-template-columns: auto 1fr; gap: var(--space-3); padding: var(--space-4); border: 1px solid var(--border-subtle); border-radius: var(--radius-container); background: var(--surface-1); box-shadow: var(--elevation-1); min-block-size: 100%; box-sizing: border-box; }
+    .wf-node::after { content: ''; position: absolute; inset-inline-end: calc(-1 * var(--space-7)); inset-block-start: 50%; inline-size: var(--space-7); border-block-start: 2px solid var(--border-strong); translate: 0 -1px; }
+    .wf-node::before { content: ''; position: absolute; inset-inline-end: calc(-1 * var(--space-7) - 1px); inset-block-start: 50%; inline-size: 8px; block-size: 8px; border-block-start: 2px solid var(--border-strong); border-inline-end: 2px solid var(--border-strong); translate: 0 -5px; rotate: 45deg; z-index: 1; }
+    [dir="rtl"] .wf-node::before { rotate: -135deg; translate: 0 -5px; }
+    .wf-node:last-child::after, .wf-node:last-child::before { display: none; }
+    .wf-i { font-family: var(--font-display); font-weight: 700; font-size: var(--font-size-3); inline-size: 28px; block-size: 28px; border-radius: var(--radius-round); display: grid; place-items: center; background: var(--accent-bg); color: var(--accent-fg); }
+    .wf-node b { display: block; font-weight: 600; margin-block-end: var(--space-1); }
+    .wf-node p { margin: 0; font-size: var(--font-size-2); color: var(--text-secondary); line-height: 1.5; }
+    .wf-node code { display: block; margin-block-start: var(--space-2); font-size: var(--font-size-1); color: var(--text-accent); word-break: break-word; }
+    .wf-node[data-kind="start"] { border-color: var(--accent-border); }
+    .wf-node[data-kind="gate"] { border-color: var(--warning-border); background: var(--warning-bg); }
+    .wf-node[data-kind="gate"] .wf-i { background: var(--warning-text); color: var(--surface-1); }
+    .wf-node[data-kind="gate"] p { color: var(--warning-text); }
+    .wf-node[data-kind="loop"] { border-style: dashed; border-color: var(--border-strong); }
+    .wf-node[data-kind="end"] { background: var(--success-bg); border-color: var(--success-border); }
+    .wf-node[data-kind="end"] .wf-i { background: var(--success-text); color: var(--surface-1); }
+    .wf-node[data-kind="end"] p { color: var(--success-text); }
+    .wf-legend { display: flex; gap: var(--space-5); flex-wrap: wrap; font-size: var(--font-size-2); color: var(--text-tertiary); margin-block-start: var(--space-4); }
+    .wf-legend span::before { content: ''; display: inline-block; inline-size: 12px; block-size: 12px; border-radius: var(--radius-control); margin-inline-end: var(--space-2); vertical-align: -1px; border: 1px solid var(--border-strong); background: var(--surface-1); }
+    .wf-legend span[data-kind="gate"]::before { background: var(--warning-bg); border-color: var(--warning-border); }
+    .wf-legend span[data-kind="loop"]::before { border-style: dashed; }
+    .wf-legend span[data-kind="end"]::before { background: var(--success-bg); border-color: var(--success-border); }
+    .wf-map { margin-block-start: var(--space-7); padding: var(--space-5); }
+    .wf-map ul { margin: var(--space-3) 0 0; padding-inline-start: var(--space-5); color: var(--text-secondary); font-size: var(--font-size-3); }
+    .wf-map li { margin-block-end: var(--space-2); }
+    .wf-rules { list-style: none; padding: 0; margin: var(--space-5) 0 0; counter-reset: rule; display: grid; gap: var(--space-3); }
+    .wf-rules li { counter-increment: rule; display: grid; grid-template-columns: auto 1fr; gap: var(--space-4); align-items: start; padding: var(--space-4) var(--space-5); border: 1px solid var(--border-subtle); border-radius: var(--radius-container); background: var(--surface-1); }
+    .wf-rules li::before { content: counter(rule, decimal-leading-zero); font-family: var(--font-display); font-weight: 700; color: var(--text-accent); font-size: var(--font-size-5); line-height: 1.2; font-variant-numeric: tabular-nums; }
+    .wf-rules b { display: block; font-weight: 600; }
+    .wf-rules span { display: block; color: var(--text-secondary); font-size: var(--font-size-3); margin-block-start: var(--space-1); }
+    .wf-rules code { display: inline-block; margin-block-start: var(--space-2); font-size: var(--font-size-1); color: var(--text-tertiary); border: 1px solid var(--border-subtle); border-radius: var(--radius-control); padding: 2px var(--space-2); }
+    .wf-rules code::before { content: 'guard: '; }
+  </style>
+</DocsShell>

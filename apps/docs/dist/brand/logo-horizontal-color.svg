@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 232 64" width="232" height="64" role="img" aria-label="Flavor DS">
+  <rect width="64" height="64" rx="14" fill="#092240"/>
+  <path d="M32 9 C34.2 24.5 39.5 29.8 55 32 C39.5 34.2 34.2 39.5 32 55 C29.8 39.5 24.5 34.2 9 32 C24.5 29.8 29.8 24.5 32 9 Z" fill="#3680da"/>
+  <ellipse cx="32" cy="32" rx="24" ry="9.5" fill="none" stroke="#c16300" stroke-width="2.5" transform="rotate(-24 32 32)"/>
+  <circle cx="50.5" cy="19.5" r="3.4" fill="#c16300"/>
+  <text x="76" y="41" font-family="'Space Grotesk','Helvetica Neue',sans-serif" font-size="27" font-weight="700" fill="#092240">Flavor</text>
+  <text x="163" y="41" font-family="'Space Grotesk','Helvetica Neue',sans-serif" font-size="27" font-weight="400" fill="#3680da">DS</text>
+</svg>

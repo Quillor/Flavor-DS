@@ -1,0 +1,241 @@
+---
+import DocsShell from '../../layouts/DocsShell.astro';
+import TemplateFrame from '../../components/TemplateFrame.astro';
+import { productNav } from '../../product/productNav';
+const extraStrings = {
+  contactInfo:    { en: 'Contact information', es: 'Información de contacto', zh: '联系信息', de: 'Kontaktinformationen', ar: 'معلومات التواصل' },
+  shippingAddress:{ en: 'Shipping address', es: 'Dirección de envío', zh: '收货地址', de: 'Lieferadresse', ar: 'عنوان الشحن' },
+  shippingMethod: { en: 'Shipping method', es: 'Método de envío', zh: '配送方式', de: 'Versandart', ar: 'طريقة الشحن' },
+  standardShipping: { en: 'Standard', es: 'Estándar', zh: '标准配送', de: 'Standard', ar: 'عادي' },
+  expressShipping:  { en: 'Express', es: 'Exprés', zh: '快速配送', de: 'Express', ar: 'سريع' },
+  standardEta:    { en: '4–6 business days', es: '4–6 días laborables', zh: '4–6 个工作日', de: '4–6 Werktage', ar: '4–6 أيام عمل' },
+  expressEta:     { en: '1–2 business days', es: '1–2 días laborables', zh: '1–2 个工作日', de: '1–2 Werktage', ar: '1–2 يوم عمل' },
+  free:           { en: 'Free', es: 'Gratis', zh: '免费', de: 'Kostenlos', ar: 'مجاني' },
+  cvc:            { en: 'CVC', es: 'CVC', zh: '安全码', de: 'Prüfziffer', ar: 'رمز الأمان' },
+  promoCode:      { en: 'Promo code', es: 'Código promocional', zh: '优惠码', de: 'Gutscheincode', ar: 'رمز الخصم' },
+  apply:          { en: 'Apply', es: 'Aplicar', zh: '使用', de: 'Einlösen', ar: 'تطبيق' },
+  securePayment:  { en: 'Payments are encrypted and secure', es: 'Los pagos están cifrados y son seguros', zh: '支付已加密，安全可靠', de: 'Zahlungen sind verschlüsselt und sicher', ar: 'المدفوعات مشفّرة وآمنة' },
+  itemMug:        { en: 'Stoneware mug', es: 'Taza de gres', zh: '陶瓷马克杯', de: 'Steingut-Tasse', ar: 'كوب فخاري' },
+  itemTote:       { en: 'Canvas tote', es: 'Bolso de lona', zh: '帆布托特包', de: 'Canvas-Tasche', ar: 'حقيبة قماشية' },
+  itemThrow:      { en: 'Wool throw', es: 'Manta de lana', zh: '羊毛盖毯', de: 'Wolldecke', ar: 'بطانية صوف' },
+  countryUS:      { en: 'United States', es: 'Estados Unidos', zh: '美国', de: 'USA', ar: 'الولايات المتحدة' },
+  countryDE:      { en: 'Germany', es: 'Alemania', zh: '德国', de: 'Deutschland', ar: 'ألمانيا' },
+  countryES:      { en: 'Spain', es: 'España', zh: '西班牙', de: 'Spanien', ar: 'إسبانيا' },
+  countryCN:      { en: 'China', es: 'China', zh: '中国', de: 'China', ar: 'الصين' },
+  countrySA:      { en: 'Saudi Arabia', es: 'Arabia Saudí', zh: '沙特阿拉伯', de: 'Saudi-Arabien', ar: 'المملكة العربية السعودية' },
+};
+const items = [
+  { key: 'itemMug',   name: 'Stoneware mug', qty: 2, price: '$48.00',  initials: 'SM' },
+  { key: 'itemTote',  name: 'Canvas tote',   qty: 1, price: '$38.00',  initials: 'CT' },
+  { key: 'itemThrow', name: 'Wool throw',    qty: 1, price: '$120.00', initials: 'WT' },
+];
+---
+<DocsShell title="Checkout" nav={productNav}>
+  <h1 style="font-family: var(--font-display); font-size: var(--font-size-9);">Checkout</h1>
+  <p style="color: var(--text-secondary); max-inline-size: 640px;">
+    Two-column checkout: contact, shipping, and payment on one side, a sticky order summary on the
+    other. On mobile the summary collapses above the form.
+  </p>
+
+  <TemplateFrame title="checkout" extraStrings={extraStrings}>
+    <div class="fds-statusbar" aria-hidden="true"><span>9:41</span><span>●●●</span></div>
+    <div class="co-layout">
+      <main class="co-form">
+        <h1 class="co-title" data-i18n="checkout">Checkout</h1>
+
+        <section class="co-section">
+          <h2 class="co-heading" data-i18n="contactInfo">Contact information</h2>
+          <div class="fds-field">
+            <label class="fds-label" for="co-email" data-i18n="email">Email</label>
+            <input class="fds-input" id="co-email" type="email" inputmode="email" data-i18n-placeholder="email" placeholder="Email" autocomplete="email" />
+          </div>
+        </section>
+
+        <fieldset class="co-section co-fieldset">
+          <legend class="co-heading" data-i18n="shippingAddress">Shipping address</legend>
+          <div class="fds-field">
+            <label class="fds-label" for="co-name" data-i18n="fullName">Full name</label>
+            <input class="fds-input" id="co-name" type="text" autocomplete="name" />
+          </div>
+          <div class="fds-field">
+            <label class="fds-label" for="co-address" data-i18n="address">Address</label>
+            <input class="fds-input" id="co-address" type="text" autocomplete="street-address" />
+          </div>
+          <div class="co-grid-2">
+            <div class="fds-field">
+              <label class="fds-label" for="co-city" data-i18n="city">City</label>
+              <input class="fds-input" id="co-city" type="text" autocomplete="address-level2" />
+            </div>
+            <div class="fds-field">
+              <label class="fds-label" for="co-postal" data-i18n="postalCode">Postal code</label>
+              <input class="fds-input" id="co-postal" type="text" autocomplete="postal-code" />
+            </div>
+          </div>
+          <div class="co-grid-2">
+            <div class="fds-field">
+              <label class="fds-label" for="co-country" data-i18n="country">Country</label>
+              <select class="fds-select" id="co-country">
+                <option data-i18n="countryUS">United States</option>
+                <option data-i18n="countryDE">Germany</option>
+                <option data-i18n="countryES">Spain</option>
+                <option data-i18n="countryCN">China</option>
+                <option data-i18n="countrySA">Saudi Arabia</option>
+              </select>
+            </div>
+            <div class="fds-field">
+              <label class="fds-label" for="co-phone" data-i18n="phone">Phone</label>
+              <input class="fds-input" id="co-phone" type="tel" inputmode="tel" autocomplete="tel" />
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="co-section co-fieldset">
+          <legend class="co-heading" data-i18n="shippingMethod">Shipping method</legend>
+          <label class="co-radio-card fds-check">
+            <input type="radio" name="co-ship" checked />
+            <span class="co-radio-body">
+              <span class="co-radio-name" data-i18n="standardShipping">Standard</span>
+              <span class="co-radio-eta fds-hint" data-i18n="standardEta">4–6 business days</span>
+            </span>
+            <span class="co-radio-price" data-i18n="free">Free</span>
+          </label>
+          <label class="co-radio-card fds-check">
+            <input type="radio" name="co-ship" />
+            <span class="co-radio-body">
+              <span class="co-radio-name" data-i18n="expressShipping">Express</span>
+              <span class="co-radio-eta fds-hint" data-i18n="expressEta">1–2 business days</span>
+            </span>
+            <span class="co-radio-price">$12.00</span>
+          </label>
+        </fieldset>
+
+        <fieldset class="co-section co-fieldset">
+          <legend class="co-heading" data-i18n="payment">Payment</legend>
+          <div class="fds-field">
+            <label class="fds-label" for="co-card" data-i18n="cardNumber">Card number</label>
+            <input class="fds-input co-mono" id="co-card" type="text" inputmode="numeric" placeholder="4242 4242 4242 4242" autocomplete="cc-number" />
+          </div>
+          <div class="co-grid-2">
+            <div class="fds-field">
+              <label class="fds-label" for="co-expiry" data-i18n="expiry">Expiry</label>
+              <input class="fds-input co-mono" id="co-expiry" type="text" inputmode="numeric" placeholder="MM / YY" autocomplete="cc-exp" />
+            </div>
+            <div class="fds-field">
+              <label class="fds-label" for="co-cvc" data-i18n="cvc">CVC</label>
+              <input class="fds-input co-mono" id="co-cvc" type="text" inputmode="numeric" placeholder="123" autocomplete="cc-csc" />
+            </div>
+          </div>
+        </fieldset>
+      </main>
+
+      <aside class="co-summary-col">
+        <div class="fds-card co-summary">
+          <h2 class="co-heading" data-i18n="orderSummary">Order summary</h2>
+          <ul class="co-items">
+            {items.map((it) => (
+              <li class="co-item">
+                <span class="fds-avatar" aria-hidden="true">{it.initials}</span>
+                <span class="co-item-body">
+                  <span class="co-item-name" data-i18n={it.key}>{it.name}</span>
+                  <span class="fds-hint"><span data-i18n="quantity">Qty</span> {it.qty}</span>
+                </span>
+                <span class="co-item-price">{it.price}</span>
+              </li>
+            ))}
+          </ul>
+          <div class="co-promo">
+            <input class="fds-input" type="text" data-i18n-placeholder="promoCode" placeholder="Promo code" data-i18n-aria="promoCode" aria-label="Promo code" />
+            <button class="fds-button" data-variant="outline" data-i18n="apply">Apply</button>
+          </div>
+          <hr class="fds-separator" />
+          <dl class="co-totals">
+            <div class="co-total-row"><dt data-i18n="subtotal">Subtotal</dt><dd>$206.00</dd></div>
+            <div class="co-total-row"><dt data-i18n="shipping">Shipping</dt><dd data-i18n="free">Free</dd></div>
+            <div class="co-total-row"><dt data-i18n="tax">Tax</dt><dd>$18.54</dd></div>
+            <div class="co-total-row co-total-grand"><dt data-i18n="total">Total</dt><dd>$224.54</dd></div>
+          </dl>
+          <button class="fds-button" data-variant="primary" data-size="lg" style="inline-size:100%" data-i18n="placeOrder">Place order</button>
+          <p class="co-secure">
+            <svg class="fds-icon" data-icon data-variant="outline" width="14" height="14" aria-hidden="true"><use href="/icons/sprite.svg#hi-lock-closed-outline"></use></svg>
+            <span data-i18n="securePayment">Payments are encrypted and secure</span>
+          </p>
+        </div>
+      </aside>
+    </div>
+  </TemplateFrame>
+
+  <style>
+    .co-layout {
+      display: grid; grid-template-columns: 1fr minmax(320px, 400px);
+      gap: var(--space-8);
+      padding: var(--space-8);
+      align-items: start;
+    }
+    .co-title { font-family: var(--font-display); font-size: var(--font-size-7); margin: 0 0 var(--space-6); }
+    .co-form { display: flex; flex-direction: column; min-inline-size: 0; }
+    .co-section { margin-block-end: var(--space-7); display: flex; flex-direction: column; gap: var(--space-4); }
+    .co-fieldset { border: none; padding: 0; margin-inline: 0; }
+    .co-heading { font-family: var(--font-display); font-size: var(--font-size-5); margin: 0; padding: 0; }
+    .co-fieldset > .co-heading { margin-block-end: var(--space-4); }
+    .co-grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); }
+    .co-mono { font-family: var(--font-mono); letter-spacing: 0.04em; }
+
+    .co-radio-card {
+      display: flex; align-items: center; gap: var(--space-4);
+      border: 1px solid var(--border-interactive);
+      border-radius: var(--radius-container);
+      padding: var(--space-4);
+      cursor: pointer;
+      transition: border-color var(--duration-2) var(--ease-standard), background-color var(--duration-2) var(--ease-standard);
+    }
+    .co-radio-card:hover { border-color: var(--border-strong); }
+    .co-radio-card:has(input:checked) { border-color: var(--accent-bg); background: var(--accent-subtle); }
+    .co-radio-card input[type="radio"] {
+      appearance: none;
+      inline-size: var(--space-5); block-size: var(--space-5);
+      border: 1px solid var(--border-interactive);
+      border-radius: var(--radius-round);
+      background: var(--surface-1);
+      display: grid; place-content: center;
+      flex-shrink: 0; margin: 0;
+    }
+    .co-radio-card input[type="radio"]:checked { background: var(--accent-bg); border-color: var(--accent-bg); }
+    .co-radio-card input[type="radio"]:checked::before {
+      content: ''; inline-size: 8px; block-size: 8px;
+      border-radius: var(--radius-round); background: var(--accent-fg);
+    }
+    .co-radio-body { display: flex; flex-direction: column; gap: 2px; flex: 1; }
+    .co-radio-name { font-weight: 600; }
+    .co-radio-price { font-weight: 700; }
+    .co-radio-card:has(input:checked) .co-radio-name,
+    .co-radio-card:has(input:checked) .co-radio-price { color: var(--text-on-accent-subtle); }
+
+    .co-summary-col { position: sticky; inset-block-start: var(--space-6); }
+    .co-summary { display: flex; flex-direction: column; gap: var(--space-4); }
+    .co-items { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-4); }
+    .co-item { display: flex; align-items: center; gap: var(--space-3); }
+    .co-item-body { display: flex; flex-direction: column; flex: 1; min-inline-size: 0; }
+    .co-item-name { font-weight: 600; font-size: var(--font-size-3); }
+    .co-item-price { font-weight: 600; font-variant-numeric: tabular-nums; }
+    .co-promo { display: flex; gap: var(--space-2); }
+    .co-promo .fds-input { flex: 1; }
+    .co-totals { margin: 0; display: flex; flex-direction: column; gap: var(--space-2); }
+    .co-total-row { display: flex; justify-content: space-between; font-size: var(--font-size-3); color: var(--text-secondary); }
+    .co-total-row dd { margin: 0; font-variant-numeric: tabular-nums; }
+    .co-total-grand {
+      color: var(--text-primary); font-weight: 700; font-size: var(--font-size-5);
+      border-block-start: 1px solid var(--border-default);
+      padding-block-start: var(--space-3); margin-block-start: var(--space-2);
+    }
+    .co-secure {
+      display: flex; align-items: center; justify-content: center; gap: var(--space-2);
+      color: var(--text-tertiary); font-size: var(--font-size-2); margin: 0;
+    }
+
+    @container (max-width: 767px) {
+      .co-layout { grid-template-columns: 1fr; gap: var(--space-6); padding: var(--space-5); }
+      .co-summary-col { position: static; order: -1; }
+      .co-grid-2 { grid-template-columns: 1fr; }
+    }
+  </style>
+</DocsShell>

@@ -1,0 +1,77 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="MCP Import">
+  <main class="docs-main" style="margin-inline:auto;">
+    <h1 style="font-family: var(--font-display); font-size: var(--font-size-9);">Import Flavor DS via MCP</h1>
+    <p style="font-size: var(--font-size-4); color: var(--text-secondary);">
+      The MCP server is the delivery mechanism: an agent connects, asks for the theme contract,
+      pulls tokens and components, and gets stack-specific adaptation steps for the project it is working in.
+    </p>
+
+    <h2 style="font-family: var(--font-display);">1 · Register the server</h2>
+    <p><strong>Hosted (no install)</strong> — Streamable HTTP, stateless, CORS-open. Claude Code:</p>
+    <pre class="fds-card" style="overflow-x:auto; font-family: var(--font-mono); font-size: var(--font-size-2); padding: var(--space-4);"><code>claude mcp add --transport http flavor-ds https://flavor-ds.vercel.app/api/mcp</code></pre>
+    <p>Any MCP client (<code>mcp.json</code> / equivalent):</p>
+    <pre class="fds-card" style="overflow-x:auto; font-family: var(--font-mono); font-size: var(--font-size-2); padding: var(--space-4);"><code>{`{
+  "mcpServers": {
+    "flavor-ds": { "type": "http", "url": "https://flavor-ds.vercel.app/api/mcp" }
+  }
+}`}</code></pre>
+    <p><strong>Local (stdio)</strong> — same tools from the repo checkout:</p>
+    <pre class="fds-card" style="overflow-x:auto; font-family: var(--font-mono); font-size: var(--font-size-2); padding: var(--space-4);"><code>claude mcp add flavor-ds -- node packages/mcp/src/server.mjs</code></pre>
+    <p class="fds-hint">The hosted endpoint is a Vercel function (<code>api/mcp.mjs</code>) around the same <code>createServer()</code> the stdio binary uses; every request builds a fresh server, so nothing is cached between calls. <code>npx -y @flavor-ds/mcp</code> will work once the package is published to npm.</p>
+
+    <h2 style="font-family: var(--font-display);">2 · The tool surface</h2>
+    <table style="border-collapse: collapse; inline-size: 100%; font-size: var(--font-size-3);">
+      <thead>
+        <tr style="text-align: start; border-block-end: 2px solid var(--border-strong);">
+          <th style="padding: var(--space-3); text-align: start;">Tool</th>
+          <th style="padding: var(--space-3); text-align: start;">What it returns</th>
+        </tr>
+      </thead>
+      <tbody>
+        {[
+          ['flavor_get_meta', 'Theme axes contract, defaults, html attributes. Agents call this first.'],
+          ['flavor_get_tokens', 'flavor.css (all 96 themes in one file), DTCG JSON, or raw hex ramps.'],
+          ['flavor_get_theme', 'The html attributes + resolved tokens for one theme combination.'],
+          ['flavor_get_contrast_pairs', 'The strict approval list: AA/AAA text pairs and 3:1 UI pairs with computed ratios.'],
+          ['flavor_list_components', 'Component inventory: CSS class, React export, accessibility contract.'],
+          ['flavor_get_component', 'Source + usage rules for one component.'],
+          ['flavor_adapt_project', 'Stack-aware adoption plan — what to install, wire, and skip for YOUR codebase.'],
+          ['flavor_figma_sync', 'The ordered, idempotent use_figma scripts that push every collection into Figma.'],
+          ['flavor_get_text_styles', 'The curated typography contract: named styles → scale step, family role, weight.'],
+          ['flavor_find_icon', 'Search 324 Heroicons by keyword; get exact HTML, React and CSS usage.'],
+          ['flavor_canvas_feedback', 'Design-review comments from the Canvas board — selector-scoped, token-constrained tweaks an agent can apply.'],
+          ['flavor_recall', 'Memory: the global rules (always, first) plus the index chunks ranked for the task, under a token budget; omitted ids listed for explicit fetch.'],
+          ['flavor_index', 'Memory table of contents: every chunk id, kind, priority, tags and summary.'],
+        ].map(([name, desc]) => (
+          <tr style="border-block-end: 1px solid var(--border-subtle);">
+            <td style="padding: var(--space-3); font-family: var(--font-mono); font-size: var(--font-size-2); color: var(--text-accent); white-space: nowrap;">{name}</td>
+            <td style="padding: var(--space-3); color: var(--text-secondary);">{desc}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+
+    <h2 style="font-family: var(--font-display);">3 · What an agent does with it</h2>
+    <ol style="color: var(--text-secondary); line-height: 1.7;">
+      <li><code>flavor_get_meta</code> → learn the nine theme axes.</li>
+      <li><code>flavor_adapt_project(stack: "Next.js 15 + Tailwind")</code> → concrete adoption steps for this repo.</li>
+      <li><code>flavor_get_tokens(format: "css")</code> → drop <code>flavor.css</code> in as the first stylesheet.</li>
+      <li>Start with <code>flavor_recall({'{'} task {'}'})</code> — rules first, then what matters for the task. How it ranks is on <a class="fds-link" href="/agent-ready/">Agent Ready</a>.</li>
+      <li>Set <code>&lt;html data-hue data-sat data-mode data-contrast data-density dir&gt;</code> — theming done.</li>
+      <li>Build UI against semantic tokens only; check pairings with <code>flavor_get_contrast_pairs</code>.</li>
+      <li>After a design review on <a class="fds-link" href="/canvas/">Canvas</a>: <code>flavor_canvas_feedback</code> → apply each entry's tweak lines with the named tokens.</li>
+    </ol>
+
+    <div class="fds-alert" data-variant="info" style="margin-block-start: var(--space-6);">
+      <div>
+        <p class="fds-alert-title">The tier rule agents must follow</p>
+        Primitive tokens (<code>--flavor-hue-sat-N</code>) are off-limits in app code. Semantic tokens
+        (<code>--surface-*</code>, <code>--text-*</code>, <code>--accent-*</code>…) are the only legal references —
+        that is what keeps all 96 themes working. A repo-side lint (<code>scripts/check-tokens.mjs</code>) enforces it.
+      </div>
+    </div>
+  </main>
+</Base>

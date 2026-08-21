@@ -1,0 +1,74 @@
+---
+import DocsShell from '../layouts/DocsShell.astro';
+import { siteNav } from '../siteNav';
+/* Capability tour for the Canvas board. Each capability is stated as a claim, then shown,
+ * then tied to what an agent gets out of it. The board itself is embedded live at the end
+ * so nothing here is a mock. */
+const CAPS = [
+  { n: '00', title: 'This is the EthiGov canvas, ported — not a lookalike', body: 'The board is the shipped EthiGov review canvas (the canvas-maker skill\'s reference implementation) running here byte-for-byte: same F-spine layout, per-group eye/mobile toggles, draft-then-Save comment flow, MentionTextarea, TokenEditorPanel and export format. Only what the skill\'s adapter contract says changes was changed: the imports (a shim over Flavor\'s own components and sprite icons), the adapter data (routes and tokens derived from this project), hex colour math instead of shadcn HSL triplets, the theming bridge (data-mode instead of a .dark class), and a token-mapped stylesheet for the 192 Tailwind utilities the reference uses. A guard fails the build if the reference ever uses a utility that stylesheet does not define.', proof: 'Diff apps/docs/src/canvas/canvas.tsx against the skill\'s reference/implementation.tsx: the changes are the header, the import block, the adapter section, four colour-math functions and one theming function.' },
+  { n: '01', title: 'Every page, live, on one board', body: 'The board loads each route of this site as a real same-origin iframe at native device size — 1440 desktop and 390 mobile — scaled by one shared factor and laid out on a spine that mirrors the site nav (Getting started → Brand → Core UI → Product → Marketing). Content height is measured after load, so a long template gets a tall frame and a short one doesn\'t. One broken page never blocks the rest; the 47 component reference pages start hidden so the board opens at a usable zoom.', proof: 'Open the board and switch Preview: click through a frame. It\'s the site.' },
+  { n: '02', title: 'Figma-grade pan and zoom, even over frames', body: 'Two-finger scroll pans; ⌘/ctrl+scroll or pinch zooms to the cursor with a rolling velocity ramp; shift+scroll pans sideways; Space+drag pans anywhere. Same-origin frames swallow wheel events, so a forwarding listener is installed in each frame\'s document — the gesture works with the pointer over a page, which is where the pointer usually is.', proof: 'Scroll with the cursor inside a frame. The canvas moves, not the page.' },
+  { n: '03', title: 'Comments are pinned to a selector, not a pixel', body: 'In Comment mode, hovering highlights the element under the pointer with an overlay drawn inside the frame, tagged with a stable selector (test-id, id, or tag + nth-of-type, ≤6 ancestors). Clicking opens a floating draft — nothing is pinned until you Save — recording route, device, selector, bounding box, visible text and whether the target bears text or is a container. Element/Page granularity switches between the element and the document body.', proof: 'Hover the hero heading on Home; the tag reads its selector. Click, then Save: a numbered pin appears on the frame.' },
+  { n: '04', title: 'Tweaks come from this system\'s tokens — nothing else', body: 'The editor\'s sections are generated from the adapter: Type offers the 17 curated text styles; Fill offers text-role tokens for text targets and surface-role tokens for containers; Spacing offers the 12-step scale per side plus gap; Radius offers the shape tokens; Layout ships fixed flex controls. Every picker is a popover of real tokens with resolved values; hovering an option previews it live on the target; a detach input accepts a raw one-off and flags it in the export.', proof: 'Pin a card, open Fill → Background: the list is exactly the surface/accent/feedback tokens in TOKENS.md.' },
+  { n: '05', title: 'The token editor is generated, and it edits every frame at once', body: 'Tokens mode lists categories derived from the token structure — Surface, Text, Border, Accent, Feedback, Spacing, Radius, Type, Elevation, Motion, Polish — with a nine-axis switcher (hue, saturation, mode, contrast, background, radius, density, type pairing, direction) that applies the same data-attributes the site uses. Editing a value writes it onto every loaded frame\'s root and persists; colours get a real picker with the raw palette for aliasing.', proof: 'Switch Hue to teal, then set surface-page to a hex. Every frame changes, immediately.' },
+  { n: '06', title: 'The board wears the brand — in light and dark', body: 'The board is not a grey tool sitting on top of the system; it is built from it. Its chrome resolves --surface-*, --text-*, --accent-*, --border-* and the spacing, radius and type scales under the brand hue, and its controls are the reference\'s shadcn calls answered by Flavor\'s own components — fds-button, fds-badge, fds-input, fds-textarea, fds-select/menu, fds-tabs — through the shim. The reference\'s own Light/Dark control flips the chrome and every frame together, and it opens in whatever mode the site was last in.', proof: 'Press Dark in the header. Chrome and all frames change at once.' },
+  { n: '07', title: 'Feedback lives in the repo and comes out agent-ready', body: 'With the dev server running, comments, author and overrides are written to .canvas/feedback.json — a versioned file, so a teammate pulling the branch sees the same pins. On reload, selectors re-resolve and tweaks re-apply to fresh frames. "Copy feedback" emits a fixed preamble plus one entry per comment: route, device, selector, box, text, tweak lines naming tokens (DETACHED lines flagged), the note, and @N cross-references. The MCP serves the same block as flavor_canvas_feedback.', proof: 'Pin two comments, reference one from the other with @, press Copy feedback, paste.' },
+];
+---
+<DocsShell title="Canvas demo" nav={siteNav}>
+  <span class="fds-badge" data-variant="accent">Canvas</span>
+  <h1 style="font-family: var(--font-display); font-size: var(--font-size-9); margin-block: var(--space-2) var(--space-3);">What Canvas can do</h1>
+  <p style="color: var(--text-secondary); max-inline-size: 680px;">
+    A design-review board where every frame is the running site, every tweak is a real token, and every comment
+    comes out as something an agent can act on. Eight points, each with a way to prove it to yourself, then the
+    board itself.
+  </p>
+  <div style="display:flex; gap: var(--space-3); flex-wrap: wrap; margin-block: var(--space-5) var(--space-8);">
+    <a class="fds-button" data-variant="primary" href="/canvas/">Open Canvas full-screen</a>
+    <a class="fds-button" data-variant="outline" href="#board">Jump to the embedded board</a>
+  </div>
+
+  <ol class="cd-caps">
+    {CAPS.map((c) => (
+      <li class="fds-card cd-cap">
+        <span class="cd-n" data-numeric>{c.n}</span>
+        <div>
+          <h2 class="fds-card-title" style="font-size: var(--font-size-5);">{c.title}</h2>
+          <p class="fds-card-description">{c.body}</p>
+          <p class="cd-proof"><strong>Prove it:</strong> {c.proof}</p>
+        </div>
+      </li>
+    ))}
+  </ol>
+
+  <h2 style="font-family: var(--font-display); margin-block-start: var(--space-8);">How it stays portable</h2>
+  <p style="color: var(--text-secondary); max-inline-size: 680px;">
+    Everything project-specific — routes, the nine axes, text styles, colour roles, the spacing and radius scales,
+    the theming bridge — lives in one adapter, <code>apps/docs/src/canvas/design-system.ts</code>, derived from the
+    site nav and the token build outputs rather than typed in. Porting Canvas to another codebase means rewriting that
+    one file — and re-pointing the chrome's <code>--cv-*</code> variables, which here are bound to Flavor's own semantic
+    tokens.
+  </p>
+  <div class="fds-alert" data-variant="info" style="max-inline-size: 720px; margin-block: var(--space-4);">
+    <strong>Persistence, stated plainly.</strong> The repo-file store needs the dev server (<code>npm run dev:docs</code>);
+    a Vite middleware answers <code>/__canvas/feedback</code>. On the static production build there is no server, so
+    the board persists to this browser only and says so in its header (<em>○ browser only</em>) — Copy feedback still works.
+    As in the reference: no author identity, no tutorial widget, no frame resizing.
+  </div>
+
+  <h2 id="board" style="font-family: var(--font-display); margin-block-start: var(--space-8);">The board</h2>
+  <p style="color: var(--text-secondary); max-inline-size: 680px;">Embedded live. Press <kbd class="fds-kbd">C</kbd> to comment, <kbd class="fds-kbd">T</kbd> for tokens, <kbd class="fds-kbd">V</kbd> to preview.</p>
+  <div class="cd-embed">
+    <iframe src="/canvas/" title="Canvas design-review board" loading="lazy"></iframe>
+  </div>
+
+  <style>
+    .cd-caps { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-4); }
+    .cd-cap { display: grid; grid-template-columns: auto 1fr; gap: var(--space-5); align-items: start; padding: var(--space-5) var(--space-6); }
+    .cd-n { font-family: var(--font-display); font-size: var(--font-size-7); font-weight: 700; color: var(--text-accent); line-height: 1; }
+    .cd-proof { margin: var(--space-3) 0 0; font-size: var(--font-size-2); color: var(--text-secondary); }
+    .cd-embed { inline-size: calc(100% + var(--space-8) * 2); margin-inline: calc(var(--space-8) * -1); block-size: 82vh; min-block-size: 640px; border-radius: var(--radius-container); overflow: hidden; box-shadow: var(--shadow-border), var(--elevation-2); background: var(--surface-1); }
+    .cd-embed iframe { inline-size: 100%; block-size: 100%; border: 0; display: block; }
+    @media (max-width: 800px) { .cd-embed { inline-size: 100%; margin-inline: 0; block-size: 70vh; } .cd-cap { grid-template-columns: 1fr; } }
+  </style>
+</DocsShell>

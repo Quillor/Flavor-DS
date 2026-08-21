@@ -1,0 +1,21 @@
+/* Shared styles for the Core UI component index and per-component pages. */
+.cdoc-group { font-family: var(--font-display); font-size: var(--font-size-3); text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-tertiary); border-block-end: 1px solid var(--border-subtle); padding-block-end: var(--space-2); margin: var(--space-8) 0 var(--space-6); }
+.cdoc-preview { display: flex; flex-direction: column; gap: var(--space-4); }
+.cdoc-row { display: flex; gap: var(--space-3); flex-wrap: wrap; align-items: center; }
+.cdoc-hint { color: var(--text-tertiary); font-size: var(--font-size-1); margin: 0; }
+.cdoc-crumbs { margin-block-end: var(--space-4); }
+.cdoc-pager { display: flex; justify-content: space-between; gap: var(--space-4); margin-block-start: var(--space-8); padding-block-start: var(--space-5); border-block-start: 1px solid var(--border-subtle); font-size: var(--font-size-2); }
+.cdoc-pager a { display: inline-flex; flex-direction: column; gap: var(--space-1); }
+.cdoc-pager .cdoc-pager-label { color: var(--text-tertiary); font-size: var(--font-size-1); text-transform: uppercase; letter-spacing: 0.06em; }
+.cdoc-pager .cdoc-pager-next { text-align: end; margin-inline-start: auto; }
+.cdoc-tabs { margin-block-start: var(--space-6); }
+.cdoc-tab-panel ul { color: var(--text-secondary); font-size: var(--font-size-2); line-height: 1.7; margin: 0; padding-inline-start: var(--space-5); }
+.cdoc-tab-panel[hidden] { display: none; }
+.cdoc-panel-title { font-family: var(--font-display); font-size: var(--font-size-5); margin: 0 0 var(--space-3); }
+.cdoc-notfor { font-size: var(--font-size-2); color: var(--text-secondary); margin: var(--space-4) 0 0; }
+.cdoc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--space-4); }
+.cdoc-card { display: block; text-decoration: none; color: var(--text-primary); transition: border-color var(--duration-2) var(--ease-standard), box-shadow var(--duration-2) var(--ease-standard); }
+.cdoc-card:hover { border-color: var(--accent-border); }
+.cdoc-card:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+.cdoc-card .fds-card-title { margin: 0 0 var(--space-1); color: var(--text-primary); text-shadow: none; }
+.cdoc-card .fds-card-description { margin: 0; color: var(--text-secondary); font-size: var(--font-size-2); }

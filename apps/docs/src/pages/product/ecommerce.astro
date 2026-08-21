@@ -1,0 +1,207 @@
+---
+import DocsShell from '../../layouts/DocsShell.astro';
+import TemplateFrame from '../../components/TemplateFrame.astro';
+import { productNav } from '../../product/productNav';
+const extraStrings = {
+  promoMsg:     { en: 'Free shipping on orders over $50', es: 'Envío gratis en pedidos superiores a 50 $', zh: '订单满 50 美元免运费', de: 'Kostenloser Versand ab 50 $', ar: 'شحن مجاني للطلبات التي تزيد عن 50 دولاراً' },
+  catAll:       { en: 'All', es: 'Todo', zh: '全部', de: 'Alle', ar: 'الكل' },
+  catClothing:  { en: 'Clothing', es: 'Ropa', zh: '服装', de: 'Kleidung', ar: 'الملابس' },
+  catShoes:     { en: 'Shoes', es: 'Zapatos', zh: '鞋类', de: 'Schuhe', ar: 'الأحذية' },
+  catAccessories: { en: 'Accessories', es: 'Accesorios', zh: '配饰', de: 'Accessoires', ar: 'الإكسسوارات' },
+  catHome:      { en: 'Home goods', es: 'Hogar', zh: '家居', de: 'Wohnen', ar: 'مستلزمات المنزل' },
+  catSale:      { en: 'Sale', es: 'Rebajas', zh: '特卖', de: 'Sale', ar: 'تخفيضات' },
+  heroSub:      { en: 'The autumn collection has landed. Fresh colorways, familiar comfort.', es: 'Ha llegado la colección de otoño. Colores nuevos, comodidad de siempre.', zh: '秋季系列已上市。全新配色，一如既往的舒适。', de: 'Die Herbstkollektion ist da. Neue Farben, vertrauter Komfort.', ar: 'وصلت تشكيلة الخريف. ألوان جديدة وراحة مألوفة.' },
+  sale:         { en: 'Sale', es: 'Oferta', zh: '促销', de: 'Sale', ar: 'تخفيض' },
+  outOfStock:   { en: 'Out of stock', es: 'Agotado', zh: '缺货', de: 'Ausverkauft', ar: 'غير متوفر' },
+  prodMug:      { en: 'Stoneware mug', es: 'Taza de gres', zh: '陶瓷马克杯', de: 'Steingut-Tasse', ar: 'كوب فخاري' },
+  prodTote:     { en: 'Canvas tote', es: 'Bolso de lona', zh: '帆布托特包', de: 'Canvas-Tasche', ar: 'حقيبة قماشية' },
+  prodSneaker:  { en: 'Court sneaker', es: 'Zapatilla court', zh: '经典板鞋', de: 'Court-Sneaker', ar: 'حذاء رياضي كلاسيكي' },
+  prodThrow:    { en: 'Wool throw', es: 'Manta de lana', zh: '羊毛盖毯', de: 'Wolldecke', ar: 'بطانية صوف' },
+  prodCap:      { en: 'Corduroy cap', es: 'Gorra de pana', zh: '灯芯绒棒球帽', de: 'Cord-Kappe', ar: 'قبعة قطيفة' },
+  prodBottle:   { en: 'Steel bottle', es: 'Botella de acero', zh: '不锈钢水瓶', de: 'Stahlflasche', ar: 'زجاجة فولاذية' },
+};
+const products = [
+  { key: 'prodMug',     name: 'Stoneware mug',  price: '$24',  img: '/photography/product.jpg',        pattern: '',                        sale: false, stock: true,  stars: 4 },
+  { key: 'prodTote',    name: 'Canvas tote',    price: '$38',  img: '',                                pattern: 'fds-pattern-dots',        sale: true,  stock: true,  stars: 5 },
+  { key: 'prodSneaker', name: 'Court sneaker',  price: '$89',  img: '/photography/texture.jpg',        pattern: '',                        sale: false, stock: true,  stars: 4 },
+  { key: 'prodThrow',   name: 'Wool throw',     price: '$120', img: '',                                pattern: 'fds-pattern-starburst',   sale: false, stock: false, stars: 5 },
+  { key: 'prodCap',     name: 'Corduroy cap',   price: '$29',  img: '/photography/collaboration.jpg',  pattern: '',                        sale: false, stock: true,  stars: 3 },
+  { key: 'prodBottle',  name: 'Steel bottle',   price: '$32',  img: '/photography/hero.jpg',           pattern: '',                        sale: false, stock: true,  stars: 4 },
+];
+const categories = [
+  { key: 'catAll', label: 'All', active: true },
+  { key: 'catClothing', label: 'Clothing', active: false },
+  { key: 'catShoes', label: 'Shoes', active: false },
+  { key: 'catAccessories', label: 'Accessories', active: false },
+  { key: 'catHome', label: 'Home goods', active: false },
+  { key: 'catSale', label: 'Sale', active: false },
+];
+---
+<DocsShell title="E-commerce" nav={productNav}>
+  <h1 style="font-family: var(--font-display); font-size: var(--font-size-9);">E-commerce</h1>
+  <p style="color: var(--text-secondary); max-inline-size: 640px;">
+    Storefront with promo strip, searchable header, category chips, photographic hero, and a
+    responsive product grid with ratings, sale and stock states.
+  </p>
+
+  <TemplateFrame title="ecommerce" extraStrings={extraStrings}>
+    <div class="fds-statusbar" aria-hidden="true"><span>9:41</span><span>●●●</span></div>
+
+    <div class="ec-promo" data-i18n="promoMsg">Free shipping on orders over $50</div>
+
+    <header class="ec-header">
+      <a href="#" class="fds-navbar-brand" data-hit data-i18n="appName">Flavor</a>
+      <div class="ec-search">
+        <input class="fds-input" type="search" data-i18n-placeholder="search" placeholder="Search" data-i18n-aria="search" aria-label="Search" />
+      </div>
+      <button class="fds-button ec-cart" data-variant="outline" data-i18n-aria="cart" aria-label="Cart">
+        <svg class="fds-icon" data-icon data-variant="outline" width="20" height="20" aria-hidden="true"><use href="/icons/sprite.svg#hi-shopping-cart-outline"></use></svg>
+        <span data-i18n="cart">Cart</span>
+        <span class="ec-cart-count fds-badge" data-variant="solid">3</span>
+      </button>
+    </header>
+
+    <nav class="ec-chips" aria-label="Categories">
+      {categories.map((c) => (
+        <button class="ec-chip" data-hit data-active={c.active || undefined} data-i18n={c.key}>{c.label}</button>
+      ))}
+    </nav>
+
+    <section class="ec-hero">
+      <img src="/photography/product.jpg" alt="" loading="lazy" />
+      <div class="ec-hero-copy">
+        <h2 data-i18n="newArrivals">New arrivals</h2>
+        <p data-i18n="heroSub">The autumn collection has landed. Fresh colorways, familiar comfort.</p>
+        <button class="fds-button" data-variant="primary" data-size="lg" data-i18n="shopNow">Shop now</button>
+      </div>
+    </section>
+
+    <h3 class="ec-section-title" data-i18n="bestSellers">Best sellers</h3>
+    <div class="ec-grid">
+      {products.map((p) => (
+        <article class="fds-card ec-card">
+          <div class={`ec-card-media ${p.pattern}`}>
+            {p.img && <img src={p.img} alt="" loading="lazy" />}
+            {p.sale && <span class="fds-badge ec-flag" data-variant="danger" data-i18n="sale">Sale</span>}
+            {!p.stock && <span class="fds-badge ec-flag" data-variant="neutral" data-i18n="outOfStock">Out of stock</span>}
+          </div>
+          <h4 class="ec-card-name" data-i18n={p.key}>{p.name}</h4>
+          <div class="ec-card-row">
+            <span class="ec-price">{p.price}</span>
+            <span class="ec-stars" role="img" aria-label={`${p.stars} / 5`}>
+              {[1, 2, 3, 4, 5].map((n) => (
+                <svg class="fds-icon" data-icon data-variant="outline" width="14" height="14" aria-hidden="true"><use href="/icons/sprite.svg#hi-star-outline"></use></svg>
+              ))}
+            </span>
+          </div>
+          {p.stock
+            ? <button class="fds-button" data-variant="secondary" data-size="sm" data-i18n="addToCart">Add to cart</button>
+            : <button class="fds-button" data-variant="secondary" data-size="sm" disabled data-i18n="outOfStock">Out of stock</button>}
+        </article>
+      ))}
+    </div>
+
+    <nav class="fds-tabbar ec-tabbar" aria-label="Primary">
+      <button class="fds-tabbar-item" aria-current="page">
+        <svg class="fds-icon" data-icon data-variant="outline" width="1.8" aria-hidden="true"><use href="/icons/sprite.svg#hi-home-outline"></use></svg>
+        <span data-i18n="home">Home</span>
+      </button>
+      <button class="fds-tabbar-item">
+        <svg class="fds-icon" data-icon data-variant="outline" width="1.8" aria-hidden="true"><use href="/icons/sprite.svg#hi-magnifying-glass-outline"></use></svg>
+        <span data-i18n="explore">Explore</span>
+      </button>
+      <button class="fds-tabbar-item">
+        <svg class="fds-icon" data-icon data-variant="outline" width="1.8" aria-hidden="true"><use href="/icons/sprite.svg#hi-shopping-cart-outline"></use></svg>
+        <span data-i18n="cart">Cart</span>
+      </button>
+      <button class="fds-tabbar-item">
+        <svg class="fds-icon" data-icon data-variant="outline" width="1.8" aria-hidden="true"><use href="/icons/sprite.svg#hi-user-outline"></use></svg>
+        <span data-i18n="account">Account</span>
+      </button>
+    </nav>
+  </TemplateFrame>
+
+  <style>
+    .ec-promo {
+      background: var(--accent-subtle); color: var(--text-on-accent-subtle);
+      text-align: center; font-size: var(--font-size-2); font-weight: 600;
+      padding-block: var(--space-2); padding-inline: var(--space-4);
+    }
+    .ec-header {
+      display: flex; align-items: center; gap: var(--space-4);
+      padding: var(--space-4) var(--space-6);
+      background: var(--surface-1);
+      border-block-end: 1px solid var(--border-subtle);
+    }
+    .ec-search { flex: 1; max-inline-size: 420px; margin-inline: auto; }
+    .ec-cart-count { margin-inline-start: var(--space-1); }
+    .ec-chips {
+      display: flex; gap: var(--space-2); flex-wrap: nowrap; overflow-x: auto;
+      padding: var(--space-4) var(--space-6);
+    }
+    .ec-chip {
+      font: inherit; font-size: var(--font-size-2); font-weight: 600;
+      color: var(--text-secondary);
+      background: var(--surface-tint);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-control);
+      padding: var(--space-2) var(--space-4);
+      cursor: pointer; white-space: nowrap;
+      transition: background-color var(--duration-2) var(--ease-standard), color var(--duration-2) var(--ease-standard);
+    }
+    .ec-chip:hover { color: var(--text-primary); border-color: var(--border-strong); }
+    .ec-chip[data-active] { background: var(--accent-bg); color: var(--accent-fg); border-color: var(--accent-bg); }
+    .ec-hero {
+      position: relative; display: flex; align-items: stretch;
+      margin: 0 var(--space-6) var(--space-6);
+      border-radius: var(--radius-container); overflow: hidden;
+      border: 1px solid var(--border-subtle);
+      min-block-size: 280px;
+    }
+    .ec-hero img { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; object-fit: cover; }
+    .ec-hero-copy {
+      position: relative; align-self: end;
+      display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-3);
+      margin: var(--space-5); padding: var(--space-6);
+      background: var(--surface-1); border-radius: var(--radius-container);
+      box-shadow: var(--elevation-2);
+      max-inline-size: 380px;
+    }
+    .ec-hero-copy h2 { font-family: var(--font-display); font-size: var(--font-size-8); line-height: var(--line-height-8); margin: 0; }
+    .ec-hero-copy p { margin: 0; color: var(--text-secondary); }
+    .ec-section-title { font-family: var(--font-display); font-size: var(--font-size-6); margin: 0; padding: 0 var(--space-6) var(--space-4); }
+    .ec-grid {
+      display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-5);
+      padding: 0 var(--space-6) var(--space-8);
+    }
+    .ec-card { display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-4); }
+    .ec-card-media {
+      position: relative; aspect-ratio: 4 / 3;
+      border-radius: var(--radius-media); overflow: hidden;
+      background: var(--surface-tint);
+      border: 1px solid var(--border-subtle);
+    }
+    .ec-card-media img { inline-size: 100%; block-size: 100%; object-fit: cover; }
+    .ec-flag { position: absolute; inset-block-start: var(--space-3); inset-inline-start: var(--space-3); }
+    .ec-card-name { margin: 0; font-size: var(--font-size-4); font-weight: 600; }
+    .ec-card-row { display: flex; align-items: center; justify-content: space-between; }
+    .ec-price { font-weight: 700; font-size: var(--font-size-4); }
+    .ec-stars { display: inline-flex; gap: 1px; color: var(--warning-text); }
+    .ec-tabbar { display: none; position: sticky; inset-block-end: 0; }
+
+    @container (max-width: 767px) {
+      .ec-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); }
+      .ec-header { padding: var(--space-3) var(--space-4); flex-wrap: wrap; }
+      .ec-search { order: 3; flex-basis: 100%; max-inline-size: none; }
+      .ec-cart { margin-inline-start: auto; }
+      .ec-hero { margin-inline: var(--space-4); min-block-size: 220px; }
+      .ec-hero-copy h2 { font-size: var(--font-size-6); line-height: var(--line-height-6); }
+      .ec-chips, .ec-section-title { padding-inline: var(--space-4); }
+      .ec-grid { padding-inline: var(--space-4); }
+    }
+    @container (max-width: 480px) {
+      .ec-grid { grid-template-columns: 1fr; }
+      .ec-tabbar { display: flex; }
+    }
+  </style>
+</DocsShell>

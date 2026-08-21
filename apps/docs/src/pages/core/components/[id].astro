@@ -1,0 +1,108 @@
+---
+import DocsShell from '../../../layouts/DocsShell.astro';
+import { COMPONENT_DOCS, type ComponentDocEntry } from '../../../core/componentDocs';
+import '../../../styles/cdoc.css';
+
+export function getStaticPaths() {
+  return COMPONENT_DOCS.map((entry, i) => ({
+    params: { id: entry.id },
+    props: { entry, prev: COMPONENT_DOCS[i - 1] ?? null, next: COMPONENT_DOCS[i + 1] ?? null },
+  }));
+}
+
+interface Props { entry: ComponentDocEntry; prev: ComponentDocEntry | null; next: ComponentDocEntry | null }
+const { entry, prev, next } = Astro.props;
+
+const emptySvg = Object.values(import.meta.glob('../../../assets/illustrations/empty.svg', { query: '?raw', import: 'default', eager: true }))[0] as string;
+const star = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>`;
+const preview = entry.preview.replaceAll('{{EMPTY_SVG}}', emptySvg).replaceAll('{{STAR}}', star);
+
+// Derive the CSS class + React export from the first code[] item.
+const stripTags = (s: string) => s.replace(/<[^>]+>/g, '').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+const firstCode = stripTags(entry.code[0] ?? '');
+const cssClass = firstCode.match(/\.(fds-[a-z0-9-]+)/)?.[1] ?? firstCode.match(/(fds-[a-z0-9-]+)/)?.[1] ?? `fds-${entry.id}`;
+const reactMatch = firstCode.match(/<([A-Z][A-Za-z]+)/)?.[1];
+const reactExport = reactMatch ?? entry.title.replace(/[^A-Za-z0-9 ]/g, ' ').split(/\s+/).filter(Boolean).map((w) => w[0].toUpperCase() + w.slice(1).toLowerCase()).join('');
+const codeSnippet = `/* CSS-first (any framework) */\n<div class="${cssClass}">…</div>\n\n/* React wrapper */\nimport { ${reactExport} } from '@flavor-ds/ui';`;
+
+const TABS = [
+  { id: 'preview', label: 'Preview' },
+  { id: 'content', label: 'Content' },
+  { id: 'design', label: 'Design' },
+  { id: 'code', label: 'Code' },
+  { id: 'a11y', label: 'Accessibility' },
+];
+---
+<DocsShell title={`${entry.title} · Components`}>
+  <nav aria-label="Breadcrumb" class="cdoc-crumbs">
+    <ol class="fds-breadcrumb">
+      <li><a class="fds-link" href="/core/">Core UI</a></li>
+      <li><a class="fds-link" href="/core/components/">Components</a></li>
+      <li aria-current="page"><strong>{entry.title}</strong></li>
+    </ol>
+  </nav>
+  <p style="color: var(--text-tertiary); font-size: var(--font-size-1); text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 var(--space-2);">{entry.group}</p>
+  <h1 style="font-family: var(--font-display); font-size: var(--font-size-9); margin: 0 0 var(--space-2);">{entry.title}</h1>
+  <p style="color: var(--text-secondary); max-inline-size: 660px; margin: 0;">{entry.summary}</p>
+
+  <div class="cdoc-tabs" data-cdoc-tabs>
+    <div class="fds-tabs-list" role="tablist" aria-label={`${entry.title} documentation`}>
+      {TABS.map((t, i) => (
+        <button class="fds-tab" role="tab" id={`tab-${t.id}`} aria-controls={`panel-${t.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1} type="button">{t.label}</button>
+      ))}
+    </div>
+
+    <section class="fds-tab-panel cdoc-tab-panel" role="tabpanel" id="panel-preview" aria-labelledby="tab-preview" tabindex="0">
+      <div class="fds-card cdoc-preview" set:html={preview} />
+      <p class="cdoc-hint" style="margin-block-start: var(--space-3);">This preview responds to every theme axis — switch any axis in the Theme control (top right) to see hue, saturation, mode, tonal, contrast, density, type pairing, and direction applied live.</p>
+    </section>
+
+    <section class="fds-tab-panel cdoc-tab-panel" role="tabpanel" id="panel-content" aria-labelledby="tab-content" tabindex="0" hidden>
+      <h2 class="cdoc-panel-title">Content guidelines</h2>
+      <ul>{entry.content.map((c) => <li set:html={c} />)}</ul>
+      {entry.notFor && <p class="cdoc-notfor"><strong>Don't use for:</strong> <span set:html={entry.notFor} /></p>}
+    </section>
+
+    <section class="fds-tab-panel cdoc-tab-panel" role="tabpanel" id="panel-design" aria-labelledby="tab-design" tabindex="0" hidden>
+      <h2 class="cdoc-panel-title">Design specs</h2>
+      <ul>{entry.design.map((c) => <li set:html={c} />)}</ul>
+    </section>
+
+    <section class="fds-tab-panel cdoc-tab-panel" role="tabpanel" id="panel-code" aria-labelledby="tab-code" tabindex="0" hidden>
+      <h2 class="cdoc-panel-title">Code specs</h2>
+      <ul>{entry.code.map((c) => <li set:html={c} />)}</ul>
+      <pre class="fds-code" tabindex="0" style="margin-block-start: var(--space-4);"><code>{codeSnippet}</code></pre>
+    </section>
+
+    <section class="fds-tab-panel cdoc-tab-panel" role="tabpanel" id="panel-a11y" aria-labelledby="tab-a11y" tabindex="0" hidden>
+      <h2 class="cdoc-panel-title">Accessibility</h2>
+      <ul>{entry.a11y.map((c) => <li set:html={c} />)}</ul>
+    </section>
+  </div>
+
+  <nav class="cdoc-pager" aria-label="Component pagination">
+    {prev && <a class="fds-link" href={`/core/components/${prev.id}/`} rel="prev"><span class="cdoc-pager-label">Previous</span><span>‹ {prev.title}</span></a>}
+    {next && <a class="fds-link cdoc-pager-next" href={`/core/components/${next.id}/`} rel="next"><span class="cdoc-pager-label">Next</span><span>{next.title} ›</span></a>}
+  </nav>
+
+  <script>
+    // The doc tabs use the SAME behaviour as the Tabs component (behaviors.tabs) — one
+    // implementation, not a page-local copy. The previous inline script queried
+    // [role="tab"] across the whole page and swallowed the preview's tabs into this
+    // tablist. Scoping is now the behaviour's job: it only binds direct tabs of its list.
+    import { tabs } from '@flavor-ds/ui/behaviors';
+    const root = document.querySelector('[data-cdoc-tabs]');
+    if (root) {
+      const list = root.querySelector('[role="tablist"]');
+      // deep-link: #design → select that tab before binding
+      const hash = location.hash.replace('#', '');
+      const want = hash && document.getElementById('tab-' + hash);
+      if (want) for (const t of list.querySelectorAll(':scope > [role="tab"]')) t.setAttribute('aria-selected', String(t === want));
+      tabs(root);
+      root.addEventListener('fds:change', (e) => {
+        const id = e.detail?.tab?.id?.replace('tab-', '');
+        if (id && history.replaceState) history.replaceState(null, '', '#' + id);
+      });
+    }
+  </script>
+</DocsShell>

@@ -1,0 +1,269 @@
+---
+import DocsShell from '../../layouts/DocsShell.astro';
+import TemplateFrame from '../../components/TemplateFrame.astro';
+import { productNav } from '../../product/productNav';
+const extraStrings = {
+  overview:      { en: 'Overview', es: 'Resumen', zh: '概览', de: 'Übersicht', ar: 'نظرة عامة' },
+  management:    { en: 'Management', es: 'Gestión', zh: '管理', de: 'Verwaltung', ar: 'الإدارة' },
+  salesOverview: { en: 'Sales overview', es: 'Resumen de ventas', zh: '销售概览', de: 'Umsatzübersicht', ar: 'نظرة عامة على المبيعات' },
+  ordersPerWeek: { en: 'Orders per week', es: 'Pedidos por semana', zh: '每周订单', de: 'Bestellungen pro Woche', ar: 'الطلبات الأسبوعية' },
+  recentOrders:  { en: 'Recent orders', es: 'Pedidos recientes', zh: '最近订单', de: 'Letzte Bestellungen', ar: 'الطلبات الأخيرة' },
+  order:         { en: 'Order', es: 'Pedido', zh: '订单', de: 'Bestellung', ar: 'طلب' },
+  customer:      { en: 'Customer', es: 'Cliente', zh: '客户', de: 'Kunde', ar: 'عميل' },
+  status:        { en: 'Status', es: 'Estado', zh: '状态', de: 'Status', ar: 'الحالة' },
+  date:          { en: 'Date', es: 'Fecha', zh: '日期', de: 'Datum', ar: 'التاريخ' },
+  paid:          { en: 'Paid', es: 'Pagado', zh: '已支付', de: 'Bezahlt', ar: 'مدفوع' },
+  pending:       { en: 'Pending', es: 'Pendiente', zh: '待处理', de: 'Ausstehend', ar: 'قيد الانتظار' },
+  refunded:      { en: 'Refunded', es: 'Reembolsado', zh: '已退款', de: 'Erstattet', ar: 'مسترد' },
+  vsLastMonth:   { en: 'vs last month', es: 'vs. mes anterior', zh: '较上月', de: 'ggü. Vormonat', ar: 'مقارنة بالشهر الماضي' },
+};
+---
+<DocsShell title="Admin dashboard" nav={productNav}>
+  <h1 style="font-family: var(--font-display); font-size: var(--font-size-9);">Admin dashboard</h1>
+  <p style="color: var(--text-secondary); max-inline-size: 640px;">
+    App shell with side navigation, KPI stat cards, token-themed inline SVG charts, and a
+    recent-orders table. The sidenav gives way to a bottom tab bar on mobile.
+  </p>
+
+  <TemplateFrame title="dashboard" extraStrings={extraStrings}>
+    <div class="fds-statusbar" aria-hidden="true"><span>9:41</span><span>●●●</span></div>
+    <div class="db-shell">
+      <nav class="fds-sidenav db-sidenav">
+        <a class="fds-navbar-brand db-brand" href="#">
+          <img src="/brand/logo-square-color.svg" alt="" width="28" height="28" />
+          <span data-i18n="appName">Flavor</span>
+        </a>
+        <div class="fds-sidenav-group" data-i18n="overview">Overview</div>
+        <a href="#" class="fds-nav-link" aria-current="page" data-i18n="dashboard">Dashboard</a>
+        <a href="#" class="fds-nav-link" data-i18n="analytics">Analytics</a>
+        <a href="#" class="fds-nav-link" data-i18n="reports">Reports</a>
+        <div class="fds-sidenav-group" data-i18n="management">Management</div>
+        <a href="#" class="fds-nav-link" data-i18n="orders">Orders</a>
+        <a href="#" class="fds-nav-link" data-i18n="customers">Customers</a>
+        <a href="#" class="fds-nav-link" data-i18n="settings">Settings</a>
+      </nav>
+
+      <div class="db-main">
+        <header class="db-topbar">
+          <input class="fds-input db-search" type="search" data-i18n-placeholder="search" placeholder="Search" data-i18n-aria="search" aria-label="Search" />
+          <button class="fds-button" data-variant="ghost" data-size="sm" data-i18n-aria="notifications" aria-label="Notifications" data-icon-only>
+            <svg class="fds-icon" data-icon data-variant="outline" width="18" height="18" aria-hidden="true"><use href="/icons/sprite.svg#hi-bell-outline"></use></svg>
+          </button>
+          <span class="fds-avatar" data-size="sm">AR</span>
+        </header>
+
+        <main class="db-content">
+          <h2 class="db-title" data-i18n="dashboard">Dashboard</h2>
+
+          <div class="db-kpis">
+            <div class="fds-card db-kpi">
+              <span class="db-kpi-label" data-i18n="revenue">Revenue</span>
+              <span class="db-kpi-value">$128,940</span>
+              <span class="db-kpi-trend"><span class="fds-badge" data-variant="success">▲ 12.4%</span> <span class="db-kpi-note" data-i18n="vsLastMonth">vs last month</span></span>
+            </div>
+            <div class="fds-card db-kpi">
+              <span class="db-kpi-label" data-i18n="orders">Orders</span>
+              <span class="db-kpi-value">3,207</span>
+              <span class="db-kpi-trend"><span class="fds-badge" data-variant="success">▲ 4.1%</span> <span class="db-kpi-note" data-i18n="vsLastMonth">vs last month</span></span>
+            </div>
+            <div class="fds-card db-kpi">
+              <span class="db-kpi-label" data-i18n="customers">Customers</span>
+              <span class="db-kpi-value">1,845</span>
+              <span class="db-kpi-trend"><span class="fds-badge" data-variant="danger">▼ 1.8%</span> <span class="db-kpi-note" data-i18n="vsLastMonth">vs last month</span></span>
+            </div>
+            <div class="fds-card db-kpi">
+              <span class="db-kpi-label" data-i18n="analytics">Analytics</span>
+              <span class="db-kpi-value">64.2%</span>
+              <span class="db-kpi-trend"><span class="fds-badge" data-variant="warning">▲ 0.6%</span> <span class="db-kpi-note" data-i18n="vsLastMonth">vs last month</span></span>
+            </div>
+          </div>
+
+          <div class="db-charts">
+            <div class="fds-card db-chart-card">
+              <h3 class="db-card-title" data-i18n="salesOverview">Sales overview</h3>
+              <svg class="db-chart" viewBox="0 0 320 140" preserveAspectRatio="none" role="img" data-i18n-aria="salesOverview" aria-label="Sales overview">
+                <g stroke="var(--border-subtle)" stroke-width="1">
+                  <line x1="0" y1="35" x2="320" y2="35" />
+                  <line x1="0" y1="70" x2="320" y2="70" />
+                  <line x1="0" y1="105" x2="320" y2="105" />
+                </g>
+                <path d="M0,110 L40,96 L80,102 L120,74 L160,82 L200,54 L240,60 L280,30 L320,38 L320,140 L0,140 Z"
+                      fill="var(--accent-subtle)" stroke="none" />
+                <path d="M0,110 L40,96 L80,102 L120,74 L160,82 L200,54 L240,60 L280,30 L320,38"
+                      fill="none" stroke="var(--accent-bg)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" />
+                <g fill="var(--accent-bg)">
+                  <circle cx="120" cy="74" r="3" />
+                  <circle cx="200" cy="54" r="3" />
+                  <circle cx="280" cy="30" r="3" />
+                </g>
+              </svg>
+            </div>
+            <div class="fds-card db-chart-card">
+              <h3 class="db-card-title" data-i18n="ordersPerWeek">Orders per week</h3>
+              <svg class="db-chart" viewBox="0 0 320 140" preserveAspectRatio="none" role="img" data-i18n-aria="ordersPerWeek" aria-label="Orders per week">
+                <g stroke="var(--border-subtle)" stroke-width="1">
+                  <line x1="0" y1="35" x2="320" y2="35" />
+                  <line x1="0" y1="70" x2="320" y2="70" />
+                  <line x1="0" y1="105" x2="320" y2="105" />
+                </g>
+                <g fill="var(--accent-subtle)">
+                  <rect x="12"  y="70" width="24" height="70" rx="3" />
+                  <rect x="52"  y="52" width="24" height="88" rx="3" />
+                  <rect x="92"  y="84" width="24" height="56" rx="3" />
+                  <rect x="132" y="40" width="24" height="100" rx="3" />
+                  <rect x="212" y="58" width="24" height="82" rx="3" />
+                  <rect x="292" y="66" width="24" height="74" rx="3" />
+                </g>
+                <g fill="var(--accent-bg)">
+                  <rect x="172" y="24" width="24" height="116" rx="3" />
+                  <rect x="252" y="34" width="24" height="106" rx="3" />
+                </g>
+              </svg>
+            </div>
+          </div>
+
+          <div class="fds-card db-table-card">
+            <div class="db-table-head">
+              <h3 class="db-card-title" data-i18n="recentOrders">Recent orders</h3>
+              <a href="#" class="db-link" data-hit data-i18n="viewAll">View all</a>
+            </div>
+            <div class="db-table-scroll">
+              <table class="db-table">
+                <thead>
+                  <tr>
+                    <th data-i18n="order">Order</th>
+                    <th data-i18n="customer">Customer</th>
+                    <th data-i18n="status">Status</th>
+                    <th data-i18n="date">Date</th>
+                    <th class="db-num" data-i18n="total">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>#4821</td>
+                    <td><span class="db-cust"><span class="fds-avatar db-mini-avatar">LK</span> Lena Kowalski</span></td>
+                    <td><span class="fds-badge" data-variant="success" data-i18n="paid">Paid</span></td>
+                    <td data-i18n="today">Today</td>
+                    <td class="db-num">$249.00</td>
+                  </tr>
+                  <tr>
+                    <td>#4820</td>
+                    <td><span class="db-cust"><span class="fds-avatar db-mini-avatar">MO</span> Marcus Okafor</span></td>
+                    <td><span class="fds-badge" data-variant="warning" data-i18n="pending">Pending</span></td>
+                    <td data-i18n="today">Today</td>
+                    <td class="db-num">$96.50</td>
+                  </tr>
+                  <tr>
+                    <td>#4819</td>
+                    <td><span class="db-cust"><span class="fds-avatar db-mini-avatar">SB</span> Sofia Bianchi</span></td>
+                    <td><span class="fds-badge" data-variant="success" data-i18n="paid">Paid</span></td>
+                    <td data-i18n="yesterday">Yesterday</td>
+                    <td class="db-num">$1,120.00</td>
+                  </tr>
+                  <tr>
+                    <td>#4818</td>
+                    <td><span class="db-cust"><span class="fds-avatar db-mini-avatar">JT</span> Jonas Tran</span></td>
+                    <td><span class="fds-badge" data-variant="danger" data-i18n="refunded">Refunded</span></td>
+                    <td data-i18n="yesterday">Yesterday</td>
+                    <td class="db-num">$38.00</td>
+                  </tr>
+                  <tr>
+                    <td>#4817</td>
+                    <td><span class="db-cust"><span class="fds-avatar db-mini-avatar">AH</span> Amira Haddad</span></td>
+                    <td><span class="fds-badge" data-variant="success" data-i18n="paid">Paid</span></td>
+                    <td data-i18n="yesterday">Yesterday</td>
+                    <td class="db-num">$412.75</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </main>
+
+        <nav class="fds-tabbar db-tabbar">
+          <button class="fds-tabbar-item" aria-current="page">
+            <svg class="fds-icon" data-icon data-variant="outline" aria-hidden="true"><use href="/icons/sprite.svg#hi-squares-2x2-outline"></use></svg>
+            <span data-i18n="dashboard">Dashboard</span>
+          </button>
+          <button class="fds-tabbar-item">
+            <svg class="fds-icon" data-icon data-variant="outline" width="2" aria-hidden="true"><use href="/icons/sprite.svg#hi-shopping-bag-outline"></use></svg>
+            <span data-i18n="orders">Orders</span>
+          </button>
+          <button class="fds-tabbar-item">
+            <svg class="fds-icon" data-icon data-variant="outline" width="2" aria-hidden="true"><use href="/icons/sprite.svg#hi-users-outline"></use></svg>
+            <span data-i18n="customers">Customers</span>
+          </button>
+          <button class="fds-tabbar-item">
+            <svg class="fds-icon" data-icon data-variant="outline" width="2" aria-hidden="true"><use href="/icons/sprite.svg#hi-cog-6-tooth-outline"></use></svg>
+            <span data-i18n="settings">Settings</span>
+          </button>
+        </nav>
+      </div>
+    </div>
+  </TemplateFrame>
+
+  <style>
+    .db-shell { display: flex; min-block-size: 640px; align-items: stretch; }
+    .db-sidenav { flex-shrink: 0; }
+    .db-brand { padding: var(--space-3); margin-block-end: var(--space-2); }
+    .db-main { flex: 1; display: flex; flex-direction: column; min-inline-size: 0; }
+
+    .db-topbar {
+      display: flex; align-items: center; gap: var(--space-4);
+      padding-inline: var(--space-6); padding-block: var(--space-3);
+      background: var(--surface-1);
+      border-block-end: 1px solid var(--border-subtle);
+    }
+    .db-search { max-inline-size: 320px; block-size: var(--control-height-sm); margin-inline-end: auto; }
+    .db-mini-avatar, .db-topbar .fds-avatar {
+      inline-size: var(--control-height-sm); block-size: var(--control-height-sm); font-size: var(--font-size-2);
+    }
+
+    .db-content { flex: 1; padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-5); }
+    .db-title { font-family: var(--font-display); font-size: var(--font-size-7); margin: 0; }
+
+    .db-kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-4); }
+    .db-kpi { min-inline-size: 0; }
+    .db-kpi-value { overflow-wrap: anywhere; }
+    .db-kpi { display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-5); }
+    .db-kpi-label { font-size: var(--font-size-2); font-weight: 600; color: var(--text-secondary); }
+    .db-kpi-value { font-family: var(--font-display); font-size: var(--font-size-7); font-weight: 700; line-height: var(--line-height-7); }
+    .db-kpi-trend { display: flex; align-items: center; gap: var(--space-2); }
+    .db-kpi-note { font-size: var(--font-size-1); color: var(--text-tertiary); }
+
+    .db-charts { display: grid; grid-template-columns: 3fr 2fr; gap: var(--space-4); }
+    .db-chart-card { padding: var(--space-5); }
+    .db-card-title { font-family: var(--font-display); font-size: var(--font-size-4); margin: 0 0 var(--space-4); }
+    .db-chart { display: block; inline-size: 100%; block-size: 150px; }
+
+    .db-table-card { padding: var(--space-5); }
+    .db-table-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
+    .db-link { color: var(--text-accent); font-weight: 600; font-size: var(--font-size-2); text-decoration: none; }
+    .db-table-scroll { overflow-x: auto; }
+    .db-table { inline-size: 100%; border-collapse: collapse; font-size: var(--font-size-3); }
+    .db-table th {
+      text-align: start; font-size: var(--font-size-1); font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.06em; color: var(--text-tertiary);
+      padding: var(--space-3) var(--space-3); border-block-end: 1px solid var(--border-default);
+    }
+    .db-table td { padding: var(--space-3); border-block-end: 1px solid var(--border-subtle); white-space: nowrap; }
+    .db-table tbody tr:last-child td { border-block-end: none; }
+    .db-num { text-align: end; font-variant-numeric: tabular-nums; }
+    .db-cust { display: inline-flex; align-items: center; gap: var(--space-2); }
+
+    .db-tabbar { display: none; }
+
+    @container (max-width: 767px) {
+      .db-sidenav { display: none; }
+      .db-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .db-charts { grid-template-columns: 1fr; }
+      .db-content { padding: var(--space-4); }
+    }
+    @container (max-width: 480px) {
+      .db-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3); }
+      .db-kpi-value { font-size: var(--font-size-6); }
+      .db-shell { min-block-size: auto; }
+      .db-tabbar { display: flex; position: sticky; inset-block-end: 0; }
+    }
+  </style>
+</DocsShell>

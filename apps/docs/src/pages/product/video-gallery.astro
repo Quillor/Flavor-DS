@@ -1,0 +1,164 @@
+---
+import DocsShell from '../../layouts/DocsShell.astro';
+import TemplateFrame from '../../components/TemplateFrame.astro';
+import { productNav } from '../../product/productNav';
+
+const extraStrings = {
+  featuredTitle: { en: 'Designing with tokens: a field guide', es: 'Diseñar con tokens: guía práctica', zh: '用令牌做设计：实用指南', de: 'Design mit Tokens: ein Praxisleitfaden', ar: 'التصميم بالرموز: دليل عملي' },
+  subscriberCount: { en: '128K subscribers', es: '128 mil suscriptores', zh: '12.8万订阅者', de: '128.000 Abonnenten', ar: '128 ألف مشترك' },
+  featuredMeta: { en: '24K views · 2 days ago', es: '24 mil visualizaciones · hace 2 días', zh: '2.4万次观看 · 2天前', de: '24.000 Aufrufe · vor 2 Tagen', ar: '24 ألف مشاهدة · قبل يومين' },
+  vColor:   { en: 'Color that scales', es: 'Color que escala', zh: '可扩展的色彩', de: 'Farbe, die skaliert', ar: 'ألوان قابلة للتوسع' },
+  vType:    { en: 'Typography deep dive', es: 'Inmersión en tipografía', zh: '深入排版', de: 'Typografie im Detail', ar: 'تعمق في أساليب الخط' },
+  vGrids:   { en: 'Grids and rhythm', es: 'Retículas y ritmo', zh: '网格与节奏', de: 'Raster und Rhythmus', ar: 'الشبكات والإيقاع' },
+  vMotion:  { en: 'Motion basics', es: 'Fundamentos de animación', zh: '动效基础', de: 'Grundlagen der Animation', ar: 'أساسيات الحركة' },
+  vDark:    { en: 'Dark mode done right', es: 'Modo oscuro bien hecho', zh: '做对深色模式', de: 'Dunkelmodus richtig gemacht', ar: 'الوضع الداكن بالشكل الصحيح' },
+  vTokens:  { en: 'Design tokens 101', es: 'Tokens de diseño 101', zh: '设计令牌入门', de: 'Design-Tokens 101', ar: 'مدخل إلى رموز التصميم' },
+  meta1: { en: '12K views · 3 days ago', es: '12 mil visualizaciones · hace 3 días', zh: '1.2万次观看 · 3天前', de: '12.000 Aufrufe · vor 3 Tagen', ar: '12 ألف مشاهدة · قبل 3 أيام' },
+  meta2: { en: '8.4K views · 1 week ago', es: '8,4 mil visualizaciones · hace 1 semana', zh: '8400次观看 · 1周前', de: '8.400 Aufrufe · vor 1 Woche', ar: '8.4 ألف مشاهدة · قبل أسبوع' },
+  meta3: { en: '31K views · 2 weeks ago', es: '31 mil visualizaciones · hace 2 semanas', zh: '3.1万次观看 · 2周前', de: '31.000 Aufrufe · vor 2 Wochen', ar: '31 ألف مشاهدة · قبل أسبوعين' },
+};
+
+const cards = [
+  { key: 'vColor',  thumb: '/photography/hero.jpg',          dur: '12:04', meta: 'meta1', tint: '' },
+  { key: 'vType',   thumb: '/photography/product.jpg',       dur: '8:31',  meta: 'meta2', tint: 'vg-tint-warm' },
+  { key: 'vGrids',  thumb: '/photography/collaboration.jpg', dur: '15:47', meta: 'meta3', tint: '' },
+  { key: 'vMotion', thumb: '/photography/texture.jpg',       dur: '6:12',  meta: 'meta1', tint: 'vg-tint-cool' },
+  { key: 'vDark',   thumb: '/photography/hero.jpg',          dur: '10:58', meta: 'meta2', tint: 'vg-tint-mono' },
+  { key: 'vTokens', thumb: '/photography/texture.jpg',       dur: '21:33', meta: 'meta3', tint: '' },
+];
+---
+<DocsShell title="Video gallery" nav={productNav}>
+  <h1 style="font-family: var(--font-display); font-size: var(--font-size-9);">Video gallery</h1>
+  <p style="color: var(--text-secondary); max-inline-size: 640px;">
+    A video platform surface: featured player with channel row, Popular/Newest tabs, and a
+    card grid with duration badges. On phones it collapses to one column with a bottom tab bar.
+  </p>
+
+  <TemplateFrame title="video-gallery" extraStrings={extraStrings}>
+    <div class="fds-statusbar" aria-hidden="true"><span>9:41</span><span>●●●</span></div>
+    <div class="vg-page">
+      <section class="vg-featured">
+        <div class="vg-player">
+          <img src="/photography/hero.jpg" alt="" class="vg-poster" />
+          <button class="vg-play" data-i18n-aria="watch" aria-label="Watch">
+            <svg class="fds-icon" data-icon data-variant="solid" aria-hidden="true"><use href="/icons/sprite.svg#hi-play-solid"></use></svg>
+          </button>
+        </div>
+        <h2 class="vg-title" data-i18n="featuredTitle">Designing with tokens: a field guide</h2>
+        <div class="vg-channel">
+          <span class="fds-avatar" aria-hidden="true">FS</span>
+          <div class="vg-channel-meta">
+            <strong>Flavor Studio</strong>
+            <span class="fds-hint" data-i18n="subscriberCount">128K subscribers</span>
+          </div>
+          <button class="fds-button" data-variant="primary" data-size="sm" data-i18n="subscribe">Subscribe</button>
+        </div>
+        <p class="vg-meta" data-i18n="featuredMeta">24K views · 2 days ago</p>
+      </section>
+
+      <div class="fds-tabs-list" role="tablist">
+        <button class="fds-tab" role="tab" aria-selected="true" data-i18n="popular">Popular</button>
+        <button class="fds-tab" role="tab" aria-selected="false" data-i18n="newest">Newest</button>
+      </div>
+
+      <div class="vg-grid">
+        {cards.map((c) => (
+          <article class="vg-card">
+            <div class="vg-thumb">
+              <img src={c.thumb} alt="" class={c.tint} loading="lazy" />
+              <span class="vg-duration" aria-hidden="true">{c.dur}</span>
+            </div>
+            <h3 class="vg-card-title" data-i18n={c.key}>{(extraStrings as any)[c.key].en}</h3>
+            <p class="vg-card-meta">Flavor Studio</p>
+            <p class="vg-card-meta" data-i18n={c.meta}>{(extraStrings as any)[c.meta].en}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+
+    <nav class="fds-tabbar vg-tabbar">
+      <button class="fds-tabbar-item" aria-current="page">
+        <svg class="fds-icon" data-icon data-variant="outline" width="2" aria-hidden="true"><use href="/icons/sprite.svg#hi-home-outline"></use></svg>
+        <span data-i18n="home">Home</span>
+      </button>
+      <button class="fds-tabbar-item">
+        <svg class="fds-icon" data-icon data-variant="outline" width="2" aria-hidden="true"><use href="/icons/sprite.svg#hi-globe-alt-outline"></use></svg>
+        <span data-i18n="explore">Explore</span>
+      </button>
+      <button class="fds-tabbar-item">
+        <svg class="fds-icon" data-icon data-variant="outline" width="2" aria-hidden="true"><use href="/icons/sprite.svg#hi-arrow-up-tray-outline"></use></svg>
+        <span data-i18n="upload">Upload</span>
+      </button>
+      <button class="fds-tabbar-item">
+        <svg class="fds-icon" data-icon data-variant="outline" width="2" aria-hidden="true"><use href="/icons/sprite.svg#hi-user-outline"></use></svg>
+        <span data-i18n="profile">Profile</span>
+      </button>
+    </nav>
+  </TemplateFrame>
+
+  <style>
+    .vg-page { padding: var(--space-6); }
+    .vg-player {
+      position: relative; aspect-ratio: 16 / 9;
+      border-radius: var(--radius-container); overflow: hidden;
+      background: var(--surface-tint);
+    }
+    .vg-poster { inline-size: 100%; block-size: 100%; object-fit: cover; display: block; }
+    .vg-play {
+      position: absolute; inset-block-start: 50%; inset-inline-start: 50%;
+      transform: translate(-50%, -50%);
+      inline-size: 64px; block-size: 64px;
+      border: none; border-radius: var(--radius-round);
+      background: var(--accent-bg); color: var(--accent-fg);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; box-shadow: var(--elevation-3);
+      transition: transform var(--duration-2) var(--ease-spring);
+    }
+    [dir="rtl"] .vg-play { transform: translate(50%, -50%); }
+    .vg-play:hover { transform: translate(-50%, -50%) scale(1.08); }
+    [dir="rtl"] .vg-play:hover { transform: translate(50%, -50%) scale(1.08); }
+    .vg-play svg { inline-size: 28px; block-size: 28px; }
+
+    .vg-title { font-family: var(--font-display); font-size: var(--font-size-6); margin: var(--space-4) 0 var(--space-3); }
+    .vg-channel { display: flex; align-items: center; gap: var(--space-3); }
+    .vg-channel-meta { display: flex; flex-direction: column; margin-inline-end: auto; }
+    .vg-meta { color: var(--text-tertiary); font-size: var(--font-size-2); margin: var(--space-2) 0 var(--space-5); }
+
+    .vg-grid {
+      display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-5) var(--space-4);
+      padding-block-start: var(--space-5);
+    }
+    .vg-thumb {
+      position: relative; aspect-ratio: 16 / 9;
+      border-radius: var(--radius-media); overflow: hidden;
+      background: var(--surface-tint);
+    }
+    .vg-thumb img { inline-size: 100%; block-size: 100%; object-fit: cover; display: block; }
+    .vg-tint-warm { filter: sepia(0.35) saturate(1.2); }
+    .vg-tint-cool { filter: hue-rotate(40deg) saturate(0.9); }
+    .vg-tint-mono { filter: grayscale(0.85); }
+    .vg-duration {
+      position: absolute; inset-block-end: var(--space-2); inset-inline-end: var(--space-2);
+      background: var(--text-primary); color: var(--surface-1);
+      font-size: var(--font-size-1); font-weight: 600;
+      padding-inline: var(--space-2); padding-block: 2px;
+      border-radius: var(--radius-media);
+      font-family: var(--font-mono);
+    }
+    .vg-card-title { font-size: var(--font-size-3); font-weight: 700; margin: var(--space-3) 0 var(--space-1); }
+    .vg-card-meta { color: var(--text-tertiary); font-size: var(--font-size-2); margin: 0; }
+
+    .vg-tabbar { display: none; }
+
+    @container (max-width: 767px) {
+      .vg-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @container (max-width: 480px) {
+      .vg-page { padding: var(--space-4); }
+      .vg-grid { grid-template-columns: 1fr; }
+      .vg-title { font-size: var(--font-size-5); }
+      .vg-tabbar { display: flex; position: sticky; inset-block-end: 0; }
+    }
+  </style>
+</DocsShell>

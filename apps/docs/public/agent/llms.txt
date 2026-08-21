@@ -1,0 +1,89 @@
+# Flavor DS
+
+> An agent-ready design system delivered over MCP: 1,152 computed colour themes (16 hues incl. Brand + Brand 2 × 3 saturations × light/dark × AA/AAA × 6 backgrounds incl. always-dark), radius/density/type/direction axes, 47 CSS-first components with keyboard contracts, 20 product templates, native token exports, and a design-review canvas whose feedback comes out agent-actionable.
+
+Start with the global rules — they are always in effect: /agent/rules.md
+Then retrieve only what the task needs: MCP flavor_recall({task}) or /agent/index.json (87 chunks, priority 0–3, keyword tags).
+
+## Contract
+- /core/tokens/ — semantic tokens (public API); TOKENS.md
+- /core/colors/ — computed AA/AAA pairings
+- /agent-ready/ — how the index and retrieval work
+- /mcp/ — the MCP tools
+
+## Components (47)
+- /core/components/button/ — Button: Triggers an action. Five variants form a hierarchy; one primary per view.
+- /core/components/icon-button/ — Icon button: A square button carrying only an icon. Requires an accessible label.
+- /core/components/button-group/ — Button group: Related actions joined visually. Use for view switching or split actions.
+- /core/components/link/ — Link: Inline navigation. Underlined so it survives without color.
+- /core/components/menu/ — Menu / dropdown: A list of actions revealed from a trigger.
+- /core/components/input/ — Text input & textarea: Single- and multi-line text entry with label, hint, and error.
+- /core/components/select/ — Select: Choose one option from a short list. Native for full a11y.
+- /core/components/checkbox-radio/ — Checkbox & radio: Multi-select (checkbox) vs single-select (radio) from visible options.
+- /core/components/switch/ — Switch: Immediate on/off. Unlike a checkbox it applies instantly, no submit.
+- /core/components/slider/ — Slider: Pick a value from a continuous range.
+- /core/components/segmented/ — Segmented control: Exclusive choice among 2–5 peers, always visible.
+- /core/components/chip/ — Chip / tag: Compact filters, selections, or removable tokens.
+- /core/components/input-group/ — Input group: An input with attached addons or buttons (prefix, suffix, action).
+- /core/components/dropzone/ — File upload: Drag-and-drop zone plus a file list.
+- /core/components/calendar/ — Date picker: Calendar grid for single dates and ranges.
+- /core/components/meter/ — Strength meter: Segmented gauge for password strength or quotas.
+- /core/components/alert/ — Alert: Inline, persistent message tied to a section of content.
+- /core/components/banner/ — Banner: Full-width, page-level announcement pinned above content.
+- /core/components/toast/ — Toast: Transient confirmation that appears in a corner and auto-dismisses.
+- /core/components/badge/ — Badge: Small status or count label.
+- /core/components/progress/ — Progress: Determinate progress toward completion.
+- /core/components/spinner/ — Spinner: Indeterminate loading indicator.
+- /core/components/skeleton/ — Skeleton: Placeholder shapes while content loads.
+- /core/components/empty/ — Empty state: What users see when there is nothing yet — with a way forward.
+- /core/components/card/ — Card: Grouped content on an elevated surface. Three elevations map to surface layers.
+- /core/components/stat/ — Stat / KPI: A headline number with label and trend.
+- /core/components/table/ — Table: Tabular data with sortable headers, selection, and density.
+- /core/components/list/ — List: Vertical stack of items with leading/trailing slots.
+- /core/components/avatar/ — Avatar: A person or entity, as image or initials, optionally with status.
+- /core/components/rating/ — Rating: Star rating, display or input.
+- /core/components/timeline/ — Timeline: Chronological events with markers.
+- /core/components/code/ — Code block: Monospace code, block or inline.
+- /core/components/kbd/ — Keyboard key: Shows a keyboard shortcut.
+- /core/components/navbar/ — Top navigation: Horizontal app bar with brand, links, and utilities.
+- /core/components/sidenav/ — Side navigation: Vertical, grouped navigation for app shells.
+- /core/components/tabs/ — Tabs: Switch between peer views in the same context.
+- /core/components/breadcrumb/ — Breadcrumb: Shows location in a hierarchy.
+- /core/components/pagination/ — Pagination: Move between pages of results.
+- /core/components/stepper/ — Stepper: Progress through a multi-step flow.
+- /core/components/tree/ — Tree view: Hierarchical, collapsible navigation (files, org charts).
+- /core/components/tabbar/ — Mobile tab bar: Bottom navigation for phone layouts (iOS/Android idioms).
+- /core/components/command/ — Command palette: Keyboard-first search over actions and pages (⌘K).
+- /core/components/dialog/ — Dialog / modal: Blocking overlay for focused tasks or confirmations.
+- /core/components/drawer/ — Drawer / sheet: Side or bottom panel for secondary tasks that keep page context.
+- /core/components/popover/ — Popover: Non-modal floating panel anchored to a trigger.
+- /core/components/tooltip/ — Tooltip: Brief label on hover/focus for icon-only controls.
+- /core/components/accordion/ — Accordion: Vertically stacked disclosure sections.
+
+## Templates (20)
+- /product/sign-in/ — Sign in
+- /product/feed/ — Social feed
+- /product/dashboard/ — Admin dashboard
+- /product/canvas/ — Canvas / flow builder
+- /product/chat/ — Chat
+- /product/ai-chat/ — AI chat
+- /product/projects/ — Project management
+- /product/calendar/ — Calendar
+- /product/map/ — Map
+- /product/music/ — Music player
+- /product/reader/ — Audiobook reader
+- /product/email/ — Email client
+- /product/ecommerce/ — E-commerce
+- /product/image-gallery/ — Image gallery
+- /product/video-gallery/ — Video gallery
+- /product/landing/ — Landing page
+- /product/email-marketing/ — HTML email · Marketing
+- /product/email-notification/ — HTML email · Notification
+- /product/checkout/ — Checkout
+- /product/settings/ — Settings
+
+## Native
+- /product/native/ — SwiftUI + Compose exports, HIG/M3 platform spec
+
+## Review
+- /canvas/ — live design-review board; feedback via flavor_canvas_feedback

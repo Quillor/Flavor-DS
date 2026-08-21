@@ -1,0 +1,84 @@
+---
+import DocsShell from '../../layouts/DocsShell.astro';
+import TemplateFrame from '../../components/TemplateFrame.astro';
+import { productNav } from '../../product/productNav';
+const extraStrings = {
+  tagline: { en: 'Tastefully engineered.', es: 'Diseñado con gusto.', zh: '匠心打造。', de: 'Mit Geschmack entwickelt.', ar: 'هندسة بذوق رفيع.' },
+  taglineSub: { en: 'One design system for every product surface.', es: 'Un sistema de diseño para cada superficie de producto.', zh: '一套设计系统，覆盖所有产品界面。', de: 'Ein Designsystem für jede Produktoberfläche.', ar: 'نظام تصميم واحد لكل واجهات المنتج.' },
+  noAccount: { en: 'New here?', es: '¿Eres nuevo?', zh: '新用户？', de: 'Neu hier?', ar: 'جديد هنا؟' },
+};
+---
+<DocsShell title="Sign in" nav={productNav}>
+  <h1 style="font-family: var(--font-display); font-size: var(--font-size-9);">Sign in</h1>
+  <p style="color: var(--text-secondary); max-inline-size: 640px;">
+    Authentication entry with social sign-in, adapting from a two-pane desktop layout to a
+    single column on mobile. Try iOS/Android and Arabic (RTL) with the frame controls.
+  </p>
+
+  <TemplateFrame title="sign-in" extraStrings={extraStrings}>
+    <div class="fds-statusbar" aria-hidden="true"><span>9:41</span><span>●●●</span></div>
+    <div class="si-layout">
+      <aside class="si-brand fds-pattern-dots fds-on-media">
+        <img src="/brand/logo-square-color.svg" alt="" width="56" height="56" />
+        <h2 class="si-tagline" data-i18n="tagline">Tastefully engineered.</h2>
+        <p class="si-sub" data-i18n="taglineSub">One design system for every product surface.</p>
+      </aside>
+      <main class="si-form">
+        <h1 class="si-title" data-i18n="signIn">Sign in</h1>
+        <div class="fds-field">
+          <label class="fds-label" for="si-email" data-i18n="email">Email</label>
+          <input class="fds-input" id="si-email" type="email" data-i18n-placeholder="email" placeholder="Email" />
+        </div>
+        <div class="fds-field">
+          <label class="fds-label" for="si-pass" data-i18n="password">Password</label>
+          <input class="fds-input" id="si-pass" type="password" placeholder="••••••••" />
+        </div>
+        <div class="si-row">
+          <label class="fds-check"><input type="checkbox" checked /> <span data-i18n="rememberMe">Remember me</span></label>
+          <a href="#" class="si-link" data-hit data-i18n="forgotPassword">Forgot password?</a>
+        </div>
+        <button class="fds-button" data-variant="primary" data-size="lg" style="inline-size:100%" data-i18n="signIn">Sign in</button>
+        <div class="si-divider"><span data-i18n="orContinueWith">or continue with</span></div>
+        <div class="si-social">
+          <button class="fds-button" data-variant="outline">Google</button>
+          <button class="fds-button" data-variant="outline">Apple</button>
+          <button class="fds-button" data-variant="outline">GitHub</button>
+        </div>
+        <p class="si-foot"><span data-i18n="noAccount">New here?</span> <a href="#" class="si-link" data-hit data-i18n="createAccount">Create account</a></p>
+      </main>
+    </div>
+  </TemplateFrame>
+
+  <style>
+    .si-layout { display: flex; min-block-size: 560px; }
+    .si-brand {
+      flex: 1; display: flex; flex-direction: column; justify-content: center; gap: var(--space-4);
+      padding: var(--space-9);
+      border-inline-end: 1px solid var(--border-subtle);
+    }
+    .si-tagline { font-family: var(--font-display); font-size: var(--font-size-8); line-height: var(--line-height-8); margin: 0; }
+    .si-sub { color: var(--text-secondary); margin: 0; }
+    .si-form {
+      inline-size: min(420px, 100%); display: flex; flex-direction: column; gap: var(--space-4);
+      padding: var(--space-9) var(--space-7); justify-content: center;
+      background: var(--surface-1);
+    }
+    .si-title { font-family: var(--font-display); font-size: var(--font-size-7); margin: 0 0 var(--space-2); }
+    .si-row { display: flex; justify-content: space-between; align-items: center; font-size: var(--font-size-2); }
+    .si-link { color: var(--text-accent); text-decoration: none; font-weight: 600; }
+    .si-divider {
+      display: flex; align-items: center; gap: var(--space-3);
+      color: var(--text-tertiary); font-size: var(--font-size-2);
+    }
+    .si-divider::before, .si-divider::after { content: ''; flex: 1; border-block-start: 1px solid var(--border-default); }
+    .si-social { display: flex; gap: var(--space-3); }
+    .si-social .fds-button { flex: 1; }
+    .si-foot { font-size: var(--font-size-2); color: var(--text-secondary); text-align: center; margin: var(--space-2) 0 0; }
+    @container (max-width: 767px) {
+      .si-layout { flex-direction: column; min-block-size: auto; }
+      .si-brand { border-inline-end: none; border-block-end: 1px solid var(--border-subtle); padding: var(--space-6); }
+      .si-tagline { font-size: var(--font-size-6); line-height: var(--line-height-6); }
+      .si-form { inline-size: 100%; padding: var(--space-6); }
+    }
+  </style>
+</DocsShell>

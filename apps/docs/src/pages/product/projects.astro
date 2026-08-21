@@ -1,0 +1,357 @@
+---
+import DocsShell from '../../layouts/DocsShell.astro';
+import TemplateFrame from '../../components/TemplateFrame.astro';
+import { productNav } from '../../product/productNav';
+
+/* Four views over one dataset, so the same records can be compared across
+ * presentations: list, board, timeline and Gantt. Rendering them from one array
+ * keeps the views honest — a bar in the Gantt and a row in the list are the
+ * same task, not two hand-written approximations. */
+const TASKS = [
+  { id: 'T-101', name: 'Audit color contrast',      who: 'MK', status: 'progress', prio: 'high',   start: 0,  span: 4, done: 60,  due: 'Mar 4',  col: 'accent' },
+  { id: 'T-102', name: 'Token pipeline v2',         who: 'JO', status: 'progress', prio: 'high',   start: 2,  span: 6, done: 35,  due: 'Mar 9',  col: 'info' },
+  { id: 'T-103', name: 'RTL layout pass',           who: 'AL', status: 'review',   prio: 'medium', start: 5,  span: 3, done: 80,  due: 'Mar 6',  col: 'success' },
+  { id: 'T-104', name: 'Density spec',              who: 'SB', status: 'todo',     prio: 'low',    start: 7,  span: 4, done: 0,   due: 'Mar 12', col: 'warning' },
+  { id: 'T-105', name: 'Icon set review',           who: 'RD', status: 'todo',     prio: 'medium', start: 9,  span: 3, done: 0,   due: 'Mar 14', col: 'accent' },
+  { id: 'T-106', name: 'Ship 1.0 release notes',    who: 'MK', status: 'done',     prio: 'high',   start: 1,  span: 2, done: 100, due: 'Mar 3',  col: 'success' },
+];
+const COLUMNS = [
+  { key: 'todo', i18n: 'todo', label: 'To do', tasks: TASKS.filter((t) => t.status === 'todo') },
+  { key: 'progress', i18n: 'inProgress', label: 'In progress', tasks: TASKS.filter((t) => t.status === 'progress') },
+  { key: 'review', i18n: 'inReview', label: 'In review', tasks: TASKS.filter((t) => t.status === 'review') },
+  { key: 'done', i18n: 'completed', label: 'Completed', tasks: TASKS.filter((t) => t.status === 'done') },
+];
+const PRIO = { high: 'High', medium: 'Medium', low: 'Low' };
+const DAYS = ['M', 'T', 'W', 'T', 'F', 'M', 'T', 'W', 'T', 'F', 'M', 'T'];
+const extraStrings = {
+  project:  { en: 'Design System', es: 'Sistema de diseño', zh: '设计系统', de: 'Designsystem', ar: 'نظام التصميم' },
+  thisWeek: { en: 'This week', es: 'Esta semana', zh: '本周', de: 'Diese Woche', ar: 'هذا الأسبوع' },
+  nextWeek: { en: 'Next week', es: 'Próxima semana', zh: '下周', de: 'Nächste Woche', ar: 'الأسبوع القادم' },
+};
+---
+<DocsShell title="Project management" nav={productNav}>
+  <h1 style="font-family: var(--font-display); font-size: var(--font-size-9);">Project management</h1>
+  <p style="color: var(--text-secondary); max-inline-size: 640px;">
+    Four views over one task set — list, board, timeline and Gantt. Every bar, chip and row is
+    drawn from tokens, so status colour, bar radius and row density all follow the active theme.
+    Switch views with the tabs; try Compact density and the Square/Pill radius modes.
+  </p>
+
+  <TemplateFrame title="projects" extraStrings={extraStrings}>
+    <div class="fds-statusbar" aria-hidden="true"><span>9:41</span><span>●●●</span></div>
+    <div class="pm">
+      <header class="pm-head">
+        <div class="pm-title-row">
+          <h2 class="pm-title" data-i18n="project">Design System</h2>
+          <span class="fds-badge" data-variant="subtle">6 <span data-i18n="tasks">Tasks</span></span>
+        </div>
+        <div class="pm-actions">
+          <input class="fds-input pm-search" type="search" data-i18n-placeholder="search" placeholder="Search" />
+          <button class="fds-button" data-variant="primary" data-size="sm"><span data-i18n="addTask">Add task</span></button>
+        </div>
+      </header>
+
+      <div class="fds-tabs pm-tabs" role="tablist" aria-label="View">
+        <button class="fds-tab" role="tab" aria-selected="true" data-view="list"><span data-i18n="list">List</span></button>
+        <button class="fds-tab" role="tab" aria-selected="false" data-view="board"><span data-i18n="board">Board</span></button>
+        <button class="fds-tab" role="tab" aria-selected="false" data-view="timeline"><span data-i18n="timeline">Timeline</span></button>
+        <button class="fds-tab" role="tab" aria-selected="false" data-view="gantt"><span data-i18n="gantt">Gantt</span></button>
+      </div>
+
+      <!-- LIST -->
+      <section class="pm-pane" data-pane="list">
+        <table class="fds-table pm-table">
+          <thead>
+            <tr>
+              <th scope="col" class="pm-col-name" data-i18n="tasks">Tasks</th>
+              <th scope="col" data-i18n="assignee">Assignee</th>
+              <th scope="col" data-i18n="dueDate">Due date</th>
+              <th scope="col" data-i18n="priority">Priority</th>
+              <th scope="col" data-i18n="status">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {TASKS.map((t) => (
+              <tr>
+                <td class="pm-col-name">
+                  <label class="fds-check pm-taskcell">
+                    <input type="checkbox" checked={t.status === 'done'} aria-label={t.name} />
+                    <span class={t.status === 'done' ? 'pm-done' : ''}>{t.name}</span>
+                  </label>
+                </td>
+                <td><span class="fds-avatar pm-av">{t.who}</span></td>
+                <td data-numeric>{t.due}</td>
+                <td><span class={`fds-status-text pm-prio-${t.prio}`} data-i18n={t.prio}>{PRIO[t.prio]}</span></td>
+                <td>
+                  <span class="fds-badge" data-variant="subtle" data-i18n={COLUMNS.find((c) => c.key === t.status)?.i18n}>
+                    {COLUMNS.find((c) => c.key === t.status)?.label}
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
+
+      <!-- BOARD -->
+      <section class="pm-pane" data-pane="board" hidden>
+        <div class="pm-board">
+          {COLUMNS.map((col) => (
+            <div class="pm-col">
+              <header class="pm-col-head">
+                <span class="pm-col-title" data-i18n={col.i18n}>{col.label}</span>
+                <span class="pm-col-count" data-numeric>{col.tasks.length}</span>
+              </header>
+              <div class="pm-col-body">
+                {col.tasks.map((t) => (
+                  <article class="pm-card">
+                    <span class={`pm-tag pm-tag-${t.col}`} data-i18n={t.prio}>{PRIO[t.prio]}</span>
+                    <p class="pm-card-title">{t.name}</p>
+                    <footer class="pm-card-foot">
+                      <span class="fds-avatar pm-av">{t.who}</span>
+                      <span class="pm-due" data-numeric>{t.due}</span>
+                    </footer>
+                  </article>
+                ))}
+                <button class="pm-add" data-hit type="button">+ <span data-i18n="addTask">Add task</span></button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <!-- TIMELINE -->
+      <section class="pm-pane" data-pane="timeline" hidden>
+        <div class="pm-tl">
+          <div class="pm-tl-scale" aria-hidden="true">
+            <span data-i18n="thisWeek">This week</span>
+            <span data-i18n="nextWeek">Next week</span>
+          </div>
+          <ol class="pm-tl-rows">
+            {TASKS.map((t) => (
+              <li class="pm-tl-row">
+                <span class="pm-tl-label">{t.name}</span>
+                <span class="pm-tl-track">
+                  <span
+                    class={`pm-bar pm-bar-${t.col}`}
+                    style={`--bar-start:${(t.start / 12) * 100}%; --bar-span:${(t.span / 12) * 100}%;`}
+                  >
+                    <span class="pm-bar-text" data-numeric>{t.done}%</span>
+                  </span>
+                </span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      <!-- GANTT -->
+      <section class="pm-pane" data-pane="gantt" hidden>
+        <div class="pm-gantt">
+          <div class="pm-gantt-head">
+            <span class="pm-gantt-corner" data-i18n="tasks">Tasks</span>
+            <div class="pm-gantt-days" aria-hidden="true">
+              {DAYS.map((d, i) => <span class={i === 3 ? 'pm-day pm-today' : 'pm-day'}>{d}</span>)}
+            </div>
+          </div>
+          <ol class="pm-gantt-rows">
+            {TASKS.map((t) => (
+              <li class="pm-gantt-row">
+                <span class="pm-gantt-label">
+                  <span class="pm-gantt-id" data-numeric>{t.id}</span>{t.name}
+                </span>
+                <span class="pm-gantt-track">
+                  <span class="pm-grid" aria-hidden="true">{DAYS.map(() => <i></i>)}</span>
+                  <span
+                    class={`pm-gbar pm-bar-${t.col}`}
+                    style={`--bar-start:${(t.start / 12) * 100}%; --bar-span:${(t.span / 12) * 100}%;`}
+                    role="img"
+                    aria-label={`${t.name}: ${t.done}%`}
+                  >
+                    <span class="pm-gbar-fill" style={`inline-size:${t.done}%`}></span>
+                  </span>
+                </span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+    </div>
+  </TemplateFrame>
+
+  <style>
+    .pm { display: flex; flex-direction: column; block-size: 620px; background: var(--surface-page); }
+
+    /* On the Media background --surface-page is transparent by design, so the photo
+       shows through. An app shell is not a photo-facing surface: its text is dark ink
+       (the frame is a declared surface), so leaving it transparent puts dark type on a
+       photograph. Paint the shell opaque there — the photo still surrounds the device. */
+    :global([data-bg="media"]) .pm { background: var(--surface-1); }
+    .pm-head {
+      display: flex; align-items: center; justify-content: space-between; gap: var(--space-4);
+      padding: var(--space-5) var(--space-6) var(--space-3);
+      flex-wrap: wrap;
+    }
+    .pm-title-row { display: flex; align-items: center; gap: var(--space-3); }
+    .pm-title { font-family: var(--font-display); font-size: var(--font-size-7); margin: 0; }
+    .pm-actions { display: flex; align-items: center; gap: var(--space-3); }
+    .pm-search { inline-size: 200px; block-size: var(--control-height-sm); }
+    .pm-tabs { padding-inline: var(--space-6); flex-shrink: 0; }
+    .pm-pane { flex: 1; overflow: auto; padding: var(--space-5) var(--space-6); }
+
+    /* --- list */
+    .pm-table { inline-size: 100%; }
+    .pm-col-name { min-inline-size: 240px; }
+    .pm-taskcell { display: flex; align-items: center; gap: var(--space-3); }
+    .pm-done { color: var(--text-tertiary); text-decoration: line-through; }
+    .pm-av {
+      inline-size: var(--control-height-sm); block-size: var(--control-height-sm);
+      font-size: var(--font-size-1);
+    }
+    .pm-prio-high { color: var(--danger-text); }
+    .pm-prio-medium { color: var(--warning-text); }
+    .pm-prio-low { color: var(--text-tertiary); }
+
+    /* --- board */
+    .pm-board { display: flex; gap: var(--space-4); align-items: flex-start; min-inline-size: min-content; }
+    .pm-col {
+      inline-size: 260px; flex-shrink: 0;
+      background: var(--surface-2);
+      border-radius: var(--radius-container);
+      padding: var(--space-3);
+    }
+    .pm-col-head { display: flex; align-items: center; justify-content: space-between; padding: var(--space-2) var(--space-2) var(--space-3); }
+    .pm-col-title { font-weight: 600; font-size: var(--font-size-2); }
+    .pm-col-count { color: var(--text-tertiary); font-size: var(--font-size-2); }
+    .pm-col-body { display: flex; flex-direction: column; gap: var(--space-3); }
+    .pm-card {
+      background: var(--surface-1);
+      border-radius: var(--radius-nested-tight);
+      padding: var(--space-4);
+      box-shadow: var(--shadow-border);
+      display: flex; flex-direction: column; gap: var(--space-2);
+    }
+    .pm-card-title { margin: 0; font-size: var(--font-size-3); line-height: var(--line-height-3); }
+    .pm-card-foot { display: flex; align-items: center; justify-content: space-between; }
+    .pm-due { color: var(--text-tertiary); font-size: var(--font-size-1); }
+    .pm-tag {
+      align-self: flex-start;
+      font-size: var(--font-size-1); font-weight: 600;
+      padding: 2px var(--space-2);
+      border-radius: var(--radius-control);
+    }
+    .pm-add {
+      background: none; border: none; cursor: pointer; font: inherit;
+      color: var(--text-tertiary); font-size: var(--font-size-2);
+      text-align: start; padding: var(--space-2);
+      border-radius: var(--radius-control);
+    }
+    .pm-add:hover { background: var(--surface-tint); color: var(--text-primary); }
+
+    /* --- shared bar colours. Every pairing is a QA'd feedback/accent pair, so the
+       label stays legible on the bar in every hue, mode and contrast level. */
+    .pm-tag-accent, .pm-bar-accent { background: var(--accent-subtle); color: var(--text-on-accent-subtle); }
+    .pm-tag-success, .pm-bar-success { background: var(--success-bg); color: var(--success-text); }
+    .pm-tag-warning, .pm-bar-warning { background: var(--warning-bg); color: var(--warning-text); }
+    .pm-tag-info, .pm-bar-info { background: var(--info-bg); color: var(--info-text); }
+
+    /* --- timeline */
+    .pm-tl { display: flex; flex-direction: column; gap: var(--space-3); }
+    .pm-tl-scale {
+      display: flex; color: var(--text-tertiary);
+      font-size: var(--font-size-1); font-weight: 600;
+      margin-inline-start: 180px;
+    }
+    .pm-tl-scale span { flex: 1; }
+    .pm-tl-rows { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-2); }
+    .pm-tl-row { display: flex; align-items: center; gap: var(--space-4); }
+    .pm-tl-label {
+      inline-size: 164px; flex-shrink: 0;
+      font-size: var(--font-size-2);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .pm-tl-track {
+      flex: 1; position: relative;
+      block-size: var(--control-height-sm);
+      background: var(--surface-2);
+      border-radius: var(--radius-control);
+    }
+    /* Logical inset so bars run right-to-left under dir="rtl" without a second rule. */
+    .pm-bar {
+      position: absolute; inset-block: 0;
+      inset-inline-start: var(--bar-start); inline-size: var(--bar-span);
+      border-radius: var(--radius-control);
+      display: flex; align-items: center; padding-inline: var(--space-3);
+      font-size: var(--font-size-1); font-weight: 600;
+      overflow: hidden;
+    }
+    .pm-bar-text { white-space: nowrap; }
+
+    /* --- gantt */
+    .pm-gantt { display: flex; flex-direction: column; }
+    .pm-gantt-head { display: flex; align-items: end; gap: var(--space-4); padding-block-end: var(--space-2); }
+    .pm-gantt-corner {
+      inline-size: 220px; flex-shrink: 0;
+      font-size: var(--font-size-1); font-weight: 600; color: var(--text-tertiary);
+      text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .pm-gantt-days { flex: 1; display: flex; }
+    .pm-day {
+      flex: 1; text-align: center;
+      font-size: var(--font-size-1); color: var(--text-tertiary);
+    }
+    .pm-today { color: var(--text-accent); font-weight: 700; }
+    .pm-gantt-rows { list-style: none; margin: 0; padding: 0; }
+    .pm-gantt-row {
+      display: flex; align-items: center; gap: var(--space-4);
+      padding-block: var(--space-2);
+      border-block-start: 1px solid var(--border-subtle);
+    }
+    .pm-gantt-label {
+      inline-size: 220px; flex-shrink: 0;
+      display: flex; align-items: baseline; gap: var(--space-2);
+      font-size: var(--font-size-2);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .pm-gantt-id { color: var(--text-tertiary); font-size: var(--font-size-1); }
+    .pm-gantt-track { flex: 1; position: relative; block-size: var(--space-6); }
+    .pm-grid { position: absolute; inset: 0; display: flex; }
+    .pm-grid i { flex: 1; border-inline-start: 1px solid var(--border-subtle); }
+    .pm-gbar {
+      position: absolute; inset-block: 2px;
+      inset-inline-start: var(--bar-start); inline-size: var(--bar-span);
+      border-radius: var(--radius-control);
+      overflow: hidden;
+    }
+    /* Progress reads as a darker segment of the same bar rather than a new colour,
+       so it needs no contrast pairing of its own. */
+    .pm-gbar-fill { display: block; block-size: 100%; background: var(--accent-bg); opacity: 0.55; }
+
+    @container (max-width: 767px) {
+      .pm-search { display: none; }
+      .pm-tl-label, .pm-gantt-label { inline-size: 120px; }
+      .pm-tl-scale { margin-inline-start: 136px; }
+      .pm-gantt-corner { inline-size: 120px; }
+    }
+    @container (max-width: 480px) {
+      .pm { block-size: 560px; }
+      .pm-pane { padding: var(--space-4); }
+      .pm-col { inline-size: 220px; }
+      .pm-col-name { min-inline-size: 160px; }
+    }
+  </style>
+
+  <script>
+    // View switching is local to the frame so several templates can coexist on a page.
+    document.querySelectorAll('#tpl-projects [data-view]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const root = btn.closest('.tpl-frame') || document;
+        root.querySelectorAll('[data-view]').forEach((b) => b.setAttribute('aria-selected', String(b === btn)));
+        const want = btn.getAttribute('data-view');
+        root.querySelectorAll('[data-pane]').forEach((p) => {
+          (p as HTMLElement).hidden = p.getAttribute('data-pane') !== want;
+        });
+      });
+    });
+  </script>
+</DocsShell>

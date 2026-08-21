@@ -1,0 +1,236 @@
+/* Flavor DS — native platform specification.
+ *
+ * data-platform="ios" | "android" on any container turns the web components into the
+ * platform's idioms. This is a SPEC, not a reskin: every metric below is the HIG or
+ * Material 3 number (cited inline), exposed as a --platform-* token so a native
+ * implementation reads the same values FlavorTokens.swift / .kt ship.
+ *
+ * What is platform-specific here is CHROME and METRICS — nav bars, tab bars, list
+ * geometry, targets, corner language. Colour, contrast, spacing scale, type scale and
+ * density come from the theme axes unchanged, which is the point: an iOS build of a
+ * product and its web build resolve identical semantic colour for the same axes.
+ *
+ * Contract: only semantic tokens (enforced by scripts/check-tokens.mjs). All box
+ * properties logical, so RTL flips for free.
+ */
+
+/* ================================================================ iOS (HIG) */
+[data-platform="ios"] {
+  --font-text: -apple-system, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+  --font-display: -apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+
+  /* HIG layout — status bar 54pt on Dynamic Island devices, 44 legacy; nav bar 44pt,
+     large title 96pt total; tab bar 49pt + 34pt home indicator; min target 44pt. */
+  --platform-statusbar: 54px;
+  --platform-navbar: 44px;
+  --platform-navbar-large: 96px;
+  --platform-tabbar: 49px;
+  --platform-safe-bottom: 34px;
+  --platform-target: 44px;
+
+  /* HIG shape — 10pt grouped-list corners, 12–14pt buttons, 10pt sheets. iOS is
+     continuous-corner (squircle) but CSS cannot draw that; radii are matched visually.
+     These override the Radius axis on purpose: platform convention wins over theme here. */
+  --radius-control: 12px;
+  --radius-field: 10px;
+  --radius-container: 10px;
+  --radius-media: 8px;
+
+  /* HIG list — 44pt rows minimum, 16pt inset, separators inset from the leading edge */
+  --platform-row: 44px;
+  --platform-inset: 16px;
+}
+
+/* status bar: time leading, indicators trailing, sits in the safe area */
+[data-platform="ios"] .fds-statusbar {
+  display: flex; block-size: var(--platform-statusbar);
+  padding-inline: var(--platform-inset); padding-block-start: 14px;
+  align-items: flex-start; font-weight: 600; font-size: 15px;
+}
+
+/* navigation bar: centred title, 44pt; large-title variant collapses on scroll (behaviour
+   in behaviors.js: largeTitle) */
+[data-platform="ios"] .fds-appbar {
+  justify-content: center; block-size: var(--platform-navbar);
+  font-size: 17px; font-weight: 600;
+  background: var(--surface-1);
+  border-block-end: 1px solid var(--border-subtle);
+  box-shadow: none;
+}
+[data-platform="ios"] .fds-appbar[data-large] {
+  block-size: var(--platform-navbar-large);
+  align-items: flex-end; justify-content: flex-start;
+  padding-inline: var(--platform-inset); padding-block-end: var(--space-2);
+  font-size: 34px; font-weight: 700; letter-spacing: -0.02em;
+  border-block-end-color: transparent;
+}
+[data-platform="ios"] .fds-appbar[data-large][data-collapsed] {
+  block-size: var(--platform-navbar); font-size: 17px; font-weight: 600;
+  justify-content: center; align-items: center; padding-block-end: 0;
+  border-block-end-color: var(--border-subtle);
+}
+/* the back control on iOS is a chevron + previous title, tinted, at the leading edge */
+[data-platform="ios"] .fds-appbar .fds-back { position: absolute; inset-inline-start: var(--space-2); color: var(--text-accent); font-weight: 400; }
+
+/* tab bar: 49pt, icons over 10pt labels, tinted selection, NO pill, sits above the home
+   indicator safe area */
+[data-platform="ios"] .fds-tabbar {
+  block-size: calc(var(--platform-tabbar) + var(--platform-safe-bottom));
+  padding-block: var(--space-1) var(--platform-safe-bottom);
+  background: var(--surface-1);
+  border-block-start: 1px solid var(--border-subtle);
+  backdrop-filter: saturate(180%) blur(20px);
+}
+[data-platform="ios"] .fds-tabbar-item { font-size: 10px; font-weight: 500; gap: 3px; border-radius: 0; background: none; min-inline-size: var(--platform-target); }
+[data-platform="ios"] .fds-tabbar-item svg { inline-size: 25px; block-size: 25px; }
+[data-platform="ios"] .fds-tabbar-item[aria-current="page"] { color: var(--text-accent); background: none; }
+/* selected tab uses the solid glyph — the outline→fill state contract */
+[data-platform="ios"] .fds-tabbar-item[aria-current="page"] .fds-icon { --icon-fill: currentColor; }
+
+/* grouped inset lists: 10pt-radius groups on the page tint, 44pt rows, inset separators,
+   trailing chevron on navigating rows */
+[data-platform="ios"] .fds-list {
+  background: var(--surface-1);
+  border-radius: var(--radius-container);
+  margin-inline: var(--platform-inset);
+  overflow: hidden; border: none;
+}
+[data-platform="ios"] .fds-list-item {
+  min-block-size: var(--platform-row);
+  padding-inline: var(--platform-inset);
+  border-block-start: 1px solid var(--border-subtle);
+  margin-inline-start: 0;
+}
+[data-platform="ios"] .fds-list-item:first-child { border-block-start: none; }
+[data-platform="ios"] .fds-list-item + .fds-list-item { border-block-start: 1px solid var(--border-subtle); margin-inline-start: var(--platform-inset); padding-inline-start: 0; }
+[data-platform="ios"] .fds-list-item[data-navigates]::after { content: ''; inline-size: 8px; block-size: 8px; border-inline-end: 2px solid var(--text-tertiary); border-block-end: 2px solid var(--text-tertiary); rotate: -45deg; margin-inline-start: auto; }
+[dir="rtl"] [data-platform="ios"] .fds-list-item[data-navigates]::after { rotate: 135deg; }
+
+/* controls: 50pt filled buttons with 12pt corners; tinted secondary; 44pt targets */
+[data-platform="ios"] .fds-button { block-size: 50px; font-size: 17px; font-weight: 600; border-radius: var(--radius-control); }
+[data-platform="ios"] .fds-button[data-size="sm"] { block-size: 34px; font-size: 15px; }
+[data-platform="ios"] .fds-button[data-variant="secondary"] { background: var(--accent-subtle); color: var(--text-accent); }
+[data-platform="ios"] .fds-input, [data-platform="ios"] .fds-select { block-size: 44px; font-size: 17px; border-radius: var(--radius-field); background: var(--surface-2); border-color: transparent; }
+/* HIG switch is 51×31 with a 27pt knob */
+[data-platform="ios"] .fds-switch { inline-size: 51px; block-size: 31px; }
+[data-platform="ios"] .fds-switch::before { inline-size: 27px; block-size: 27px; inset-block-start: 2px; inset-inline-start: 2px; }
+[data-platform="ios"] .fds-switch:checked::before { transform: translateX(20px); }
+[dir="rtl"] [data-platform="ios"] .fds-switch:checked::before { transform: translateX(-20px); }
+[data-platform="ios"] .fds-switch:checked { background: var(--success-solid); }   /* iOS system green */
+
+/* sheets: 10pt top corners, grabber 36×5 */
+[data-platform="ios"] .fds-drawer[data-side="bottom"] { border-start-start-radius: 10px; border-start-end-radius: 10px; }
+[data-platform="ios"] .fds-sheet-handle { inline-size: 36px; block-size: 5px; }
+
+/* iOS segmented control: 32pt, 8pt outer / 6pt inner corners, sliding white thumb */
+[data-platform="ios"] .fds-segmented { block-size: 32px; padding: 2px; background: var(--surface-tint); border-radius: 8px; border: none; }
+[data-platform="ios"] .fds-segment { border-radius: 6px; font-size: 13px; font-weight: 600; }
+[data-platform="ios"] .fds-segment[aria-pressed="true"] { background: var(--surface-1); box-shadow: var(--elevation-1); color: var(--text-primary); }
+
+/* ================================================================ Android (Material 3) */
+[data-platform="android"] {
+  --font-text: Roboto, 'Noto Sans', system-ui, sans-serif;
+  --font-display: Roboto, 'Noto Sans', system-ui, sans-serif;
+
+  /* M3 layout — status bar 24dp; top app bar small 64dp, medium 112, large 152;
+     navigation bar 80dp; navigation rail 80dp wide (≥600dp windows); FAB 56;
+     min target 48dp. */
+  --platform-statusbar: 24px;
+  --platform-navbar: 64px;
+  --platform-navbar-large: 152px;
+  --platform-tabbar: 80px;
+  --platform-safe-bottom: 0px;
+  --platform-target: 48px;
+  --platform-rail: 80px;
+
+  /* M3 shape scale — extra small 4, small 8, medium 12, large 16, extra large 28; buttons
+     and chips are full (20 at 40dp height). Overrides the Radius axis: platform wins. */
+  --radius-control: 20px;
+  --radius-field: 4px;
+  --radius-container: 12px;
+  --radius-media: 12px;
+
+  --platform-row: 56px;
+  --platform-inset: 16px;
+}
+
+[data-platform="android"] .fds-statusbar { display: flex; block-size: var(--platform-statusbar); padding-inline: var(--platform-inset); font-size: 14px; font-weight: 500; }
+
+/* top app bar: 64dp, title leading (after nav icon), 22sp, surface with tonal elevation
+   on scroll rather than a border */
+[data-platform="android"] .fds-appbar {
+  block-size: var(--platform-navbar); justify-content: flex-start;
+  padding-inline: var(--space-1) var(--platform-inset);
+  font-size: 22px; font-weight: 400;
+  background: var(--surface-1); border-block-end: none; box-shadow: none;
+}
+[data-platform="android"] .fds-appbar[data-scrolled] { background: var(--surface-2); box-shadow: var(--elevation-1); }
+[data-platform="android"] .fds-appbar[data-large] { block-size: var(--platform-navbar-large); align-items: flex-end; padding-block-end: 28px; padding-inline-start: var(--platform-inset); font-size: 28px; }
+[data-platform="android"] .fds-appbar[data-large][data-collapsed] { block-size: var(--platform-navbar); align-items: center; padding-block-end: 0; font-size: 22px; }
+
+/* navigation bar: 80dp, active indicator pill 64×32 radius 16, label always shown, 12sp */
+[data-platform="android"] .fds-tabbar { block-size: var(--platform-tabbar); padding-block: 12px 16px; background: var(--surface-2); border-block-start: none; }
+[data-platform="android"] .fds-tabbar-item { font-size: 12px; font-weight: 500; gap: 4px; padding: 0; background: none; min-inline-size: var(--platform-target); }
+[data-platform="android"] .fds-tabbar-item svg { inline-size: 24px; block-size: 24px; }
+/* the pill sits behind the ICON only */
+[data-platform="android"] .fds-tabbar-item > :first-child { display: inline-flex; align-items: center; justify-content: center; inline-size: 64px; block-size: 32px; border-radius: 16px; transition-property: background-color; transition-duration: var(--duration-2); transition-timing-function: var(--ease-standard); }
+[data-platform="android"] .fds-tabbar-item[aria-current="page"] { color: var(--text-primary); background: none; }
+[data-platform="android"] .fds-tabbar-item[aria-current="page"] > :first-child { background: var(--accent-subtle); color: var(--text-on-accent-subtle); }
+
+/* navigation rail: 80dp wide, destinations stacked, FAB slot at top — for windows ≥ 600dp */
+.fds-navrail { display: none; }
+[data-platform="android"] .fds-navrail {
+  display: flex; flex-direction: column; align-items: center; gap: var(--space-3);
+  inline-size: var(--platform-rail); flex-shrink: 0;
+  padding-block: var(--space-4);
+  background: var(--surface-1);
+}
+[data-platform="android"] .fds-navrail .fds-tabbar-item { inline-size: 100%; }
+[data-platform="android"] .fds-navrail .fds-fab { margin-block-end: var(--space-4); }
+
+/* buttons: 40dp, full corners; filled / tonal / outlined / text */
+[data-platform="android"] .fds-button { block-size: 40px; font-size: 14px; font-weight: 500; letter-spacing: 0.01em; border-radius: var(--radius-control); padding-inline: 24px; }
+[data-platform="android"] .fds-button[data-size="sm"] { block-size: 32px; padding-inline: 16px; }
+[data-platform="android"] .fds-button[data-variant="secondary"] { background: var(--accent-subtle); color: var(--text-on-accent-subtle); }   /* tonal */
+/* text fields: 56dp filled with a 4dp top radius and an active-indicator underline */
+[data-platform="android"] .fds-input, [data-platform="android"] .fds-select {
+  block-size: 56px; font-size: 16px;
+  border-radius: var(--radius-field) var(--radius-field) 0 0;
+  background: var(--surface-2); border: none; border-block-end: 1px solid var(--border-strong);
+}
+[data-platform="android"] .fds-input:focus-visible { outline: none; border-block-end: 2px solid var(--accent-bg); }
+/* switch: 52×32 track, 24dp knob unselected → 24 selected with icon well */
+[data-platform="android"] .fds-switch { inline-size: 52px; block-size: 32px; border: 2px solid var(--border-strong); background: var(--surface-2); }
+[data-platform="android"] .fds-switch::before { inline-size: 16px; block-size: 16px; inset-block-start: 6px; inset-inline-start: 6px; background: var(--border-strong); }
+[data-platform="android"] .fds-switch:checked { background: var(--accent-bg); border-color: var(--accent-bg); }
+[data-platform="android"] .fds-switch:checked::before { inline-size: 24px; block-size: 24px; inset-block-start: 2px; transform: translateX(20px); background: var(--accent-fg); }
+[dir="rtl"] [data-platform="android"] .fds-switch:checked::before { transform: translateX(-20px); }
+
+/* FAB 56dp radius 16; extended FAB 56 tall with label */
+[data-platform="android"] .fds-fab { inline-size: 56px; block-size: 56px; border-radius: 16px; box-shadow: var(--elevation-2); }
+[data-platform="android"] .fds-fab[data-extended] { inline-size: auto; padding-inline: 16px 20px; gap: 12px; font-weight: 500; }
+
+/* lists: 56dp one-line / 72 two-line, 16dp inset, no group corners, full-bleed */
+[data-platform="android"] .fds-list { border: none; border-radius: 0; background: transparent; }
+[data-platform="android"] .fds-list-item { min-block-size: var(--platform-row); padding-inline: var(--platform-inset); border: none; }
+[data-platform="android"] .fds-list-item:hover { background: var(--surface-tint); }
+
+/* cards 12dp; modal bottom sheet 28dp top corners with 32×4 drag handle */
+[data-platform="android"] .fds-card { border-radius: var(--radius-container); }
+[data-platform="android"] .fds-drawer[data-side="bottom"] { border-start-start-radius: 28px; border-start-end-radius: 28px; }
+[data-platform="android"] .fds-sheet-handle { inline-size: 32px; block-size: 4px; }
+
+/* segmented button: 40dp, full outer corners, outlined, checked = tonal with check glyph */
+[data-platform="android"] .fds-segmented { block-size: 40px; padding: 0; background: transparent; border: 1px solid var(--border-strong); border-radius: 20px; }
+[data-platform="android"] .fds-segment { border-radius: 0; font-size: 14px; font-weight: 500; }
+[data-platform="android"] .fds-segment + .fds-segment { border-inline-start: 1px solid var(--border-strong); }
+[data-platform="android"] .fds-segment:first-child { border-start-start-radius: 20px; border-end-start-radius: 20px; }
+[data-platform="android"] .fds-segment:last-child { border-start-end-radius: 20px; border-end-end-radius: 20px; }
+[data-platform="android"] .fds-segment[aria-pressed="true"] { background: var(--accent-subtle); color: var(--text-on-accent-subtle); }
+
+/* ================================================================ shared: targets */
+/* Both platforms raise the hit floor to their own minimum (44 / 48). */
+[data-platform="ios"], [data-platform="android"] { --hit-target: var(--platform-target); }
+
+/* Reduced motion: platform chrome transitions are all on duration tokens, which the
+   prefers-reduced-motion block in flavor.css already zeroes. */

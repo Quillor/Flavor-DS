@@ -1,0 +1,25 @@
+---
+import DocsShell from '../../layouts/DocsShell.astro';
+import { productNav, TEMPLATES } from '../../product/productNav';
+---
+<DocsShell title="Product" nav={productNav}>
+  <h1 style="font-family: var(--font-display); font-size: var(--font-size-9);">Product DS</h1>
+  <p style="color: var(--text-secondary); max-inline-size: 660px;">
+    Fourteen product templates built entirely on Core UI. Every one switches across all theme
+    axes, adapts desktop → tablet → mobile via container queries, prototypes iOS and Android
+    idioms, and speaks five languages (English, Español, 中文, Deutsch, العربية — RTL).
+  </p>
+  <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap: var(--space-3); margin-block-start: var(--space-5);">
+    {TEMPLATES.map((t) => (
+      <a href={`/product/${t.slug}/`} class="fds-card tpl-link" style="display:flex; align-items:center; justify-content:space-between; gap:var(--space-2); text-decoration:none; color:inherit;">
+        <span style="font-weight:600;">{t.label}</span>
+        <span aria-hidden style="color: var(--text-accent);">→</span>
+      </a>
+    ))}
+  </div>
+  <style>
+    .tpl-link { transition: border-color var(--duration-2) var(--ease-standard); }
+    .tpl-link:hover { border-color: var(--accent-border); }
+    [dir="rtl"] .tpl-link span[aria-hidden] { transform: scaleX(-1); }
+  </style>
+</DocsShell>

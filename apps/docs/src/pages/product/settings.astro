@@ -1,0 +1,271 @@
+---
+import DocsShell from '../../layouts/DocsShell.astro';
+import TemplateFrame from '../../components/TemplateFrame.astro';
+import { productNav } from '../../product/productNav';
+const extraStrings = {
+  accountHint:        { en: 'Your public profile information.', es: 'Tu información de perfil pública.', zh: '您的公开资料信息。', de: 'Deine öffentlichen Profilinformationen.', ar: 'معلومات ملفك الشخصي العامة.' },
+  darkModeHint:       { en: 'Use a dark color scheme.', es: 'Usa un esquema de colores oscuro.', zh: '使用深色配色方案。', de: 'Dunkles Farbschema verwenden.', ar: 'استخدام نظام ألوان داكن.' },
+  density:            { en: 'Density', es: 'Densidad', zh: '密度', de: 'Dichte', ar: 'الكثافة' },
+  comfortable:        { en: 'Comfortable', es: 'Cómoda', zh: '舒适', de: 'Komfortabel', ar: 'مريحة' },
+  compact:            { en: 'Compact', es: 'Compacta', zh: '紧凑', de: 'Kompakt', ar: 'مضغوطة' },
+  emailNotifications: { en: 'Email notifications', es: 'Notificaciones por correo', zh: '邮件通知', de: 'E-Mail-Benachrichtigungen', ar: 'إشعارات البريد الإلكتروني' },
+  emailNotifsHint:    { en: 'Get order and account updates by email.', es: 'Recibe novedades de pedidos y cuenta por correo.', zh: '通过邮件接收订单和账户更新。', de: 'Bestell- und Kontoupdates per E-Mail erhalten.', ar: 'استلم تحديثات الطلبات والحساب عبر البريد.' },
+  pushNotifications:  { en: 'Push notifications', es: 'Notificaciones push', zh: '推送通知', de: 'Push-Benachrichtigungen', ar: 'الإشعارات الفورية' },
+  pushHint:           { en: 'Real-time alerts on your devices.', es: 'Alertas en tiempo real en tus dispositivos.', zh: '在您的设备上接收实时提醒。', de: 'Echtzeit-Hinweise auf deinen Geräten.', ar: 'تنبيهات فورية على أجهزتك.' },
+  weeklyDigest:       { en: 'Weekly digest', es: 'Resumen semanal', zh: '每周摘要', de: 'Wöchentliche Zusammenfassung', ar: 'الملخص الأسبوعي' },
+  digestHint:         { en: 'A summary of activity every Monday.', es: 'Un resumen de actividad cada lunes.', zh: '每周一发送活动摘要。', de: 'Eine Aktivitätsübersicht jeden Montag.', ar: 'ملخص للنشاط كل يوم اثنين.' },
+  marketingEmails:    { en: 'Marketing emails', es: 'Correos de marketing', zh: '营销邮件', de: 'Marketing-E-Mails', ar: 'رسائل تسويقية' },
+  marketingHint:      { en: 'News, offers and product tips.', es: 'Noticias, ofertas y consejos del producto.', zh: '新闻、优惠与产品技巧。', de: 'Neuigkeiten, Angebote und Produkttipps.', ar: 'أخبار وعروض ونصائح حول المنتج.' },
+  changePassword:     { en: 'Change password', es: 'Cambiar contraseña', zh: '修改密码', de: 'Passwort ändern', ar: 'تغيير كلمة المرور' },
+  twoFactor:          { en: 'Two-factor authentication', es: 'Autenticación de dos factores', zh: '双重验证', de: 'Zwei-Faktor-Authentifizierung', ar: 'المصادقة الثنائية' },
+  twoFactorHint:      { en: 'Require a code when signing in.', es: 'Solicita un código al iniciar sesión.', zh: '登录时需要验证码。', de: 'Beim Anmelden einen Code verlangen.', ar: 'طلب رمز عند تسجيل الدخول.' },
+  currentPlan:        { en: 'Current plan', es: 'Plan actual', zh: '当前套餐', de: 'Aktueller Tarif', ar: 'الخطة الحالية' },
+  upgrade:            { en: 'Upgrade', es: 'Mejorar plan', zh: '升级', de: 'Upgrade', ar: 'ترقية' },
+  billingHint:        { en: 'Billed yearly. Next invoice on March 1.', es: 'Facturación anual. Próxima factura el 1 de marzo.', zh: '按年计费。下次账单日期为 3 月 1 日。', de: 'Jährliche Abrechnung. Nächste Rechnung am 1. März.', ar: 'فوترة سنوية. الفاتورة القادمة في 1 مارس.' },
+  dangerZone:         { en: 'Danger zone', es: 'Zona de peligro', zh: '危险区域', de: 'Gefahrenzone', ar: 'منطقة الخطر' },
+  deleteAccount:      { en: 'Delete account', es: 'Eliminar cuenta', zh: '删除账户', de: 'Konto löschen', ar: 'حذف الحساب' },
+  deleteAccountHint:  { en: 'Permanently delete your account and all data. This cannot be undone.', es: 'Elimina permanentemente tu cuenta y todos tus datos. No se puede deshacer.', zh: '永久删除您的账户及所有数据。此操作无法撤销。', de: 'Konto und alle Daten dauerhaft löschen. Dies kann nicht rückgängig gemacht werden.', ar: 'احذف حسابك وجميع بياناتك نهائيًا. لا يمكن التراجع عن هذا الإجراء.' },
+};
+---
+<DocsShell title="Settings" nav={productNav}>
+  <h1 style="font-family: var(--font-display); font-size: var(--font-size-9);">Settings</h1>
+  <p style="color: var(--text-secondary); max-inline-size: 640px;">
+    Account settings with a section side nav that collapses to a select on mobile: profile
+    fields, appearance toggles, notification switches, security, billing, and a danger zone.
+  </p>
+
+  <TemplateFrame title="settings" extraStrings={extraStrings}>
+    <div class="fds-statusbar" aria-hidden="true"><span>9:41</span><span>●●●</span></div>
+    <div class="st-shell">
+      <nav class="fds-sidenav st-sidenav">
+        <div class="fds-sidenav-group" data-i18n="settings">Settings</div>
+        <a href="#st-account" class="fds-nav-link" aria-current="page" data-i18n="account">Account</a>
+        <a href="#st-appearance" class="fds-nav-link" data-i18n="appearance">Appearance</a>
+        <a href="#st-notifications" class="fds-nav-link" data-i18n="notifications">Notifications</a>
+        <a href="#st-security" class="fds-nav-link" data-i18n="security">Security</a>
+        <a href="#st-billing" class="fds-nav-link" data-i18n="billing">Billing</a>
+      </nav>
+
+      <div class="st-main">
+        <main class="st-content">
+          <h2 class="st-title" data-i18n="settings">Settings</h2>
+
+          <div class="fds-field st-section-picker">
+            <label class="fds-label" for="st-section" data-i18n="settings">Settings</label>
+            <select class="fds-select" id="st-section">
+              <option selected data-i18n="account">Account</option>
+              <option data-i18n="appearance">Appearance</option>
+              <option data-i18n="notifications">Notifications</option>
+              <option data-i18n="security">Security</option>
+              <option data-i18n="billing">Billing</option>
+            </select>
+          </div>
+
+          <section class="fds-card st-card" id="st-account">
+            <h3 class="st-card-title" data-i18n="account">Account</h3>
+            <p class="st-card-sub" data-i18n="accountHint">Your public profile information.</p>
+            <div class="st-profile-row">
+              <span class="fds-avatar st-avatar">AR</span>
+              <button class="fds-button" data-variant="outline" data-size="sm" data-i18n="upload">Upload</button>
+            </div>
+            <div class="st-grid">
+              <div class="fds-field">
+                <label class="fds-label" for="st-name" data-i18n="fullName">Full name</label>
+                <input class="fds-input" id="st-name" type="text" value="Ava Rahimi" />
+              </div>
+              <div class="fds-field">
+                <label class="fds-label" for="st-email" data-i18n="email">Email</label>
+                <input class="fds-input" id="st-email" type="email" value="ava@flavor.design" />
+              </div>
+              <div class="fds-field">
+                <label class="fds-label" for="st-phone" data-i18n="phone">Phone</label>
+                <input class="fds-input" id="st-phone" type="tel" value="+1 555 010 4477" />
+              </div>
+              <div class="fds-field">
+                <label class="fds-label" for="st-country" data-i18n="country">Country</label>
+                <select class="fds-select" id="st-country">
+                  <option selected>United States</option>
+                  <option>Deutschland</option>
+                  <option>España</option>
+                </select>
+              </div>
+            </div>
+            <div class="st-actions">
+              <button class="fds-button" data-variant="primary" data-i18n="save">Save</button>
+              <button class="fds-button" data-variant="ghost" data-i18n="cancel">Cancel</button>
+            </div>
+          </section>
+
+          <section class="fds-card st-card" id="st-appearance">
+            <h3 class="st-card-title" data-i18n="appearance">Appearance</h3>
+            <div class="st-row">
+              <div class="st-row-text">
+                <span class="st-row-label" data-i18n="darkMode">Dark mode</span>
+                <span class="fds-hint" data-i18n="darkModeHint">Use a dark color scheme.</span>
+              </div>
+              <input type="checkbox" class="fds-switch" data-i18n-aria="darkMode" aria-label="Dark mode" />
+            </div>
+            <hr class="fds-separator st-sep" />
+            <div class="st-row">
+              <label class="st-row-label" for="st-density" data-i18n="density">Density</label>
+              <select class="fds-select st-row-control" id="st-density">
+                <option selected data-i18n="comfortable">Comfortable</option>
+                <option data-i18n="compact">Compact</option>
+              </select>
+            </div>
+            <hr class="fds-separator st-sep" />
+            <div class="st-row">
+              <label class="st-row-label" for="st-lang" data-i18n="language">Language</label>
+              <select class="fds-select st-row-control" id="st-lang">
+                <option selected>English</option>
+                <option>Español</option>
+                <option>中文</option>
+                <option>Deutsch</option>
+                <option>العربية</option>
+              </select>
+            </div>
+          </section>
+
+          <section class="fds-card st-card" id="st-notifications">
+            <h3 class="st-card-title" data-i18n="notifications">Notifications</h3>
+            <div class="st-row">
+              <div class="st-row-text">
+                <span class="st-row-label" data-i18n="emailNotifications">Email notifications</span>
+                <span class="fds-hint" data-i18n="emailNotifsHint">Get order and account updates by email.</span>
+              </div>
+              <input type="checkbox" class="fds-switch" checked data-i18n-aria="emailNotifications" aria-label="Email notifications" />
+            </div>
+            <hr class="fds-separator st-sep" />
+            <div class="st-row">
+              <div class="st-row-text">
+                <span class="st-row-label" data-i18n="pushNotifications">Push notifications</span>
+                <span class="fds-hint" data-i18n="pushHint">Real-time alerts on your devices.</span>
+              </div>
+              <input type="checkbox" class="fds-switch" checked data-i18n-aria="pushNotifications" aria-label="Push notifications" />
+            </div>
+            <hr class="fds-separator st-sep" />
+            <div class="st-row">
+              <div class="st-row-text">
+                <span class="st-row-label" data-i18n="weeklyDigest">Weekly digest</span>
+                <span class="fds-hint" data-i18n="digestHint">A summary of activity every Monday.</span>
+              </div>
+              <input type="checkbox" class="fds-switch" data-i18n-aria="weeklyDigest" aria-label="Weekly digest" />
+            </div>
+            <hr class="fds-separator st-sep" />
+            <div class="st-row">
+              <div class="st-row-text">
+                <span class="st-row-label" data-i18n="marketingEmails">Marketing emails</span>
+                <span class="fds-hint" data-i18n="marketingHint">News, offers and product tips.</span>
+              </div>
+              <input type="checkbox" class="fds-switch" data-i18n-aria="marketingEmails" aria-label="Marketing emails" />
+            </div>
+          </section>
+
+          <section class="fds-card st-card" id="st-security">
+            <h3 class="st-card-title" data-i18n="security">Security</h3>
+            <div class="st-row">
+              <div class="st-row-text">
+                <span class="st-row-label" data-i18n="twoFactor">Two-factor authentication</span>
+                <span class="fds-hint" data-i18n="twoFactorHint">Require a code when signing in.</span>
+              </div>
+              <input type="checkbox" class="fds-switch" checked data-i18n-aria="twoFactor" aria-label="Two-factor authentication" />
+            </div>
+            <hr class="fds-separator st-sep" />
+            <div class="st-row">
+              <span class="st-row-label" data-i18n="password">Password</span>
+              <button class="fds-button" data-variant="outline" data-size="sm" data-i18n="changePassword">Change password</button>
+            </div>
+          </section>
+
+          <section class="fds-card st-card" id="st-billing">
+            <h3 class="st-card-title" data-i18n="billing">Billing</h3>
+            <div class="st-row">
+              <div class="st-row-text">
+                <span class="st-row-label"><span data-i18n="currentPlan">Current plan</span> <span class="fds-badge" data-variant="accent">Pro</span></span>
+                <span class="fds-hint" data-i18n="billingHint">Billed yearly. Next invoice on March 1.</span>
+              </div>
+              <button class="fds-button" data-variant="secondary" data-size="sm" data-i18n="upgrade">Upgrade</button>
+            </div>
+          </section>
+
+          <section class="fds-card st-card st-danger">
+            <h3 class="st-card-title st-danger-title" data-i18n="dangerZone">Danger zone</h3>
+            <div class="st-row">
+              <div class="st-row-text">
+                <span class="st-row-label" data-i18n="deleteAccount">Delete account</span>
+                <span class="fds-hint" data-i18n="deleteAccountHint">Permanently delete your account and all data. This cannot be undone.</span>
+              </div>
+              <button class="fds-button" data-variant="danger" data-size="sm" data-i18n="deleteAccount">Delete account</button>
+            </div>
+          </section>
+        </main>
+
+        <nav class="fds-tabbar st-tabbar">
+          <button class="fds-tabbar-item">
+            <svg class="fds-icon" data-icon data-variant="outline" width="2" aria-hidden="true"><use href="/icons/sprite.svg#hi-home-outline"></use></svg>
+            <span data-i18n="home">Home</span>
+          </button>
+          <button class="fds-tabbar-item">
+            <svg class="fds-icon" data-icon data-variant="outline" width="2" aria-hidden="true"><use href="/icons/sprite.svg#hi-bell-outline"></use></svg>
+            <span data-i18n="notifications">Notifications</span>
+          </button>
+          <button class="fds-tabbar-item">
+            <svg class="fds-icon" data-icon data-variant="outline" width="2" aria-hidden="true"><use href="/icons/sprite.svg#hi-user-outline"></use></svg>
+            <span data-i18n="profile">Profile</span>
+          </button>
+          <button class="fds-tabbar-item" aria-current="page">
+            <svg class="fds-icon" data-icon data-variant="outline" width="2" aria-hidden="true"><use href="/icons/sprite.svg#hi-cog-6-tooth-outline"></use></svg>
+            <span data-i18n="settings">Settings</span>
+          </button>
+        </nav>
+      </div>
+    </div>
+  </TemplateFrame>
+
+  <style>
+    .st-shell { display: flex; min-block-size: 640px; align-items: stretch; }
+    .st-sidenav { flex-shrink: 0; }
+    .st-main { flex: 1; display: flex; flex-direction: column; min-inline-size: 0; }
+    .st-content {
+      flex: 1; display: flex; flex-direction: column; gap: var(--space-5);
+      padding: var(--space-7); max-inline-size: 720px;
+    }
+    .st-title { font-family: var(--font-display); font-size: var(--font-size-7); margin: 0; }
+    .st-section-picker { display: none; }
+
+    .st-card { display: flex; flex-direction: column; gap: var(--space-4); }
+    .st-card-title { font-family: var(--font-display); font-size: var(--font-size-5); margin: 0; }
+    .st-card-sub { color: var(--text-secondary); font-size: var(--font-size-3); margin: calc(-1 * var(--space-3)) 0 0; }
+    .st-sep { margin-block: 0; }
+
+    .st-profile-row { display: flex; align-items: center; gap: var(--space-4); }
+    .st-avatar { inline-size: var(--control-height-lg); block-size: var(--control-height-lg); font-size: var(--font-size-5); }
+
+    .st-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); }
+    .st-actions { display: flex; gap: var(--space-3); }
+
+    .st-row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-5); }
+    .st-row-text { display: flex; flex-direction: column; gap: var(--space-1); }
+    .st-row-label { font-weight: 600; font-size: var(--font-size-3); }
+    .st-row-control { inline-size: auto; min-inline-size: 180px; }
+
+    .st-danger { border-color: var(--danger-border); }
+    .st-danger-title { color: var(--danger-text); }
+
+    .st-tabbar { display: none; }
+
+    @container (max-width: 767px) {
+      .st-sidenav { display: none; }
+      .st-section-picker { display: flex; }
+      .st-content { padding: var(--space-5); }
+      .st-grid { grid-template-columns: 1fr; }
+    }
+    @container (max-width: 480px) {
+      .st-shell { min-block-size: auto; }
+      .st-content { padding: var(--space-4); }
+      .st-row { flex-wrap: wrap; }
+      .st-row-control { min-inline-size: 100%; }
+      .st-tabbar { display: flex; position: sticky; inset-block-end: 0; }
+    }
+  </style>
+</DocsShell>

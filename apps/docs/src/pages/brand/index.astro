@@ -1,0 +1,87 @@
+---
+import DocsShell from '../../layouts/DocsShell.astro';
+import ramps from '@flavor-ds/tokens/dist/ramps.json';
+const nav = [{ group: 'Brand DS', items: [{ label: 'Overview', href: '/brand/' }] }];
+const neutrals = ramps.neutral.regular.light;
+const brand = {
+  'Deep Navy': '#092240',
+  'Flavor Blue': '#3680da',
+  'Signal Orange': '#c16300',
+};
+---
+<DocsShell title="Brand" nav={nav}>
+  <h1 style="font-family: var(--font-display); font-size: var(--font-size-9);">Flavor DS Brand</h1>
+  <p style="color: var(--text-secondary); max-inline-size: 640px;">
+    The Brand DS is the fixed identity layer: it does <em>not</em> re-theme. Product surfaces theme
+    through Core UI; the brand stays stable so the company is recognizable in every theme.
+  </p>
+
+  <h2 style="font-family: var(--font-display);">Logos</h2>
+  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: var(--space-4);">
+    {[
+      ['Square · Full color', '/brand/logo-square-color.svg', '#ffffff'],
+      ['Square · White', '/brand/logo-square-white.svg', '#092240'],
+      ['Horizontal · Full color', '/brand/logo-horizontal-color.svg', '#ffffff'],
+      ['Horizontal · White', '/brand/logo-horizontal-white.svg', '#092240'],
+    ].map(([label, src, bg]) => (
+      <figure class="fds-card" style="margin:0; text-align:center;">
+        <div style={`background:${bg}; border-radius: var(--radius-3); padding: var(--space-6); display:flex; justify-content:center;`}>
+          <img src={src} alt={label} style="max-inline-size:100%; block-size:56px;" />
+        </div>
+        <figcaption class="fds-hint" style="margin-block-start: var(--space-3);">{label}</figcaption>
+      </figure>
+    ))}
+  </div>
+
+  <h2 style="font-family: var(--font-display);">Core brand colors</h2>
+  <p class="fds-hint">Swatches, no ramps — ramps live in Core UI.</p>
+  <div style="display:flex; gap: var(--space-4); flex-wrap:wrap;">
+    {Object.entries(brand).map(([name, hex]) => (
+      <div class="fds-card" style="padding: var(--space-3); min-inline-size: 160px;">
+        <div style={`background:${hex}; block-size:72px; border-radius: var(--radius-3);`}></div>
+        <p style="margin: var(--space-2) 0 0; font-weight:600;">{name}</p>
+        <p class="fds-hint" style="font-family: var(--font-mono);">{hex}</p>
+      </div>
+    ))}
+  </div>
+
+  <h2 style="font-family: var(--font-display);">Brand 2 — the alternate pair</h2>
+  <p class="fds-hint">Same system, second identity: <code>data-hue="brand2"</code>. Primary Magenta carries the accents, Cyan is the secondary (buttons with <code>data-tone="secondary"</code>, focus ring, accent border). Both are full 12-step ramps in Core UI, in muted / regular / bold.</p>
+  <div style="display:flex; gap: var(--space-4); flex-wrap:wrap;">
+    {Object.entries({ 'Brand Magenta': '#c34e97', 'Brand Cyan': '#008db7' }).map(([name, hex]) => (
+      <div class="fds-card" style="padding: var(--space-3); min-inline-size: 160px;">
+        <div style={`background:${hex}; block-size:72px; border-radius: var(--radius-3);`}></div>
+        <p style="margin: var(--space-2) 0 0; font-weight:600;">{name}</p>
+        <p class="fds-hint" style="font-family: var(--font-mono);">{hex}</p>
+      </div>
+    ))}
+  </div>
+
+  <h2 style="font-family: var(--font-display);">Brand neutrals</h2>
+  <div style="display:flex; gap: var(--space-1); flex-wrap:wrap;">
+    {neutrals.map((hex, i) => (
+      <div style="text-align:center;">
+        <div style={`background:${hex}; inline-size:56px; block-size:56px; border-radius: var(--radius-2); border:1px solid var(--border-subtle);`}></div>
+        <span class="fds-hint" style="font-family: var(--font-mono);">{i + 1}</span>
+      </div>
+    ))}
+  </div>
+
+  <h2 style="font-family: var(--font-display);">Typography pairing</h2>
+  <div class="fds-card" style="display:flex; flex-direction:column; gap: var(--space-4);">
+    <div>
+      <p class="fds-hint">Display · Space Grotesk</p>
+      <p style="font-family: var(--font-display); font-size: var(--font-size-8); font-weight:700; margin:0;">Tastefully engineered.</p>
+    </div>
+    <hr class="fds-separator" />
+    <div>
+      <p class="fds-hint">Text · Inter</p>
+      <p style="font-size: var(--font-size-4); margin:0;">Interface copy, product surfaces, and long-form documentation set in Inter for neutral legibility at every size.</p>
+    </div>
+    <hr class="fds-separator" />
+    <div>
+      <p class="fds-hint">Mono · IBM Plex Mono</p>
+      <p style="font-family: var(--font-mono); font-size: var(--font-size-3); margin:0;">--accent-bg: var(--ramp-9);</p>
+    </div>
+  </div>
+</DocsShell>

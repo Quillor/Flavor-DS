@@ -1,0 +1,34 @@
+---
+/**
+ * /canvas/ — the Canvas design-review board: the EthiGov reference implementation
+ * ported (see src/canvas/canvas.tsx header). Renders every page of this site as live
+ * device frames on an infinite canvas. Deliberately NOT in the site nav
+ * beyond the homepage mention: it is a review tool, not documentation. Client-only —
+ * it needs the DOM of same-origin iframes.
+ */
+import { CanvasPage } from '../canvas/canvas';
+import '../canvas/canvas-tw.css';
+import '@fontsource/space-grotesk/700.css';
+import '@fontsource/inter/400.css';
+import '@fontsource/inter/600.css';
+import '@fontsource/ibm-plex-mono/400.css';
+import '@flavor-ds/tokens/dist/flavor.css';
+---
+<!doctype html>
+<html lang="en" data-hue="brand" data-sat="regular" data-mode="light" data-contrast="aa" data-bg="primary" data-radius="rounded" data-density="regular" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Canvas · Flavor DS</title>
+    <link rel="icon" href="/brand/logo-square-color.svg" type="image/svg+xml" />
+    <meta name="robots" content="noindex" />
+    <script is:inline>
+      // Match the site's saved mode before first paint so the board doesn't flash light.
+      try { const s = JSON.parse(localStorage.getItem('flavor-theme') || 'null'); const m = s?.mode || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); document.documentElement.setAttribute('data-mode', m); } catch {}
+    </script>
+    <style>html,body{margin:0;height:100%;overflow:hidden;background:var(--surface-page)}</style>
+  </head>
+  <body>
+    <div class="fds-canvas fds-app" style="height:100%"><CanvasPage client:only="react" /></div>
+  </body>
+</html>

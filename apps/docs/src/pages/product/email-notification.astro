@@ -1,0 +1,187 @@
+---
+import DocsShell from '../../layouts/DocsShell.astro';
+import TemplateFrame from '../../components/TemplateFrame.astro';
+import { productNav } from '../../product/productNav';
+
+const extraStrings = {
+  orderConfirmed: { en: 'Your order is confirmed', es: 'Tu pedido está confirmado', zh: '您的订单已确认', de: 'Ihre Bestellung ist bestätigt', ar: 'تم تأكيد طلبك' },
+  orderThanks:    { en: 'Thanks, Ava — we are getting it ready to ship. We will email you again when it is on the way.', es: 'Gracias, Ava: lo estamos preparando para el envío. Te escribiremos de nuevo cuando esté en camino.', zh: '谢谢您，Ava——我们正在为您备货，发货后会再次邮件通知您。', de: 'Danke, Ava – wir machen die Bestellung versandfertig. Wir melden uns per E-Mail, sobald sie unterwegs ist.', ar: 'شكرًا لك يا آفا — نجهّز طلبك للشحن، وسنراسلك مجددًا عندما يكون في الطريق.' },
+  viewOrder:      { en: 'View order', es: 'Ver pedido', zh: '查看订单', de: 'Bestellung ansehen', ar: 'عرض الطلب' },
+  orderNumber:    { en: 'Order number', es: 'Número de pedido', zh: '订单号', de: 'Bestellnummer', ar: 'رقم الطلب' },
+  orderDate:      { en: 'Order date', es: 'Fecha del pedido', zh: '下单日期', de: 'Bestelldatum', ar: 'تاريخ الطلب' },
+  item1:          { en: 'Ceramic pour-over set', es: 'Set de café de cerámica', zh: '陶瓷手冲咖啡套装', de: 'Keramik-Filterkaffee-Set', ar: 'طقم قهوة سيراميك' },
+  item2:          { en: 'Linen apron', es: 'Delantal de lino', zh: '亚麻围裙', de: 'Leinenschürze', ar: 'مريلة كتان' },
+  free:           { en: 'Free', es: 'Gratis', zh: '免费', de: 'Kostenlos', ar: 'مجاني' },
+  needHelp:       { en: 'Need help with your order?', es: '¿Necesitas ayuda con tu pedido?', zh: '订单需要帮助？', de: 'Hilfe zu Ihrer Bestellung?', ar: 'هل تحتاج مساعدة بشأن طلبك؟' },
+  contactSupport: { en: 'Contact support', es: 'Contactar con soporte', zh: '联系客服', de: 'Support kontaktieren', ar: 'التواصل مع الدعم' },
+};
+---
+<DocsShell title="HTML email · Notification" nav={productNav}>
+  <h1 style="font-family: var(--font-display); font-size: var(--font-size-9);">HTML email · Notification</h1>
+  <p style="color: var(--text-secondary); max-inline-size: 640px;">
+    A 600px transactional email: order confirmation with success icon, itemized summary table,
+    CTA, and a mono metadata block. Previewed with live semantic tokens.
+  </p>
+
+  <TemplateFrame title="email-notification" extraStrings={extraStrings} native={false}>
+    <div class="en-canvas">
+      <table role="presentation" class="en-shell" cellpadding="0" cellspacing="0">
+        <tr>
+          <td class="en-header">
+            <img src="/brand/logo-horizontal-color.svg" alt="Flavor" height="22" />
+          </td>
+        </tr>
+        <tr>
+          <td class="en-hero">
+            <span class="en-icon" aria-hidden="true">
+              <svg class="fds-icon" data-icon data-variant="outline" width="2.5"><use href="/icons/sprite.svg#hi-check-outline"></use></svg>
+            </span>
+            <h1 class="en-headline" data-i18n="orderConfirmed">Your order is confirmed</h1>
+            <p class="en-copy" data-i18n="orderThanks">Thanks, Ava — we are getting it ready to ship. We will email you again when it is on the way.</p>
+          </td>
+        </tr>
+        <tr>
+          <td class="en-summary-cell">
+            <h2 class="en-summary-title" data-i18n="orderSummary">Order summary</h2>
+            <table role="presentation" class="en-summary" cellpadding="0" cellspacing="0">
+              <tr class="en-item">
+                <td class="en-item-name">
+                  <span data-i18n="item1">Ceramic pour-over set</span>
+                  <span class="en-qty"><span data-i18n="quantity">Qty</span> 1</span>
+                </td>
+                <td class="en-price">$64.00</td>
+              </tr>
+              <tr class="en-item">
+                <td class="en-item-name">
+                  <span data-i18n="item2">Linen apron</span>
+                  <span class="en-qty"><span data-i18n="quantity">Qty</span> 2</span>
+                </td>
+                <td class="en-price">$38.00</td>
+              </tr>
+              <tr class="en-totals">
+                <td data-i18n="subtotal">Subtotal</td>
+                <td class="en-price">$102.00</td>
+              </tr>
+              <tr class="en-totals">
+                <td data-i18n="shipping">Shipping</td>
+                <td class="en-price" data-i18n="free">Free</td>
+              </tr>
+              <tr class="en-grand">
+                <td data-i18n="total">Total</td>
+                <td class="en-price">$102.00</td>
+              </tr>
+            </table>
+            <div class="en-cta-row">
+              <a href="#" class="en-cta" data-i18n="viewOrder">View order</a>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td class="en-meta-cell">
+            <div class="en-meta">
+              <p class="en-meta-line"><span data-i18n="orderNumber">Order number</span>: FLV-10482</p>
+              <p class="en-meta-line"><span data-i18n="orderDate">Order date</span>: 2026-08-15</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td class="en-footer">
+            <p class="en-footer-line">
+              <span data-i18n="needHelp">Need help with your order?</span>
+              <a href="#" class="en-mutedlink" data-hit data-i18n="contactSupport">Contact support</a>
+            </p>
+            <p class="en-footer-line">Flavor Inc. · 428 Market Street, Suite 12 · San Francisco, CA 94111</p>
+            <p class="en-footer-line"><a href="#" class="en-mutedlink" data-hit data-i18n="unsubscribe">Unsubscribe</a></p>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </TemplateFrame>
+
+  <div class="fds-alert" data-variant="info" role="note" style="margin-block-start: var(--space-4);">
+    <span aria-hidden="true">ℹ️</span>
+    <div>
+      <p class="fds-alert-title" style="margin:0;">Preview only</p>
+      This preview renders live semantic tokens. Production export inlines the resolved hex
+      values for the chosen theme, since email clients cannot read CSS custom properties.
+    </div>
+  </div>
+
+  <style>
+    .en-canvas {
+      background: var(--surface-tint);
+      padding: var(--space-7) var(--space-4);
+      display: flex; flex-direction: column; align-items: center;
+    }
+    .en-shell {
+      inline-size: 600px; max-inline-size: 100%;
+      background: var(--surface-1);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-container);
+      overflow: hidden;
+      border-collapse: separate; border-spacing: 0;
+    }
+    .en-header { padding: var(--space-5) var(--space-6); text-align: center; border-block-end: 1px solid var(--border-subtle); }
+    .en-hero { padding: var(--space-7) var(--space-7) var(--space-4); text-align: center; }
+    .en-icon {
+      display: inline-flex; align-items: center; justify-content: center;
+      inline-size: 56px; block-size: 56px;
+      border-radius: var(--radius-round);
+      background: var(--success-bg);
+      border: 1px solid var(--success-border);
+      color: var(--success-text);
+      margin-block-end: var(--space-4);
+    }
+    .en-icon svg { inline-size: 26px; block-size: 26px; }
+    .en-headline { font-family: var(--font-display); font-size: var(--font-size-7); margin: 0 0 var(--space-3); color: var(--text-primary); }
+    .en-copy { color: var(--text-secondary); font-size: var(--font-size-3); line-height: var(--line-height-4); margin: 0; }
+
+    .en-summary-cell { padding: var(--space-5) var(--space-7) var(--space-6); }
+    .en-summary-title { font-size: var(--font-size-3); font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-tertiary); margin: 0 0 var(--space-3); text-align: start; }
+    .en-summary { inline-size: 100%; border-collapse: collapse; }
+    .en-summary td { padding-block: var(--space-3); font-size: var(--font-size-3); text-align: start; }
+    .en-item td { border-block-end: 1px solid var(--border-subtle); }
+    .en-item-name { display: flex; flex-direction: column; gap: 2px; }
+    .en-qty { color: var(--text-tertiary); font-size: var(--font-size-2); }
+    .en-price { text-align: end; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .en-totals td { color: var(--text-secondary); padding-block: var(--space-2); }
+    .en-totals:first-of-type td { padding-block-start: var(--space-4); }
+    .en-grand td { font-weight: 700; font-size: var(--font-size-4); border-block-start: 1px solid var(--border-default); padding-block-start: var(--space-3); }
+    .en-cta-row { text-align: center; padding-block-start: var(--space-6); }
+    .en-cta {
+      display: inline-block;
+      background: var(--accent-bg); color: var(--accent-fg);
+      font-weight: 700; font-size: var(--font-size-3);
+      text-decoration: none;
+      padding: var(--space-4) var(--space-7);
+      border-radius: var(--radius-control);
+    }
+
+    .en-meta-cell { padding: 0 var(--space-7) var(--space-6); }
+    .en-meta {
+      background: var(--surface-tint);
+      border-radius: var(--radius-control);
+      padding: var(--space-4) var(--space-5);
+    }
+    .en-meta-line {
+      font-family: var(--font-mono);
+      font-size: var(--font-size-2);
+      color: var(--text-secondary);
+      margin: 0 0 var(--space-1);
+      text-align: start;
+    }
+    .en-meta-line:last-child { margin-block-end: 0; }
+
+    .en-footer { padding: var(--space-5) var(--space-6) var(--space-6); text-align: center; border-block-start: 1px solid var(--border-subtle); }
+    .en-footer-line { color: var(--text-tertiary); font-size: var(--font-size-1); margin: 0 0 var(--space-2); }
+    .en-mutedlink { color: var(--text-tertiary); text-decoration: underline; }
+
+    @container (max-width: 480px) {
+      .en-canvas { padding: var(--space-4) var(--space-2); }
+      .en-hero { padding: var(--space-6) var(--space-5) var(--space-3); }
+      .en-summary-cell { padding: var(--space-4) var(--space-5) var(--space-5); }
+      .en-meta-cell { padding: 0 var(--space-5) var(--space-5); }
+      .en-headline { font-size: var(--font-size-6); }
+    }
+  </style>
+</DocsShell>

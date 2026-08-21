@@ -1,0 +1,261 @@
+---
+import DocsShell from '../../layouts/DocsShell.astro';
+import TemplateFrame from '../../components/TemplateFrame.astro';
+import { productNav } from '../../product/productNav';
+
+/* Real places, real coordinates (San Francisco). The map is Leaflet over CARTO's free basemap
+ * tiles (© OpenStreetMap contributors © CARTO): "light_all" in light mode, "dark_all" in dark mode,
+ * swapped live when data-mode changes. Pins, the route and every control are Flavor tokens. */
+const PLACES = [
+  { n: 1, name: 'Ferry Building',      cat: 'Landmark',  dist: '0.4', min: '6',  open: true,  lat: 37.7955, lng: -122.3937 },
+  { n: 2, name: 'Blue Bottle Coffee',  cat: 'Café',      dist: '0.6', min: '9',  open: true,  lat: 37.7823, lng: -122.4076 },
+  { n: 3, name: 'Yerba Buena Gardens', cat: 'Park',      dist: '0.9', min: '13', open: false, lat: 37.7850, lng: -122.4021 },
+  { n: 4, name: 'SFMOMA',              cat: 'Museum',    dist: '1.1', min: '16', open: false, lat: 37.7857, lng: -122.4011 },
+  { n: 5, name: 'Salesforce Park',     cat: 'Park',      dist: '1.4', min: '19', open: true,  lat: 37.7897, lng: -122.3966 },
+];
+/* walking route Blue Bottle → Ferry Building along Mint / Market / Embarcadero */
+const ROUTE = [[37.7823, -122.4076], [37.7833, -122.4082], [37.7866, -122.4040], [37.7900, -122.3997], [37.7929, -122.3960], [37.7955, -122.3937]];
+const extraStrings = {
+  places:  { en: 'Places', es: 'Lugares', zh: '地点', de: 'Orte', ar: 'الأماكن' },
+  closed:  { en: 'Closed', es: 'Cerrado', zh: '已关闭', de: 'Geschlossen', ar: 'مغلق' },
+  openNow: { en: 'Open now', es: 'Abierto ahora', zh: '营业中', de: 'Jetzt geöffnet', ar: 'مفتوح الآن' },
+  km:      { en: 'km', es: 'km', zh: '公里', de: 'km', ar: 'كم' },
+};
+---
+<DocsShell title="Map" nav={productNav}>
+  <h1 style="font-family: var(--font-display); font-size: var(--font-size-9);">Map</h1>
+  <p style="color: var(--text-secondary); max-inline-size: 640px;">
+    Location list over a <strong>real map</strong> — Leaflet with CARTO's free OpenStreetMap basemap — with numbered
+    pins, a selected place card and a walking route. The basemap follows the mode axis (light / dark tiles);
+    everything drawn on top — pins, route, controls, card, status chips — is Flavor tokens.
+  </p>
+
+  <TemplateFrame title="map" extraStrings={extraStrings}>
+    <div class="fds-statusbar" aria-hidden="true"><span>9:41</span><span>●●●</span></div>
+    <div class="mp">
+      <aside class="mp-list" aria-label="Places">
+        <header class="mp-list-head">
+          <h2 class="mp-title" data-i18n="nearby">Nearby</h2>
+          <input class="fds-input" type="search" data-i18n-placeholder="search" placeholder="Search" />
+        </header>
+        <ol class="mp-items">
+          {PLACES.map((p) => (
+            <li>
+              <button class="mp-item" data-hit aria-current={p.n === 2 ? 'true' : undefined}>
+                <span class="mp-num" aria-hidden="true">{p.n}</span>
+                <span class="mp-meta">
+                  <strong class="mp-name" data-fds-truncate>{p.name}</strong>
+                  <span class="mp-sub">
+                    {p.cat} · <span class="mp-dist" data-numeric>{p.dist}</span> <span data-i18n="km">km</span>
+                  </span>
+                </span>
+                <span class="mp-side">
+                  <span class="mp-min" data-numeric>{p.min}</span>
+                  <span class="mp-min-l" data-i18n="minutesAway">min away</span>
+                  <span class="fds-status-text mp-status" data-status={p.open ? 'success' : undefined}
+                        data-i18n={p.open ? 'openNow' : 'closed'}>{p.open ? 'Open now' : 'Closed'}</span>
+                </span>
+              </button>
+            </li>
+          ))}
+        </ol>
+      </aside>
+
+      <div class="mp-canvas" data-viewport>
+        <div class="mp-map" id="mp-map" role="img" aria-label="Map of nearby places in San Francisco"
+             data-places={JSON.stringify(PLACES)} data-route={JSON.stringify(ROUTE)}></div>
+        <p class="mp-attrib">© <a href="https://www.openstreetmap.org/copyright" class="fds-link">OpenStreetMap</a> © <a href="https://carto.com/attributions" class="fds-link">CARTO</a></p>
+
+        <div class="mp-controls">
+          <button class="fds-icon-button" aria-label="Zoom in">
+            <svg class="fds-icon" data-icon data-variant="outline" aria-hidden="true"><use href="/icons/sprite.svg#hi-plus-outline"></use></svg>
+          </button>
+          <button class="fds-icon-button" aria-label="Zoom out">
+            <svg class="fds-icon" data-icon data-variant="outline" aria-hidden="true"><use href="/icons/sprite.svg#hi-minus-outline"></use></svg>
+          </button>
+          <button class="fds-icon-button" aria-label="Recenter">
+            <svg class="fds-icon" data-icon data-variant="outline" aria-hidden="true"><use href="/icons/sprite.svg#hi-viewfinder-circle-outline"></use></svg>
+          </button>
+        </div>
+
+        <article class="mp-card">
+          <div class="mp-card-body">
+            <h3 class="mp-card-title" data-fds-truncate>Blue Bottle Coffee</h3>
+            <p class="mp-card-sub">
+              Café · <span data-numeric>0.6</span> <span data-i18n="km">km</span> ·
+              <span class="fds-status-text mp-status" data-status="success" data-i18n="openNow">Open now</span>
+            </p>
+            <p class="mp-card-addr">66 Mint St, San Francisco</p>
+          </div>
+          <button class="fds-button mp-dir" data-variant="primary" data-size="sm">
+            <svg class="fds-icon" data-icon data-variant="outline" data-directional aria-hidden="true"><use href="/icons/sprite.svg#hi-arrow-right-outline"></use></svg>
+            <span data-i18n="directions">Directions</span>
+          </button>
+        </article>
+      </div>
+    </div>
+  </TemplateFrame>
+
+  <style>
+    .mp { display: flex; block-size: 620px; background: var(--surface-page); }
+
+    /* On the Media background --surface-page is transparent by design, so the photo
+       shows through. An app shell is not a photo-facing surface: its text is dark ink
+       (the frame is a declared surface), so leaving it transparent puts dark type on a
+       photograph. Paint the shell opaque there — the photo still surrounds the device. */
+    :global([data-bg="media"]) .mp { background: var(--surface-1); }
+    .mp-list {
+      inline-size: 300px; flex-shrink: 0;
+      display: flex; flex-direction: column;
+      background: var(--surface-1);
+      border-inline-end: 1px solid var(--border-subtle);
+      overflow-y: auto;
+    }
+    .mp-list-head { padding: var(--space-4); display: flex; flex-direction: column; gap: var(--space-3); }
+    .mp-title { font-family: var(--font-display); font-size: var(--font-size-6); margin: 0; }
+    .mp-items { list-style: none; margin: 0; padding: 0; }
+    .mp-item {
+      inline-size: 100%;
+      display: flex; align-items: center; gap: var(--space-3);
+      padding: var(--space-3) var(--space-4);
+      background: none; border: none; cursor: pointer; font: inherit;
+      color: var(--text-primary); text-align: start;
+      border-block-start: 1px solid var(--border-subtle);
+    }
+    .mp-item:hover { background: var(--surface-tint); }
+    .mp-item[aria-current="true"] { background: var(--accent-subtle); color: var(--text-on-accent-subtle); }
+    .mp-num {
+      inline-size: var(--space-6); block-size: var(--space-6); flex-shrink: 0;
+      display: inline-flex; align-items: center; justify-content: center;
+      border-radius: var(--radius-round);          /* pins stay circular in every radius mode */
+      background: var(--accent-bg); color: var(--accent-fg);
+      font-size: var(--font-size-1); font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+    .mp-meta { display: flex; flex-direction: column; flex: 1; min-inline-size: 0; }
+    .mp-name { font-size: var(--font-size-3); }
+    .mp-sub { font-size: var(--font-size-1); color: var(--text-tertiary); }
+    .mp-side { display: flex; flex-direction: column; align-items: flex-end; flex-shrink: 0; }
+    .mp-min { font-size: var(--font-size-3); font-weight: 600; font-variant-numeric: tabular-nums; }
+    .mp-min-l { font-size: var(--font-size-1); color: var(--text-tertiary); }
+    .mp-status { font-size: var(--font-size-1); padding-block: 0; }
+
+    /* isolation: Leaflet stacks its panes at z 400–1000; a local stacking context keeps them INSIDE
+       the device frame, under the site's theme popover, drawers and menus. */
+    .mp-canvas { flex: 1; position: relative; min-inline-size: 0; overflow: hidden; background: var(--surface-2); isolation: isolate; z-index: 0; }
+    .mp-map { position: absolute; inset: 0; overflow: hidden; }
+    /* Leaflet chrome → tokens. Tiles are photos of the world; the rest is ours. */
+    .mp-map :global(.leaflet-container) { background: var(--surface-2); font: inherit; }
+    .mp-map :global(.leaflet-control-attribution) { display: none; }   /* rendered by .mp-attrib with fds-link */
+    .mp-attrib { position: absolute; inset-block-end: 2px; inset-inline-end: var(--space-2); margin: 0; font-size: var(--font-size-1); color: var(--text-tertiary); z-index: 500; background: var(--surface-1); padding: 0 var(--space-1); border-radius: var(--radius-control); opacity: 0.9; }
+    .mp-attrib .fds-link { color: var(--text-secondary); text-decoration: none; }
+    /* pins are created at runtime by Leaflet (divIcon) → outside Astro's style scope */
+    :global(.mp-pin) {
+      inline-size: max(var(--space-7), 28px); block-size: max(var(--space-7), 28px);
+      display: inline-flex; align-items: center; justify-content: center;
+      border-radius: var(--radius-round);          /* pins stay circular in every radius mode */
+      background: var(--surface-1); color: var(--text-primary);
+      border: 2px solid var(--accent-bg);
+      font-size: var(--font-size-1); font-weight: 700; font-family: var(--font-text);
+      font-variant-numeric: tabular-nums;
+      cursor: pointer;
+      box-shadow: var(--elevation-2);
+      transition-property: scale, background-color, color;
+      transition-duration: var(--duration-2);
+      transition-timing-function: var(--ease-standard);
+    }
+    /* the visible pin is 28px; the ::after extends the TARGET to the touch floor (rule 8) */
+    :global(.mp-pin) { position: relative; }
+    :global(.mp-pin::after) { content: ''; position: absolute; inset-block-start: 50%; inset-inline-start: 50%; translate: -50% -50%; inline-size: max(100%, var(--hit-area-touch)); block-size: max(100%, var(--hit-area-touch)); }
+    :global(.mp-pin:hover) { scale: 1.08; }
+    :global(.mp-pin-active) { background: var(--accent-bg); color: var(--accent-fg); }
+    :global(.mp-marker) { background: none; border: none; }
+    :global(.mp-route) { stroke: var(--accent-bg); }
+
+    .mp-controls {
+      position: absolute; inset-block-start: var(--space-4); inset-inline-end: var(--space-4);
+      display: flex; flex-direction: column; gap: var(--space-2); z-index: 500;
+    }
+    .mp-controls .fds-icon-button {
+      background: var(--surface-1);
+      box-shadow: var(--shadow-border), var(--elevation-1);
+    }
+    .mp-controls svg { inline-size: 18px; block-size: 18px; }
+
+    .mp-card {
+      position: absolute; z-index: 500;
+      inset-block-end: var(--space-5);
+      inset-inline-start: var(--space-5); inset-inline-end: var(--space-5);
+      max-inline-size: 420px;
+      display: flex; align-items: center; justify-content: space-between; gap: var(--space-4);
+      padding: var(--space-4) var(--space-5);
+      background: var(--surface-1);
+      border-radius: var(--radius-container);
+      box-shadow: var(--shadow-border), var(--elevation-3);
+    }
+    .mp-card-body { min-inline-size: 0; }
+    .mp-card-title { margin: 0; font-family: var(--font-display); font-size: var(--font-size-5); }
+    .mp-card-sub { margin: var(--space-1) 0 0; font-size: var(--font-size-2); color: var(--text-secondary); }
+    .mp-card-addr { margin: var(--space-1) 0 0; font-size: var(--font-size-1); color: var(--text-tertiary); }
+    .mp-dir { flex-shrink: 0; }
+    .mp-dir svg { inline-size: 16px; block-size: 16px; }
+
+    @container (max-width: 767px) { .mp-list { inline-size: 240px; } }
+    @container (max-width: 480px) {
+      .mp { block-size: 560px; flex-direction: column; }
+      .mp-list {
+        inline-size: 100%;
+        border-inline-end: none;
+        border-block-start: 1px solid var(--border-subtle);
+        order: 2; max-block-size: 220px;
+      }
+      .mp-canvas { order: 1; flex: 1; }
+      .mp-card { max-inline-size: none; inset-block-end: var(--space-3); }
+    }
+  </style>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+  <script is:inline src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script is:inline>
+    (() => {
+      const el = document.getElementById('mp-map');
+      if (!el || !window.L) return;
+      const L = window.L;
+      const places = JSON.parse(el.dataset.places), route = JSON.parse(el.dataset.route);
+      const root = document.documentElement;
+      const map = L.map(el, { zoomControl: false, attributionControl: false, scrollWheelZoom: false }).setView([37.7885, -122.4010], 16);
+      const TILES = { light: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', dark: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png' };
+      let tiles = null;
+      const modeOf = () => (root.getAttribute('data-mode') === 'dark' || /^dark-/.test(root.getAttribute('data-bg') || '') ? 'dark' : 'light');
+      const setTiles = () => { const m = modeOf(); if (tiles && tiles._mode === m) return; if (tiles) map.removeLayer(tiles); tiles = L.tileLayer(TILES[m], { maxZoom: 19, subdomains: 'abcd' }); tiles._mode = m; tiles.addTo(map); };
+      setTiles();
+      new MutationObserver(setTiles).observe(root, { attributes: true, attributeFilter: ['data-mode', 'data-bg'] });
+      // route: read the accent token at runtime so it re-themes with the hue
+      const accent = () => getComputedStyle(root).getPropertyValue('--accent-bg').trim();
+      const line = L.polyline(route, { color: accent(), weight: 5, opacity: 0.95, dashArray: '10 8', lineCap: 'round', className: 'mp-route' }).addTo(map);
+      new MutationObserver(() => line.setStyle({ color: accent() })).observe(root, { attributes: true, attributeFilter: ['data-hue', 'data-sat', 'data-mode', 'data-contrast', 'data-bg'] });
+      const size = 28;
+      const markers = places.map((p) => L.marker([p.lat, p.lng], {
+        icon: L.divIcon({ className: 'mp-marker', html: `<button class="mp-pin${p.n === 2 ? ' mp-pin-active' : ''}" aria-label="${p.name}"><span aria-hidden="true">${p.n}</span></button>`, iconSize: [size, size], iconAnchor: [size / 2, size] }),
+        keyboard: false, title: p.name,
+      }).addTo(map));
+      // controls
+      const q = (sel) => el.parentElement.querySelector(sel);
+      q('[aria-label="Zoom in"]')?.addEventListener('click', () => map.zoomIn());
+      q('[aria-label="Zoom out"]')?.addEventListener('click', () => map.zoomOut());
+      q('[aria-label="Recenter"]')?.addEventListener('click', () => map.setView([37.7885, -122.4010], 16));
+      // list ↔ pin selection
+      const items = [...el.closest('.mp').querySelectorAll('.mp-item')];
+      const select = (i) => {
+        items.forEach((it, k) => it.toggleAttribute('aria-current', k === i));
+        markers.forEach((m, k) => m.getElement()?.querySelector('.mp-pin')?.classList.toggle('mp-pin-active', k === i));
+        map.panTo([places[i].lat, places[i].lng]);
+      };
+      items.forEach((it, i) => it.addEventListener('click', () => select(i)));
+      markers.forEach((m, i) => m.on('click', () => select(i)));
+      // the frame is sized by CSS; make sure Leaflet measures it after layout
+      requestAnimationFrame(() => map.invalidateSize());
+      new ResizeObserver(() => map.invalidateSize()).observe(el);
+    })();
+  </script>
+</DocsShell>

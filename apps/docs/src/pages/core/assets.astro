@@ -1,0 +1,69 @@
+---
+import DocsShell from '../../layouts/DocsShell.astro';
+import { coreNav } from '../../coreNav';
+
+const scenarioFiles = import.meta.glob('../../assets/illustrations/*.svg', { query: '?raw', import: 'default', eager: true });
+const illustrations = Object.entries(scenarioFiles).map(([path, svg]) => ({
+  name: path.split('/').pop()!.replace('.svg', ''),
+  svg: svg as string,
+}));
+---
+<DocsShell title="Assets" nav={coreNav}>
+  <h1 style="font-family: var(--font-display); font-size: var(--font-size-9);">Illustrations, Photography & Patterns</h1>
+  <p style="color: var(--text-secondary); max-inline-size: 640px;">
+    Icons have their own page: <a class="fds-link" href="/core/icons/">324 Heroicons, four variants, one sprite →</a>
+  </p>
+
+  <h2 style="font-family: var(--font-display);">Illustrations — Open Doodles (CC0)</h2>
+  <div class="fds-alert" data-variant="info" style="max-inline-size: 720px; margin-block-end: var(--space-4);">
+    <strong>Style note.</strong> The brief asked for 1950s tech-Memphis vector illustration. No free pack in
+    that style exists, so per the brief's fallback these are <a href="https://www.opendoodles.com" style="color: var(--text-accent);">Open Doodles</a>
+    (Pablo Stanley, CC0) — a friendly line style, <em>not</em> the target aesthetic. The pipeline is style-agnostic:
+    any two-colour SVG pack drops in and re-themes the same way, so a matching set can replace these without touching
+    a template. Treat the current set as a placeholder for tone, not a decision.
+  </div>
+  <p style="color: var(--text-secondary); max-inline-size: 640px;">
+    Tokenized at build: accent fills resolve to <code>--illustration-accent</code> and line work to
+    <code>--illustration-line</code>. Switch any theme axis — they re-theme live.
+  </p>
+  <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--space-4);">
+    {illustrations.map((il) => (
+      <figure class="fds-card" style="margin:0; text-align:center;">
+        <div class="illus" set:html={il.svg} />
+        <figcaption style="font-weight:600; margin-block-start: var(--space-2); text-transform: capitalize;">{il.name}</figcaption>
+      </figure>
+    ))}
+  </div>
+
+  <h2 style="font-family: var(--font-display);">Surface patterns</h2>
+  <p style="color: var(--text-secondary); max-inline-size: 640px;">
+    Transparent, gradient-built, and token-bound — add a <code>fds-pattern-*</code> class to any surface
+    and it adapts to the active theme.
+  </p>
+  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: var(--space-4);">
+    {['dots', 'grid', 'diagonal', 'starburst'].map((p) => (
+      <div class={`fds-card fds-pattern-${p}`} style="block-size: 140px; display:flex; align-items:end;">
+        <span class="fds-badge" data-variant="neutral">fds-pattern-{p}</span>
+      </div>
+    ))}
+  </div>
+
+  <h2 style="font-family: var(--font-display);">Photography</h2>
+  <p style="color: var(--text-secondary); max-inline-size: 640px;">
+    Direction: 1950s retro-futurism — atomic-age optimism, brushed chrome, saturated Kodachrome.
+    Scenario set: hero backdrops, team/collaboration, product-in-hand, abstract texture.
+  </p>
+  <div id="photo-grid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr)); gap: var(--space-4);">
+    {['hero', 'collaboration', 'product', 'texture'].map((p) => (
+      <figure class="fds-card" style="margin:0; padding: var(--space-3);">
+        <img src={`/photography/${p}.jpg`} alt={`1950s retro-futurism ${p} photograph`} style="inline-size:100%; border-radius: var(--radius-3); display:block;" loading="lazy" />
+        <figcaption class="fds-hint" style="margin-block-start: var(--space-2); text-transform: capitalize;">{p}</figcaption>
+      </figure>
+    ))}
+  </div>
+
+  <style>
+    .icon :global(svg) { inline-size: 28px; block-size: 28px; }
+    .illus :global(svg) { inline-size: 100%; block-size: 150px; }
+  </style>
+</DocsShell>

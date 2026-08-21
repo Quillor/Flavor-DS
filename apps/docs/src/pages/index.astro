@@ -1,0 +1,133 @@
+---
+import Base from '../layouts/Base.astro';
+import meta from '@flavor-ds/tokens/dist/meta.json';
+---
+<Base title="Home">
+  <main>
+    <section style="padding: var(--space-12) var(--space-8); text-align: center; background: var(--surface-page);">
+      <img src="/brand/logo-square-color.svg" alt="" width="88" height="88" style="margin-block-end: var(--space-5)" />
+      <h1 style="font-family: var(--font-display); font-size: var(--font-size-11); line-height: var(--line-height-11); margin: 0 0 var(--space-4);">
+        A design system<br/>built for humans <em style="color: var(--text-accent); font-style: normal;">and agents</em>.
+      </h1>
+      <p style="font-size: var(--font-size-5); color: var(--text-secondary); max-inline-size: 620px; margin-inline: auto;">
+        Flavor DS is delivered over MCP. Any project — new or existing — imports it,
+        and the system adapts: tokens, themes, components, and accessibility guarantees included.
+      </p>
+      <div style="display:flex; gap: var(--space-3); justify-content:center; margin-block-start: var(--space-6); flex-wrap: wrap;">
+        <a href="/mcp/" class="fds-button" data-variant="primary" data-size="lg" style="text-decoration:none">Import via MCP</a>
+        <a href="/core/" class="fds-button" data-variant="outline" data-size="lg" style="text-decoration:none">Explore Core UI</a>
+      </div>
+    </section>
+
+    <section style="max-inline-size: 1080px; margin-inline: auto; padding: var(--space-9) var(--space-6); display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-5);">
+      <div class="fds-card">
+        <h2 class="fds-card-title">{meta.themeCount} themes, one file</h2>
+        <p class="fds-card-description">
+          {meta.axes.hue.length} hues × {meta.axes.sat.length} saturations × light/dark × AA/AAA —
+          every combination resolves from nine attributes on <code>&lt;html&gt;</code>. No theme forks, ever.
+        </p>
+      </div>
+      <div class="fds-card">
+        <h2 class="fds-card-title">Contrast is computed, not promised</h2>
+        <p class="fds-card-description">
+          Every text and surface pairing ships with its WCAG ratio calculated to two decimals.
+          Pairings outside the approved list are not expressible in the semantic tier.
+        </p>
+      </div>
+      <div class="fds-card">
+        <h2 class="fds-card-title">Agents are first-class users</h2>
+        <p class="fds-card-description">
+          The MCP server exposes tokens, themes, components, and adaptation logic as tools.
+          An agent asks <code>flavor_adapt_project</code> and gets stack-specific adoption steps.
+        </p>
+      </div>
+      <div class="fds-card">
+        <h2 class="fds-card-title">Density, direction, elevation</h2>
+        <p class="fds-card-description">
+          Three density modes rescale every control. RTL flips every layout via logical properties.
+          Dark mode elevations get lighter as they rise — not a naive inversion.
+        </p>
+      </div>
+    </section>
+
+    <section style="max-inline-size: 1080px; margin-inline: auto; padding: 0 var(--space-6) var(--space-6);">
+      <div class="fds-card" data-elevation="2" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-6); align-items:center;">
+        <div>
+          <span class="fds-badge" data-variant="accent" style="margin-block-end: var(--space-3);">Canvas</span>
+          <h2 class="fds-card-title">Review the whole system on one board</h2>
+          <p class="fds-card-description">
+            <strong>Canvas</strong> — the EthiGov review board, ported byte-for-byte via the canvas-maker skill —
+            renders every page of this site as live device frames on an infinite, pannable board: the real app, not screenshots. Pin a comment on any element; adjust type, colour, spacing and
+            radius from <em>this system's real tokens only</em> (with an explicit detach for one-offs); switch any
+            theme axis or edit a token and watch every frame restyle at once. The board itself wears the brand theme
+            and follows light and dark with the frames — it is built from the tokens it reviews. Feedback is written to
+            <code>.canvas/feedback.json</code> in the repo so it travels with the branch, and
+            <strong>Copy feedback</strong> exports a block an agent can apply unambiguously — the same block the
+            MCP serves as <code>flavor_canvas_feedback</code>.
+          </p>
+          <div style="display:flex; gap: var(--space-3); flex-wrap: wrap; margin-block-start: var(--space-4);">
+            <a class="fds-button" data-variant="primary" href="/canvas/">Open Canvas</a>
+            <a class="fds-button" data-variant="outline" href="/canvas-demo/">See what it can do</a>
+          </div>
+        </div>
+        <a href="/canvas/" aria-label="Open Canvas" class="home-canvas-preview" style="display:block; border-radius: var(--radius-media); overflow:hidden; box-shadow: var(--shadow-border), var(--elevation-2);">
+          <!-- The board is bound to the brand theme in light and dark; the preview follows the
+               site's own mode so what you see is what you get when you open it. -->
+          <img class="home-canvas-light" src="/canvas/preview-light.png" alt="Canvas board in light mode: live page frames on a spine, a pinned comment, the token-scoped editor" width="1600" height="1000" style="display:block; inline-size:100%; block-size:auto;" loading="lazy" />
+          <img class="home-canvas-dark" src="/canvas/preview-dark.png" alt="Canvas board in dark mode" width="1600" height="1000" style="display:none; inline-size:100%; block-size:auto;" loading="lazy" />
+        </a>
+        <style>
+          :root[data-mode="dark"] .home-canvas-light { display: none !important; }
+          :root[data-mode="dark"] .home-canvas-dark { display: block !important; }
+        </style>
+      </div>
+    </section>
+
+    <section style="max-inline-size: 1080px; margin-inline: auto; padding: 0 var(--space-6) var(--space-6);">
+      <div class="fds-card" data-elevation="2" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-6); align-items:center;">
+        <div>
+          <span class="fds-badge" data-variant="accent" style="margin-block-end: var(--space-3);">Agent Ready</span>
+          <h2 class="fds-card-title" style="font-size: var(--font-size-6);">A memory, not a manual</h2>
+          <p class="fds-card-description">
+            The whole system is indexed at build time — 86 chunks with priorities and tags — and <code>flavor_recall</code>
+            hands an agent the twelve global rules first, then only what the task in front of it needs, under a token
+            budget, with everything it left out listed by id. Deterministic, tested in CI, and the same code runs live on the page.
+          </p>
+          <div style="display:flex; gap: var(--space-3); flex-wrap: wrap; margin-block-start: var(--space-4);">
+            <a class="fds-button" data-variant="primary" href="/agent-ready/">How agents read Flavor</a>
+            <a class="fds-button" data-variant="outline" href="/llms.txt">llms.txt</a>
+          </div>
+        </div>
+        <pre style="margin:0; overflow-x:auto; font-family: var(--font-mono); font-size: var(--font-size-1); line-height:1.6; padding: var(--space-4); border-radius: var(--radius-container); background: var(--surface-1); border: 1px solid var(--border-subtle);"><code>flavor_recall({'{'} task: "build a login form" {'}'})
+
+# Global rules            ← always, first
+1. Semantic tokens only …
+# Contract                ← building UI
+Theme axes · Adopt Flavor
+# Relevant to the task    ← ranked, budgeted
+Text input   score 9.1
+Sign in template  8.4
+Button       7.6 …
+# Also available          ← omitted, by id
+component-checkbox-radio, template-settings …</code></pre>
+      </div>
+    </section>
+
+    <section style="max-inline-size: 1080px; margin-inline: auto; padding: 0 var(--space-6) var(--space-10);">
+      <div class="fds-card" data-elevation="2" style="display:flex; flex-wrap: wrap; gap: var(--space-6); align-items:center; justify-content: space-between;">
+        <div>
+          <h2 class="fds-card-title">Try it right now</h2>
+          <p class="fds-card-description">Open the <strong>Theme</strong> control in the top bar. This entire site re-themes live — it consumes the same tokens it documents.</p>
+        </div>
+        <div style="display:flex; gap: var(--space-2); flex-wrap: wrap;">
+          <span class="fds-badge" data-variant="solid">accent</span>
+          <span class="fds-badge" data-variant="accent">subtle</span>
+          <span class="fds-badge" data-variant="success">success</span>
+          <span class="fds-badge" data-variant="warning">warning</span>
+          <span class="fds-badge" data-variant="danger">danger</span>
+          <span class="fds-badge" data-variant="neutral">neutral</span>
+        </div>
+      </div>
+    </section>
+  </main>
+</Base>

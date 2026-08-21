@@ -1,0 +1,265 @@
+---
+import DocsShell from '../../layouts/DocsShell.astro';
+import TemplateFrame from '../../components/TemplateFrame.astro';
+import { productNav } from '../../product/productNav';
+
+const illustrationFiles = import.meta.glob('../../assets/illustrations/*.svg', { query: '?raw', import: 'default', eager: true });
+const successIllustration = illustrationFiles['../../assets/illustrations/success.svg'] as string;
+
+const extraStrings = {
+  post:           { en: 'Post', es: 'Publicar', zh: '发布', de: 'Posten', ar: 'نشر' },
+  whatsHappening: { en: "What's happening?", es: '¿Qué está pasando?', zh: '有什么新鲜事？', de: "Was gibt's Neues?", ar: 'ما الذي يحدث؟' },
+  trending:       { en: 'Trending', es: 'Tendencias', zh: '热门趋势', de: 'Angesagt', ar: 'الرائج' },
+  whoToFollow:    { en: 'Who to follow', es: 'A quién seguir', zh: '推荐关注', de: 'Wem folgen', ar: 'من تتابع' },
+  posts:          { en: 'posts', es: 'publicaciones', zh: '帖子', de: 'Beiträge', ar: 'منشورات' },
+};
+---
+<DocsShell title="Social feed" nav={productNav}>
+  <h1 style="font-family: var(--font-display); font-size: var(--font-size-9);">Social feed</h1>
+  <p style="color: var(--text-secondary); max-inline-size: 640px;">
+    Three-column social timeline — nav rail, feed, and trending panel — collapsing to a single
+    column with a bottom tab bar on mobile. Try iOS/Android and Arabic (RTL) with the frame controls.
+  </p>
+
+  <TemplateFrame title="feed" extraStrings={extraStrings}>
+    <div class="fds-statusbar" aria-hidden="true"><span>9:41</span><span>●●●</span></div>
+    <div class="fd-layout">
+      <nav class="fd-nav" aria-label="Primary">
+        <a href="#" class="fd-nav-item" data-hit data-active>
+          <svg class="fds-icon" data-icon data-variant="outline" width="1.8" aria-hidden="true"><use href="/icons/sprite.svg#hi-home-outline"></use></svg>
+          <span data-i18n="home">Home</span>
+        </a>
+        <a href="#" class="fd-nav-item" data-hit>
+          <svg class="fds-icon" data-icon data-variant="outline" width="1.8" aria-hidden="true"><use href="/icons/sprite.svg#hi-magnifying-glass-outline"></use></svg>
+          <span data-i18n="explore">Explore</span>
+        </a>
+        <a href="#" class="fd-nav-item" data-hit>
+          <svg class="fds-icon" data-icon data-variant="outline" width="1.8" aria-hidden="true"><use href="/icons/sprite.svg#hi-bell-outline"></use></svg>
+          <span data-i18n="notifications">Notifications</span>
+          <span class="fds-badge" data-variant="solid">3</span>
+        </a>
+        <a href="#" class="fd-nav-item" data-hit>
+          <svg class="fds-icon" data-icon data-variant="outline" width="1.8" aria-hidden="true"><use href="/icons/sprite.svg#hi-chat-bubble-oval-left-outline"></use></svg>
+          <span data-i18n="messages">Messages</span>
+        </a>
+        <a href="#" class="fd-nav-item" data-hit>
+          <svg class="fds-icon" data-icon data-variant="outline" width="1.8" aria-hidden="true"><use href="/icons/sprite.svg#hi-user-outline"></use></svg>
+          <span data-i18n="profile">Profile</span>
+        </a>
+        <button class="fds-button" data-variant="primary" data-size="lg" style="inline-size:100%; margin-block-start: var(--space-3);" data-i18n="post">Post</button>
+      </nav>
+
+      <main class="fd-feed">
+        <div class="fds-card fd-compose">
+          <span class="fds-avatar">TR</span>
+          <div class="fd-compose-main">
+            <input class="fds-input" type="text" data-i18n-placeholder="whatsHappening" placeholder="What's happening?" />
+            <div class="fd-compose-row">
+              <button class="fds-button" data-variant="primary" data-size="sm" data-i18n="post">Post</button>
+            </div>
+          </div>
+        </div>
+
+        <article class="fds-card fd-post">
+          <header class="fd-post-head">
+            <span class="fds-avatar">MK</span>
+            <div class="fd-post-meta"><strong>Maya Kim</strong><span class="fd-time">2h</span></div>
+          </header>
+          <p class="fd-post-text">Shipped the new theming engine today. Every surface re-resolves live when you flip a single axis — dark mode took zero extra work.</p>
+          <footer class="fd-actions">
+            <button class="fd-action" data-hit><svg class="fds-icon" data-icon data-variant="outline" width="1.8" aria-hidden="true"><use href="/icons/sprite.svg#hi-heart-outline"></use></svg><span data-i18n="like">Like</span><span class="fd-count">248</span></button>
+            <button class="fd-action" data-hit><svg class="fds-icon" data-icon data-variant="outline" width="1.8" aria-hidden="true"><use href="/icons/sprite.svg#hi-chat-bubble-oval-left-outline"></use></svg><span data-i18n="comment">Comment</span><span class="fd-count">36</span></button>
+            <button class="fd-action" data-hit><svg class="fds-icon" data-icon data-variant="outline" width="1.8" aria-hidden="true"><use href="/icons/sprite.svg#hi-arrow-up-tray-outline"></use></svg><span data-i18n="share">Share</span><span class="fd-count">12</span></button>
+          </footer>
+        </article>
+
+        <article class="fds-card fd-post">
+          <header class="fd-post-head">
+            <span class="fds-avatar">JO</span>
+            <div class="fd-post-meta"><strong>Jonas Okafor</strong><span class="fd-time">4h</span></div>
+          </header>
+          <p class="fd-post-text">Golden hour over the studio rooftop. No filter needed.</p>
+          <img class="fd-post-img" src="/photography/hero.jpg" alt="Golden hour rooftop photograph" loading="lazy" />
+          <footer class="fd-actions">
+            <button class="fd-action" data-hit><svg class="fds-icon" data-icon data-variant="outline" width="1.8" aria-hidden="true"><use href="/icons/sprite.svg#hi-heart-outline"></use></svg><span data-i18n="like">Like</span><span class="fd-count">1.2k</span></button>
+            <button class="fd-action" data-hit><svg class="fds-icon" data-icon data-variant="outline" width="1.8" aria-hidden="true"><use href="/icons/sprite.svg#hi-chat-bubble-oval-left-outline"></use></svg><span data-i18n="comment">Comment</span><span class="fd-count">98</span></button>
+            <button class="fd-action" data-hit><svg class="fds-icon" data-icon data-variant="outline" width="1.8" aria-hidden="true"><use href="/icons/sprite.svg#hi-arrow-up-tray-outline"></use></svg><span data-i18n="share">Share</span><span class="fd-count">64</span></button>
+          </footer>
+        </article>
+
+        <article class="fds-card fd-post">
+          <header class="fd-post-head">
+            <span class="fds-avatar">AL</span>
+            <div class="fd-post-meta"><strong>Ana López</strong><span class="fd-time">6h</span></div>
+          </header>
+          <p class="fd-post-text">We hit 10,000 community members this week. Thank you all — celebration illustration courtesy of the design system itself.</p>
+          <div class="fd-post-illus" set:html={successIllustration} />
+          <footer class="fd-actions">
+            <button class="fd-action" data-hit><svg class="fds-icon" data-icon data-variant="outline" width="1.8" aria-hidden="true"><use href="/icons/sprite.svg#hi-heart-outline"></use></svg><span data-i18n="like">Like</span><span class="fd-count">532</span></button>
+            <button class="fd-action" data-hit><svg class="fds-icon" data-icon data-variant="outline" width="1.8" aria-hidden="true"><use href="/icons/sprite.svg#hi-chat-bubble-oval-left-outline"></use></svg><span data-i18n="comment">Comment</span><span class="fd-count">74</span></button>
+            <button class="fd-action" data-hit><svg class="fds-icon" data-icon data-variant="outline" width="1.8" aria-hidden="true"><use href="/icons/sprite.svg#hi-arrow-up-tray-outline"></use></svg><span data-i18n="share">Share</span><span class="fd-count">41</span></button>
+          </footer>
+        </article>
+
+        <article class="fds-card fd-post">
+          <header class="fd-post-head">
+            <span class="fds-avatar">SB</span>
+            <div class="fd-post-meta"><strong>Sam Berger</strong><span class="fd-time">9h</span></div>
+          </header>
+          <p class="fd-post-text">Hot take: container queries made responsive design fun again. Media queries never knew where the component actually lived.</p>
+          <footer class="fd-actions">
+            <button class="fd-action" data-hit><svg class="fds-icon" data-icon data-variant="outline" width="1.8" aria-hidden="true"><use href="/icons/sprite.svg#hi-heart-outline"></use></svg><span data-i18n="like">Like</span><span class="fd-count">89</span></button>
+            <button class="fd-action" data-hit><svg class="fds-icon" data-icon data-variant="outline" width="1.8" aria-hidden="true"><use href="/icons/sprite.svg#hi-chat-bubble-oval-left-outline"></use></svg><span data-i18n="comment">Comment</span><span class="fd-count">27</span></button>
+            <button class="fd-action" data-hit><svg class="fds-icon" data-icon data-variant="outline" width="1.8" aria-hidden="true"><use href="/icons/sprite.svg#hi-arrow-up-tray-outline"></use></svg><span data-i18n="share">Share</span><span class="fd-count">8</span></button>
+          </footer>
+        </article>
+
+        <article class="fds-card fd-post">
+          <header class="fd-post-head">
+            <span class="fds-avatar">RD</span>
+            <div class="fd-post-meta"><strong>Rina Das</strong><span class="fd-time">12h</span></div>
+          </header>
+          <p class="fd-post-text">Reminder: your design tokens are an API. Version them, document them, and never let a hex value sneak past review.</p>
+          <footer class="fd-actions">
+            <button class="fd-action" data-hit><svg class="fds-icon" data-icon data-variant="outline" width="1.8" aria-hidden="true"><use href="/icons/sprite.svg#hi-heart-outline"></use></svg><span data-i18n="like">Like</span><span class="fd-count">301</span></button>
+            <button class="fd-action" data-hit><svg class="fds-icon" data-icon data-variant="outline" width="1.8" aria-hidden="true"><use href="/icons/sprite.svg#hi-chat-bubble-oval-left-outline"></use></svg><span data-i18n="comment">Comment</span><span class="fd-count">45</span></button>
+            <button class="fd-action" data-hit><svg class="fds-icon" data-icon data-variant="outline" width="1.8" aria-hidden="true"><use href="/icons/sprite.svg#hi-arrow-up-tray-outline"></use></svg><span data-i18n="share">Share</span><span class="fd-count">19</span></button>
+          </footer>
+        </article>
+      </main>
+
+      <aside class="fd-side">
+        <div class="fds-card">
+          <h2 class="fd-side-title" data-i18n="trending">Trending</h2>
+          <ul class="fd-trend-list">
+            <li><strong>#containerqueries</strong><span class="fd-trend-count">4,821 <span data-i18n="posts">posts</span></span></li>
+            <li><strong>#designtokens</strong><span class="fd-trend-count">3,204 <span data-i18n="posts">posts</span></span></li>
+            <li><strong>#darkmode</strong><span class="fd-trend-count">2,977 <span data-i18n="posts">posts</span></span></li>
+            <li><strong>#a11y</strong><span class="fd-trend-count">1,530 <span data-i18n="posts">posts</span></span></li>
+          </ul>
+          <a href="#" class="fd-side-link" data-hit data-i18n="viewAll">View all</a>
+        </div>
+        <div class="fds-card">
+          <h2 class="fd-side-title" data-i18n="whoToFollow">Who to follow</h2>
+          <div class="fd-suggest">
+            <span class="fds-avatar">PT</span>
+            <div class="fd-suggest-meta"><strong>Priya Tan</strong><span class="fd-time">@priyatan</span></div>
+            <button class="fds-button" data-variant="secondary" data-size="sm" data-i18n="follow">Follow</button>
+          </div>
+          <div class="fd-suggest">
+            <span class="fds-avatar">LW</span>
+            <div class="fd-suggest-meta"><strong>Leo Wagner</strong><span class="fd-time">@leow</span></div>
+            <button class="fds-button" data-variant="secondary" data-size="sm" data-i18n="follow">Follow</button>
+          </div>
+          <div class="fd-suggest">
+            <span class="fds-avatar">CN</span>
+            <div class="fd-suggest-meta"><strong>Chidi Nwosu</strong><span class="fd-time">@chidi</span></div>
+            <button class="fds-button" data-variant="secondary" data-size="sm" data-i18n="follow">Follow</button>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <nav class="fds-tabbar fd-tabbar" aria-label="Primary mobile">
+      <button class="fds-tabbar-item" data-active>
+        <svg class="fds-icon" data-icon data-variant="outline" width="1.8" aria-hidden="true"><use href="/icons/sprite.svg#hi-home-outline"></use></svg>
+        <span data-i18n="home">Home</span>
+      </button>
+      <button class="fds-tabbar-item">
+        <svg class="fds-icon" data-icon data-variant="outline" width="1.8" aria-hidden="true"><use href="/icons/sprite.svg#hi-magnifying-glass-outline"></use></svg>
+        <span data-i18n="explore">Explore</span>
+      </button>
+      <button class="fds-tabbar-item">
+        <svg class="fds-icon" data-icon data-variant="outline" width="1.8" aria-hidden="true"><use href="/icons/sprite.svg#hi-bell-outline"></use></svg>
+        <span data-i18n="notifications">Notifications</span>
+      </button>
+      <button class="fds-tabbar-item">
+        <svg class="fds-icon" data-icon data-variant="outline" width="1.8" aria-hidden="true"><use href="/icons/sprite.svg#hi-chat-bubble-oval-left-outline"></use></svg>
+        <span data-i18n="messages">Messages</span>
+      </button>
+      <button class="fds-tabbar-item">
+        <svg class="fds-icon" data-icon data-variant="outline" width="1.8" aria-hidden="true"><use href="/icons/sprite.svg#hi-user-outline"></use></svg>
+        <span data-i18n="profile">Profile</span>
+      </button>
+    </nav>
+  </TemplateFrame>
+
+  <style>
+    .fd-layout {
+      display: grid;
+      grid-template-columns: 220px 1fr 280px;
+      gap: var(--space-6);
+      padding: var(--space-6);
+      align-items: start;
+      min-block-size: 560px;
+    }
+    .fd-nav { display: flex; flex-direction: column; gap: var(--space-1); }
+    .fd-nav-item {
+      display: flex; align-items: center; gap: var(--space-3);
+      color: var(--text-secondary); text-decoration: none; font-weight: 600;
+      font-size: var(--font-size-4);
+      padding: var(--space-3) var(--space-4); border-radius: var(--radius-control);
+      transition: background-color var(--duration-2) var(--ease-standard), color var(--duration-2) var(--ease-standard);
+    }
+    .fd-nav-item:hover { background: var(--surface-tint); color: var(--text-primary); }
+    .fd-nav-item[data-active] { color: var(--text-accent); }
+    .fd-nav-item svg { inline-size: 22px; block-size: 22px; flex-shrink: 0; }
+    .fd-nav-item .fds-badge { margin-inline-start: auto; }
+
+    .fd-feed { display: flex; flex-direction: column; gap: var(--space-4); min-inline-size: 0; }
+    .fd-compose { display: flex; gap: var(--space-3); align-items: flex-start; }
+    .fd-compose .fds-avatar { flex-shrink: 0; }
+    .fd-compose-main { flex: 1; display: flex; flex-direction: column; gap: var(--space-3); }
+    .fd-compose-row { display: flex; justify-content: flex-end; }
+
+    .fd-post { display: flex; flex-direction: column; gap: var(--space-3); }
+    .fd-post-head { display: flex; align-items: center; gap: var(--space-3); }
+    .fd-post-meta { display: flex; flex-direction: column; }
+    .fd-time { color: var(--text-tertiary); font-size: var(--font-size-2); }
+    .fd-post-text { margin: 0; line-height: var(--line-height-4); }
+    .fd-post-img { inline-size: 100%; block-size: auto; border-radius: var(--radius-media); display: block; }
+    .fd-post-illus { max-inline-size: 260px; margin-inline: auto; }
+    .fd-post-illus :global(svg) { inline-size: 100%; block-size: auto; }
+
+    .fd-actions {
+      display: flex; gap: var(--space-2);
+      border-block-start: 1px solid var(--border-subtle);
+      padding-block-start: var(--space-3);
+    }
+    .fd-action {
+      display: inline-flex; align-items: center; gap: var(--space-2);
+      background: none; border: none; cursor: pointer;
+      color: var(--text-secondary); font: inherit; font-size: var(--font-size-2); font-weight: 600;
+      padding: var(--space-1) var(--space-3); border-radius: var(--radius-control);
+      transition: background-color var(--duration-2) var(--ease-standard), color var(--duration-2) var(--ease-standard);
+    }
+    .fd-action:hover { background: var(--accent-subtle); color: var(--text-on-accent-subtle); }
+    .fd-action svg { inline-size: 18px; block-size: 18px; }
+    .fd-count { color: var(--text-tertiary); font-weight: 500; }
+
+    .fd-side { display: flex; flex-direction: column; gap: var(--space-4); }
+    .fd-side-title { font-family: var(--font-display); font-size: var(--font-size-5); margin: 0 0 var(--space-3); }
+    .fd-trend-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-3); }
+    .fd-trend-list li { display: flex; flex-direction: column; }
+    .fd-trend-count { color: var(--text-tertiary); font-size: var(--font-size-2); }
+    .fd-side-link {
+      display: inline-block; margin-block-start: var(--space-3);
+      color: var(--text-accent); text-decoration: none; font-weight: 600; font-size: var(--font-size-2);
+    }
+    .fd-suggest { display: flex; align-items: center; gap: var(--space-3); padding-block: var(--space-2); }
+    .fd-suggest-meta { display: flex; flex-direction: column; flex: 1; min-inline-size: 0; }
+    .fd-suggest .fds-button { flex-shrink: 0; }
+
+    .fd-tabbar { display: none; }
+
+    @container (max-width: 767px) {
+      .fd-layout { grid-template-columns: 200px 1fr; }
+      .fd-side { display: none; }
+    }
+    @container (max-width: 480px) {
+      .fd-layout { grid-template-columns: 1fr; padding: var(--space-4); min-block-size: auto; }
+      .fd-nav { display: none; }
+      .fd-tabbar { display: flex; position: sticky; inset-block-end: 0; }
+    }
+  </style>
+</DocsShell>

@@ -1,0 +1,57 @@
+---
+import DocsShell from '../../layouts/DocsShell.astro';
+import { coreNav } from '../../coreNav';
+const spaces = [1,2,3,4,5,6,7,8,9,10,11,12];
+const sizes = [1,2,3,4,5,6,7,8,9];
+---
+<DocsShell title="Tokens" nav={coreNav}>
+  <h1 style="font-family: var(--font-display); font-size: var(--font-size-9);">Tokens</h1>
+
+  <h2 style="font-family: var(--font-display);">Spacing ramp × density</h2>
+  <p style="color: var(--text-secondary);">
+    <code>--space-1…12</code> re-resolve under <code>data-density</code>: compact ×0.8, regular ×1, comfy ×1.25.
+    Switch density in the Theme control and watch the bars change.
+  </p>
+  <div style="display:flex; flex-direction:column; gap: var(--space-2);">
+    {spaces.map((n) => (
+      <div style="display:flex; align-items:center; gap: var(--space-3);">
+        <code class="fds-hint" style="inline-size: 90px; font-family: var(--font-mono);">--space-{n}</code>
+        <div style={`background: var(--accent-bg); block-size: 14px; inline-size: var(--space-${n}); border-radius: 3px;`}></div>
+      </div>
+    ))}
+  </div>
+
+  <h2 style="font-family: var(--font-display);">Type ramp</h2>
+  {sizes.map((n) => (
+    <p style={`font-size: var(--font-size-${n}); line-height: var(--line-height-${n}); margin: var(--space-2) 0;`}>
+      <code class="fds-hint" style="font-family: var(--font-mono); font-size: var(--font-size-1);">size-{n}</code>
+      &nbsp;The quick brown fox jumps over the lazy dog
+    </p>
+  ))}
+
+  <h2 style="font-family: var(--font-display);">Elevation</h2>
+  <p style="color: var(--text-secondary);">Three layers: surface, drawer, modal. In dark mode each layer is a lighter surface step — toggle mode to compare.</p>
+  <div style="display:grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap: var(--space-5); padding: var(--space-4); background: var(--surface-page); border-radius: var(--radius-4);">
+    {[1,2,3].map((e) => (
+      <div class="fds-card" data-elevation={e} style="text-align:center;">
+        <p style="font-weight:700; margin:0;">Elevation {e}</p>
+        <p class="fds-hint" style="margin:var(--space-1) 0 0;">{['surface','drawer','modal'][e-1]} · --surface-{e} + --elevation-{e}</p>
+      </div>
+    ))}
+  </div>
+
+  <h2 style="font-family: var(--font-display);">Motion</h2>
+  <div style="display:flex; gap: var(--space-4); flex-wrap:wrap;">
+    {[['--duration-2','--ease-standard','Standard'],['--duration-3','--ease-emphasized','Emphasized'],['--duration-4','--ease-spring','Spring']].map(([d,e,label]) => (
+      <div class="fds-card motion-demo" style="flex:1; min-inline-size:180px; cursor:pointer;" tabindex="0">
+        <div class="motion-dot" style={`inline-size:20px; block-size:20px; border-radius:var(--radius-full); background:var(--accent-bg); transition: transform ${`var(${d}) var(${e})`};`}></div>
+        <p style="font-weight:600; margin: var(--space-3) 0 0;">{label}</p>
+        <p class="fds-hint" style="font-family:var(--font-mono);">{d} · {e}</p>
+      </div>
+    ))}
+  </div>
+  <style>
+    .motion-demo:hover .motion-dot, .motion-demo:focus .motion-dot { transform: translateX(120px); }
+    [dir="rtl"] .motion-demo:hover .motion-dot, [dir="rtl"] .motion-demo:focus .motion-dot { transform: translateX(-120px); }
+  </style>
+</DocsShell>

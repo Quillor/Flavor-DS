@@ -1,0 +1,137 @@
+---
+import DocsShell from '../../layouts/DocsShell.astro';
+import { coreNav } from '../../coreNav';
+import manifest from '@flavor-ds/ui/icons/manifest.json';
+const names: string[] = manifest.names;
+---
+<DocsShell title="Icons" nav={coreNav}>
+  <h1 style="font-family: var(--font-display); font-size: var(--font-size-9);">Icons</h1>
+  <p style="color: var(--text-secondary); max-inline-size: 640px;">
+    <strong>{manifest.count} Heroicons</strong> (MIT), four variants, one sprite. Colour is <code>currentColor</code>;
+    stroke weight follows the text beside it via <code>--icon-stroke-*</code>. Outline is the default state,
+    solid marks active/selected. Click any icon to copy its usage.
+  </p>
+
+  <section class="ic-contract">
+    <div class="fds-card" style="padding: var(--space-5);">
+      <h2 class="fds-card-title" style="font-size: var(--font-size-5);">Contract</h2>
+      <table class="fds-table ic-table">
+        <thead><tr><th>Variant</th><th>Grid</th><th>Use for</th><th>Sample</th></tr></thead>
+        <tbody>
+          {manifest.variants.map((v: any) => (
+            <tr>
+              <td><code>{v.key}</code></td>
+              <td data-numeric>{v.grid}</td>
+              <td>{v.use}</td>
+              <td>
+                <span class="ic-sample">
+                  <svg class="fds-icon" width={v.grid} height={v.grid} data-icon data-variant={v.key} aria-hidden="true"><use href={`/icons/sprite.svg#hi-bell-${v.key}`}></use></svg>
+                  <svg class="fds-icon" width={v.grid} height={v.grid} data-icon data-variant={v.key} aria-hidden="true"><use href={`/icons/sprite.svg#hi-heart-${v.key}`}></use></svg>
+                  <svg class="fds-icon" width={v.grid} height={v.grid} data-icon data-variant={v.key} data-directional aria-hidden="true"><use href={`/icons/sprite.svg#hi-arrow-right-${v.key}`}></use></svg>
+                </span>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <p class="fds-hint" style="margin-block: var(--space-4) 0;">
+        Weight follows text: an icon inside a button or beside 600-weight text renders at <code>--icon-stroke-strong</code> (2px);
+        beside body text at <code>--icon-stroke-regular</code> (1.5px). Direction-bearing glyphs take <code>data-directional</code>
+        and mirror under <code>dir="rtl"</code>; checks, clocks and logos do not.
+      </p>
+    </div>
+  </section>
+
+  <div class="ic-tools">
+    <input class="fds-input ic-search" type="search" placeholder={`Search ${manifest.count} icons…`} aria-label="Search icons" />
+    <div class="fds-segmented" role="group" aria-label="Variant">
+      {manifest.variants.map((v: any, i: number) => (
+        <button class="fds-segment ic-variant" data-variant={v.key} aria-pressed={i === 0 ? 'true' : 'false'}>{v.key}</button>
+      ))}
+    </div>
+    <span class="fds-hint ic-count" aria-live="polite">{manifest.count} shown</span>
+  </div>
+
+  <ul class="ic-grid" data-variant="outline">
+    {names.map((n) => (
+      <li>
+        <button class="ic-tile" data-name={n} title={n} type="button">
+          <svg class="fds-icon ic-glyph" width="24" height="24" data-icon aria-hidden="true"><use href={`/icons/sprite.svg#hi-${n}-outline`}></use></svg>
+          <span class="ic-name">{n}</span>
+        </button>
+      </li>
+    ))}
+  </ul>
+
+  <div class="fds-toast-region" aria-live="polite">
+    <div class="fds-toast ic-toast" data-variant="success" hidden><span class="ic-toast-text"></span></div>
+  </div>
+
+  <style>
+    .ic-contract { margin-block: var(--space-6); }
+    .ic-table { inline-size: 100%; }
+    .ic-sample { display: inline-flex; gap: var(--space-3); align-items: center; }
+    .ic-tools { display: flex; align-items: center; gap: var(--space-4); margin-block: var(--space-6) var(--space-4); flex-wrap: wrap; position: sticky; inset-block-start: 56px; background: var(--surface-page); padding-block: var(--space-3); z-index: 5; }
+    .ic-search { inline-size: min(360px, 100%); }
+    .ic-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); gap: var(--space-2); }
+    .ic-tile {
+      inline-size: 100%; display: flex; flex-direction: column; align-items: center; gap: var(--space-2);
+      padding: var(--space-4) var(--space-2);
+      background: var(--surface-1); border: none; cursor: pointer; font: inherit; color: var(--text-primary);
+      border-radius: var(--radius-container);
+      box-shadow: var(--shadow-border);
+      transition-property: background-color, box-shadow, scale; transition-duration: var(--duration-2); transition-timing-function: var(--ease-standard);
+    }
+    .ic-tile:hover { background: var(--surface-tint); box-shadow: var(--shadow-border-hover); }
+    .ic-tile:active { scale: var(--press-scale); }
+    .ic-glyph { inline-size: 24px; block-size: 24px; }
+    .ic-grid[data-variant="mini"] .ic-glyph { inline-size: 20px; block-size: 20px; }
+    .ic-grid[data-variant="micro"] .ic-glyph { inline-size: 16px; block-size: 16px; }
+    .ic-name { font-size: var(--font-size-1); color: var(--text-tertiary); max-inline-size: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .ic-toast { position: fixed; inset-block-end: var(--space-6); inset-inline-start: 50%; translate: -50% 0; z-index: 90; }
+  </style>
+
+  <script>
+    const grid = document.querySelector('.ic-grid') as HTMLElement;
+    const tiles = [...grid.querySelectorAll<HTMLButtonElement>('.ic-tile')];
+    const count = document.querySelector('.ic-count') as HTMLElement;
+    const search = document.querySelector('.ic-search') as HTMLInputElement;
+    const toast = document.querySelector('.ic-toast') as HTMLElement;
+    let variant = 'outline';
+
+    const applyVariant = (v: string) => {
+      variant = v; grid.dataset.variant = v;
+      for (const t of tiles) {
+        const use = t.querySelector('use')!; const g = t.querySelector('.ic-glyph')!;
+        use.setAttribute('href', `/icons/sprite.svg#hi-${t.dataset.name}-${v}`);
+        g.setAttribute('data-variant', v);
+      }
+      document.querySelectorAll('.ic-variant').forEach((b) => b.setAttribute('aria-pressed', String((b as HTMLElement).dataset.variant === v)));
+    };
+    document.querySelectorAll<HTMLButtonElement>('.ic-variant').forEach((b) => b.addEventListener('click', () => applyVariant(b.dataset.variant!)));
+
+    search.addEventListener('input', () => {
+      const q = search.value.trim().toLowerCase(); let n = 0;
+      for (const t of tiles) { const hit = !q || t.dataset.name!.includes(q); (t.parentElement as HTMLElement).hidden = !hit; if (hit) n++; }
+      count.textContent = `${n} shown`;
+    });
+
+    // Copy the three usage forms; the one an agent needs depends on the stack.
+    let timer: number;
+    grid.addEventListener('click', async (e) => {
+      const t = (e.target as HTMLElement).closest<HTMLButtonElement>('.ic-tile'); if (!t) return;
+      const n = t.dataset.name;
+      const text = [
+        `<!-- HTML -->`,
+        `<svg class="fds-icon" data-icon data-variant="${variant}" aria-hidden="true"><use href="/icons/sprite.svg#hi-${n}-${variant}"></use></svg>`,
+        `// React`,
+        `<Icon name="${n}"${variant !== 'outline' ? ` variant="${variant}"` : ''} />`,
+        `/* CSS mask */`,
+        `mask-image: url(/icons/${variant}/${n}.svg);`,
+      ].join('\n');
+      try { await navigator.clipboard.writeText(text); } catch {}
+      toast.querySelector('.ic-toast-text')!.textContent = `Copied ${n} (${variant}) — HTML, React and CSS forms`;
+      toast.hidden = false; clearTimeout(timer); timer = window.setTimeout(() => (toast.hidden = true), 1800);
+    });
+  </script>
+</DocsShell>

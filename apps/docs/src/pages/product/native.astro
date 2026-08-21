@@ -1,0 +1,177 @@
+---
+import DocsShell from '../../layouts/DocsShell.astro';
+import { productNav } from '../../product/productNav';
+import { IOS_CATEGORIES, ANDROID_SCALES, BASE_PX, multipliers } from '@flavor-ds/ui/type-scale';
+const iosCols = IOS_CATEGORIES, andCols = ANDROID_SCALES;
+const rows = [1, 3, 4, 7, 9, 12].map((n) => ({ step: n, px: BASE_PX[n - 1] }));
+import meta from '@flavor-ds/tokens/dist/meta.json';
+
+/* The spec table is the single source for this page: every row is a metric platform.css
+ * declares as a --platform-* token, with the HIG / M3 figure it comes from. If the CSS and
+ * this table disagree, the CSS is wrong — scripts/check-native-spec.mjs asserts they match. */
+const SPEC = [
+  { part: 'Status bar',        ios: '54pt (Dynamic Island) · 44 legacy', android: '24dp',                          token: '--platform-statusbar',    src: ['HIG › Layout', 'M3 › Layout'] },
+  { part: 'Top bar',           ios: '44pt nav bar · 96 large title',     android: '64dp small · 112 medium · 152 large', token: '--platform-navbar / -large', src: ['HIG › Navigation bars', 'M3 › Top app bar'] },
+  { part: 'Bottom navigation', ios: '49pt tab bar + 34 home indicator',  android: '80dp navigation bar',           token: '--platform-tabbar / --platform-safe-bottom', src: ['HIG › Tab bars', 'M3 › Navigation bar'] },
+  { part: 'Wide-window nav',   ios: 'Sidebar (split view)',              android: '80dp navigation rail ≥ 600dp',  token: '--platform-rail',         src: ['HIG › Sidebars', 'M3 › Navigation rail'] },
+  { part: 'Selection style',   ios: 'Tinted glyph, no pill',             android: '64×32 active-indicator pill',   token: '.fds-tabbar-item',        src: ['HIG › Tab bars', 'M3 › Navigation bar'] },
+  { part: 'Buttons',           ios: '50pt filled · 12pt corners',        android: '40dp filled/tonal · full (20dp) corners', token: '.fds-button', src: ['HIG › Buttons', 'M3 › Buttons'] },
+  { part: 'Text fields',       ios: '44pt · 10pt corners · grouped fill', android: '56dp filled · 4dp top corners · underline', token: '.fds-input', src: ['HIG › Text fields', 'M3 › Text fields'] },
+  { part: 'Switch',            ios: '51×31 · 27 knob · system green',    android: '52×32 · 16→24 knob',            token: '.fds-switch',             src: ['HIG › Toggles', 'M3 › Switch'] },
+  { part: 'Lists',             ios: 'Grouped inset · 10pt · 44pt rows · inset separators', android: 'Full-bleed · 56/72dp rows · 16dp inset', token: '--platform-row / --platform-inset', src: ['HIG › Lists and tables', 'M3 › Lists'] },
+  { part: 'Sheets',            ios: '10pt top corners · 36×5 grabber',   android: '28dp top corners · 32×4 handle', token: '.fds-drawer[data-side=bottom]', src: ['HIG › Sheets', 'M3 › Bottom sheets'] },
+  { part: 'FAB',               ios: '— (not an iOS idiom)',              android: '56dp · 16dp corners · extended variant', token: '.fds-fab', src: ['—', 'M3 › FAB'] },
+  { part: 'Segmented',         ios: '32pt · 8/6pt corners · sliding thumb', android: '40dp outlined · full corners · tonal checked', token: '.fds-segmented', src: ['HIG › Segmented controls', 'M3 › Segmented buttons'] },
+  { part: 'Minimum target',    ios: '44×44pt',                           android: '48×48dp',                        token: '--platform-target → --hit-target', src: ['HIG › Accessibility', 'M3 › Accessibility'] },
+  { part: 'Corner language',   ios: 'Continuous (squircle) 10–14pt',     android: 'M3 shape scale 4/8/12/16/28',   token: '--radius-* (overrides the Radius axis)', src: ['HIG › Materials', 'M3 › Shape'] },
+  { part: 'Type',              ios: 'SF Pro Text / Display',             android: 'Roboto',                         token: '--font-text / --font-display', src: ['HIG › Typography', 'M3 › Typography'] },
+];
+const axes = Object.entries(meta.defaults).filter(([k]) => !['mode', 'font', 'dir'].includes(k)).map(([k, v]) => `${k}=${v}`).join(' · ');
+---
+<DocsShell title="Native" nav={productNav}>
+  <h1 style="font-family: var(--font-display); font-size: var(--font-size-9);">Native — iOS &amp; Android</h1>
+  <p style="color: var(--text-secondary); max-inline-size: 680px;">
+    What "native" means in Flavor DS, precisely. Two things ship: <strong>token exports</strong> a SwiftUI or
+    Compose app compiles against, resolving <em>the same hex the web resolves</em> for the same axes; and a
+    <strong>platform specification</strong> — <code>data-platform="ios|android"</code> — that turns the web components
+    into the platform's chrome and metrics. Colour, contrast, spacing, type and density come from the theme axes
+    unchanged. What differs is chrome and geometry, and every figure below is the HIG or Material 3 number.
+  </p>
+
+  <section class="nv-downloads">
+    <div class="fds-card nv-dl">
+      <div>
+        <h2 class="fds-card-title" style="font-size: var(--font-size-5);">FlavorTokens.swift</h2>
+        <p class="fds-card-description">SwiftUI. <code>FlavorTheme</code> value type, <code>FlavorTokens.colors(theme, scheme:)</code>, <code>@Environment(\.flavorColors)</code>, spacing/radii/type. <strong>Typechecks against the SwiftUI SDK</strong> in <code>scripts/test-native.mjs</code>.</p>
+      </div>
+      <a class="fds-button" data-variant="primary" data-size="sm" href="/native/FlavorTokens.swift" download>Download</a>
+    </div>
+    <div class="fds-card nv-dl">
+      <div>
+        <h2 class="fds-card-title" style="font-size: var(--font-size-5);">FlavorTokens.kt</h2>
+        <p class="fds-card-description">Jetpack Compose. <code>FlavorTheme</code> data class, <code>FlavorTokens.colors(theme, dark)</code>, <code>LocalFlavorColors</code>, <code>FlavorThemed {}</code>. Structure-checked; <em>not compiled here</em> — no Kotlin toolchain on the build machine, stated rather than hidden.</p>
+      </div>
+      <a class="fds-button" data-variant="primary" data-size="sm" href="/native/FlavorTokens.kt" download>Download</a>
+    </div>
+  </section>
+
+  <p class="fds-hint" style="max-inline-size: 680px;">
+    Both are generated by <code>packages/tokens/native-export.mjs</code> from the shipped <code>flavor.css</code> through the same
+    cascade resolver the WCAG QA uses — 216 theme keys × 43 semantic colours × 2 schemes, byte-identical to the web.
+    Primitives are not exported (tier rule). Media background returns a transparent <code>surfacePage</code>; use
+    <code>textOnMedia</code> for text placed directly on a photo. Defaults: {axes}.
+  </p>
+
+  <h2 style="font-family: var(--font-display); margin-block-start: var(--space-8);">Platform specification</h2>
+  <p style="color: var(--text-secondary); max-inline-size: 680px;">
+    Set <code>data-platform</code> on any container. Each row is a <code>--platform-*</code> token or a component override in
+    <code>packages/ui/src/styles/platform.css</code>; the source column is where the number comes from. Corner radii on a platform
+    <em>override the Radius axis</em> — platform convention wins over theme there, and that is deliberate.
+  </p>
+  <div class="fds-table-wrap">
+    <table class="fds-table nv-spec">
+      <thead><tr><th>Part</th><th>iOS (HIG)</th><th>Android (Material 3)</th><th>Token / hook</th><th>Source</th></tr></thead>
+      <tbody>
+        {SPEC.map((r) => (
+          <tr>
+            <th scope="row">{r.part}</th>
+            <td>{r.ios}</td>
+            <td>{r.android}</td>
+            <td><code>{r.token}</code></td>
+            <td class="nv-src">{r.src.join(' · ')}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+  <h2 style="font-family: var(--font-display); margin-block-start: var(--space-8);">Dynamic type — the OS text-size setting</h2>
+  <p style="color: var(--text-secondary); max-inline-size: 680px;">
+    Both platforms let people scale text system-wide, and both scale <em>non-linearly</em>: small text grows the most,
+    display text the least. Every <code>--font-size-N</code> / <code>--line-height-N</code> token multiplies by its own
+    <code>--type-scale-N</code>, and <code>@flavor-ds/ui/type-scale</code> computes the twelve multipliers per platform and
+    step. In every product template pick <strong>iOS</strong> or <strong>Android</strong>, then drag the <strong>text size</strong>
+    slider: iOS walks the 12 Dynamic Type categories (xSmall → AX5, Large is default), Android the 7 font-scale positions
+    (85% → 200%, 100% default). Below are the multipliers actually applied to six of the twelve steps.
+  </p>
+  <div class="fds-table-wrap">
+    <table class="fds-table nv-spec">
+      <caption class="fds-hint" style="text-align:start; padding-block-end: var(--space-2);">iOS Dynamic Type · anchors from the HIG size tables (Caption 2 = 11 pt, Body = 17 pt, Large Title = 34 pt); other sizes interpolate.</caption>
+      <thead><tr><th>Step (px)</th>{iosCols.map((c) => <th>{c.label.replace(' (accessibility)', '').replace(' (default)', '*')}</th>)}</tr></thead>
+      <tbody>{rows.map((r) => <tr><th scope="row">{r.step} ({r.px}px)</th>{iosCols.map((c) => <td data-numeric>{multipliers('ios', c.id)[r.step - 1].toFixed(2)}×</td>)}</tr>)}</tbody>
+    </table>
+  </div>
+  <div class="fds-table-wrap" style="margin-block-start: var(--space-4);">
+    <table class="fds-table nv-spec">
+      <caption class="fds-hint" style="text-align:start; padding-block-end: var(--space-2);">Android font scale · linear to 130%; 150 / 180 / 200% follow the Android 14 FontScaleConverter tables (large sp values taper).</caption>
+      <thead><tr><th>Step (px ≈ sp)</th>{andCols.map((c) => <th>{c.label.replace(' (default)', '*')}</th>)}</tr></thead>
+      <tbody>{rows.map((r) => <tr><th scope="row">{r.step} ({r.px}px)</th>{andCols.map((c) => <td data-numeric>{multipliers('android', c.id)[r.step - 1].toFixed(2)}×</td>)}</tr>)}</tbody>
+    </table>
+  </div>
+  <p style="color: var(--text-secondary); max-inline-size: 680px; margin-block-start: var(--space-3);">
+    <strong>Truncation.</strong> When scaled text no longer fits, mark the element <code>data-fds-truncate</code>: it gets a
+    single-line ellipsis and — only while it actually overflows — a tooltip with the full text on hover <em>and</em> keyboard
+    focus. The full text never leaves the DOM, so screen readers read it whole; the tooltip is a sighted-user courtesy, not the
+    only place the information lives. Multi-line clamp: add <code>data-lines</code> and set <code>--truncate-lines</code>.
+  </p>
+
+  <h2 style="font-family: var(--font-display); margin-block-start: var(--space-8);">Specimen</h2>
+  <p style="color: var(--text-secondary); max-inline-size: 680px;">
+    The same markup under each platform. Scroll the list to see the large title collapse. Every product template
+    has the same switch in its frame toolbar.
+  </p>
+  <div class="nv-specimens">
+    {['ios', 'android'].map((p) => (
+      <div class="nv-device" data-platform={p} data-device="mobile" dir="ltr">
+        <div class="fds-statusbar" aria-hidden="true"><span>9:41</span><span>●●●</span></div>
+        <header class="fds-appbar" data-large id={`nv-bar-${p}`} data-scroll-target={`nv-scroll-${p}`}>Library</header>
+        <div class="nv-scroll" id={`nv-scroll-${p}`}>
+          <div class="fds-segmented" role="group" aria-label="Filter" style="margin: var(--space-3) var(--platform-inset);">
+            <button class="fds-segment" aria-pressed="true">All</button><button class="fds-segment">Recent</button><button class="fds-segment">Saved</button>
+          </div>
+          <ul class="fds-list">
+            {['Design tokens', 'Contrast pairs', 'Density scale', 'Type pairings', 'Radius modes', 'Backgrounds', 'Icons', 'Behaviours'].map((t) => (
+              <li class="fds-list-item" data-navigates><span class="fds-list-title">{t}</span></li>
+            ))}
+          </ul>
+          <div style="padding: var(--space-4) var(--platform-inset); display: flex; flex-direction: column; gap: var(--space-3);">
+            <label class="fds-label" for={`nv-in-${p}`}>Name</label>
+            <input class="fds-input" id={`nv-in-${p}`} placeholder="Workspace name" />
+            <label style="display:flex; align-items:center; gap: var(--space-3); justify-content: space-between;"><span>Notifications</span><input type="checkbox" class="fds-switch" checked /></label>
+            <button class="fds-button" data-variant="primary">Continue</button>
+            <button class="fds-button" data-variant="secondary">Learn more</button>
+          </div>
+        </div>
+        {p === 'android' && <button class="fds-fab nv-fab" aria-label="Compose"><svg class="fds-icon" data-icon aria-hidden="true"><use href="/icons/sprite.svg#hi-plus-outline"></use></svg></button>}
+        <nav class="fds-tabbar" aria-label="Primary">
+          {[['home', 'Home'], ['magnifying-glass', 'Search'], ['queue-list', 'Library'], ['user', 'Profile']].map(([ic, l], i) => (
+            <a class="fds-tabbar-item" href="#" aria-current={i === 2 ? 'page' : undefined}>
+              <span><svg class="fds-icon" data-icon data-variant={i === 2 ? 'solid' : 'outline'} aria-hidden="true"><use href={`/icons/sprite.svg#hi-${ic}-${i === 2 ? 'solid' : 'outline'}`}></use></svg></span>
+              <span>{l}</span>
+            </a>
+          ))}
+        </nav>
+      </div>
+    ))}
+  </div>
+
+  <style>
+    .nv-downloads { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-4); margin-block: var(--space-6) var(--space-4); }
+    .nv-dl { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-4); }
+    .nv-dl .fds-button { flex-shrink: 0; }
+    .nv-spec th[scope="row"] { text-align: start; white-space: nowrap; }
+    .nv-src { color: var(--text-tertiary); font-size: var(--font-size-1); }
+    .nv-specimens { display: flex; gap: var(--space-8); flex-wrap: wrap; align-items: flex-start; margin-block: var(--space-5) var(--space-8); }
+    .nv-device {
+      inline-size: 393px; block-size: 760px;
+      display: flex; flex-direction: column; position: relative;
+      background: var(--surface-page); color: var(--text-primary);
+      border-radius: 55px; border: 8px solid var(--text-primary); overflow: hidden;
+      box-shadow: var(--elevation-3);
+    }
+    .nv-device[data-platform="android"] { inline-size: 412px; border-radius: 28px; border-width: 6px; }
+    .nv-scroll { flex: 1; overflow-y: auto; }
+    .nv-fab { position: absolute; inset-inline-end: 16px; inset-block-end: calc(var(--platform-tabbar) + 16px); z-index: 2; }
+    @media (max-width: 900px) { .nv-device { inline-size: 100%; max-inline-size: 393px; } }
+  </style>
+</DocsShell>

@@ -1,0 +1,31 @@
+{
+  "name": "@flavor-ds/ui",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Flavor DS core components. CSS-first; React wrappers included. References semantic tokens only.",
+  "exports": {
+    ".": "./src/index.ts",
+    "./css": "./src/styles/components.css",
+    "./react": "./src/components.tsx",
+    "./package.json": "./package.json",
+    "./behaviors": "./src/behaviors.js",
+    "./icons/sprite.svg": "./dist/icons/sprite.svg",
+    "./icons/manifest.json": "./dist/icons/manifest.json",
+    "./platform.css": "./src/styles/platform.css",
+    "./type-scale": "./src/type-scale.js"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
+  },
+  "files": [
+    "src",
+    "dist"
+  ],
+  "sideEffects": [
+    "*.css"
+  ],
+  "scripts": {
+    "build:icons": "node scripts/build-icons.mjs"
+  }
+}

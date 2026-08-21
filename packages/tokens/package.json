@@ -1,0 +1,30 @@
+{
+  "name": "@flavor-ds/tokens",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Flavor DS token source and generator. Ramps, pairings, and theme CSS are computed, not hand-picked.",
+  "main": "dist/tokens.json",
+  "files": [
+    "dist",
+    "build.mjs",
+    "figma-export.mjs",
+    "i18n-export.mjs",
+    "figma-sync"
+  ],
+  "scripts": {
+    "build": "node build.mjs && node figma-export.mjs && node i18n-export.mjs && node figma-sync/plan.mjs",
+    "prepack": "npm run build"
+  },
+  "dependencies": {
+    "culori": "^4.0.1"
+  },
+  "exports": {
+    ".": "./dist/tokens.json",
+    "./css": "./dist/flavor.css",
+    "./meta": "./dist/meta.json",
+    "./contrast": "./dist/contrast.json",
+    "./ramps": "./dist/ramps.json",
+    "./dist/*": "./dist/*",
+    "./package.json": "./package.json"
+  }
+}

@@ -1,0 +1,122 @@
+---
+import DocsShell from '../../layouts/DocsShell.astro';
+import { coreNav } from '../../coreNav';
+import ramps from '@flavor-ds/tokens/dist/ramps.json';
+import contrast from '@flavor-ds/tokens/dist/contrast.json';
+import meta from '@flavor-ds/tokens/dist/meta.json';
+const brands = (meta as any).brands as Record<string, { primary: string; secondary: string; label: string }>;
+
+const hues = Object.keys(ramps);
+const sats = ['muted', 'regular', 'bold'];
+const sel = (mode: string, level: string) => (contrast.modes as any)[mode].families.regular.selections[level];
+const tonalSel = (mode: string, level: string) => (contrast.modes as any)[mode].families.regular.perRamp.blue[level].tonal;
+const selRows = [
+  ['Light · AA', sel('light', 'aa')],
+  ['Light · AAA', sel('light', 'aaa')],
+  ['Dark · AA', sel('dark', 'aa')],
+  ['Dark · AAA', sel('dark', 'aaa')],
+  ['Tonal (blue) Light · AA', tonalSel('light', 'aa')],
+  ['Tonal (blue) Light · AAA', tonalSel('light', 'aaa')],
+  ['Tonal (blue) Dark · AA', tonalSel('dark', 'aa')],
+  ['Tonal (blue) Dark · AAA', tonalSel('dark', 'aaa')],
+];
+---
+<DocsShell title="Color & Contrast" nav={coreNav}>
+  <h1 style="font-family: var(--font-display); font-size: var(--font-size-9);">Color & Contrast</h1>
+  <p style="color: var(--text-secondary); max-inline-size: 660px;">
+    12 steps per ramp, equal OKLCH lightness across hues at every step. Fourteen ramps on the wheel —
+    the six primaries/secondaries plus the in-betweens <strong>scarlet</strong> (red-orange), <strong>tangerine</strong>
+    (yellow-orange), <strong>lime</strong> (yellow-green), <strong>cyan</strong>, <strong>violet</strong> (blue-purple) and
+    <strong>magenta</strong>, plus neutral. Each hue ships in three saturation families — <strong>muted</strong>, <strong>regular</strong>, <strong>bold</strong>.
+    Swatches below show the light-mode value set; dark mode swaps value sets on the same step numbers.
+  </p>
+
+  <h2 style="font-family: var(--font-display);">Brand themes = a primary + a secondary hue</h2>
+  <p style="color: var(--text-secondary); max-inline-size: 660px;">
+    A brand theme keeps neutral surfaces and takes its accents from a <em>pair</em> of ramps: the primary carries
+    <code>--accent-*</code>, the secondary carries <code>--secondary-*</code>, the focus ring and the accent border.
+    Single-hue themes get a neutral secondary so <code>--secondary-*</code> always resolves. Every secondary pairing is
+    contrast-walked against the surfaces it actually sits on — including the tonal page and media.
+  </p>
+  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--space-4); margin-block-end: var(--space-6);">
+    {Object.entries(brands).map(([key, b]) => (
+      <div class="fds-card" style="padding: var(--space-4);">
+        <div style="display:flex; justify-content:space-between; align-items:baseline;"><strong>{b.label}</strong><code style="font-size: var(--font-size-1);">data-hue="{key}"</code></div>
+        <div style="display:flex; gap: var(--space-2); margin-block-start: var(--space-3);">
+          {[b.primary, b.secondary].map((h, i) => (
+            <div style="flex:1;">
+              <div style="display:flex; border-radius: var(--radius-3); overflow:hidden; border:1px solid var(--border-subtle);">
+                {ramps[h].regular.light.map((hex, n) => <div title={`${h}-regular-${n + 1} · ${hex}`} style={`background:${hex}; flex:1; block-size: 28px;`}></div>)}
+              </div>
+              <span class="fds-hint" style="text-transform: capitalize;">{i === 0 ? 'primary' : 'secondary'} · {h}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    ))}
+    <div class="fds-card" style="padding: var(--space-4);">
+      <strong>Live, in the current theme</strong>
+      <p class="fds-hint" style="margin-block: var(--space-1) var(--space-3);">Switch Hue in the top bar to brand / brand2 to see the pair.</p>
+      <div style="display:flex; gap: var(--space-2); flex-wrap: wrap;">
+        <button class="fds-button" data-variant="primary" data-size="sm">Primary</button>
+        <button class="fds-button" data-variant="primary" data-tone="secondary" data-size="sm">Secondary</button>
+        <button class="fds-button" data-variant="secondary" data-tone="secondary" data-size="sm">Subtle</button>
+        <span class="fds-badge" data-variant="accent" data-tone="secondary">badge</span>
+        <a class="fds-link" data-tone="secondary" href="#">link</a>
+      </div>
+    </div>
+  </div>
+
+  {hues.map((hue) => (
+    <section>
+      <h2 style="font-family: var(--font-display); text-transform: capitalize;">{hue}</h2>
+      {sats.map((sat) => (
+        <div style="display:flex; align-items:center; gap: var(--space-3); margin-block-end: var(--space-2);">
+          <span class="fds-hint" style="inline-size: 64px; flex-shrink:0;">{sat}</span>
+          <div style="display:flex; flex:1; border-radius: var(--radius-3); overflow:hidden; border:1px solid var(--border-subtle);">
+            {ramps[hue][sat].light.map((hex, i) => (
+              <div title={`${hue}-${sat}-${i + 1} · ${hex}`} style={`background:${hex}; flex:1; block-size:44px;`}></div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </section>
+  ))}
+
+  <h2 style="font-family: var(--font-display);">Approved text pairings (computed)</h2>
+  <p style="color: var(--text-secondary);">
+    Semantic assignments are selected by walking ramp steps until the worst-case ratio across
+    <em>all 24 ramps</em> clears the threshold. These are the shipped selections:
+  </p>
+  <table style="border-collapse:collapse; inline-size:100%; font-size: var(--font-size-3);">
+    <thead>
+      <tr style="border-block-end:2px solid var(--border-strong); text-align:start;">
+        <th style="padding:var(--space-3); text-align:start;">Mode / Level</th>
+        <th style="padding:var(--space-3); text-align:start;">text-primary</th>
+        <th style="padding:var(--space-3); text-align:start;">text-secondary</th>
+        <th style="padding:var(--space-3); text-align:start;">text-tertiary</th>
+        <th style="padding:var(--space-3); text-align:start;">border-interactive</th>
+      </tr>
+    </thead>
+    <tbody>
+      {selRows.map(([label, s]: any) => (
+        <tr style="border-block-end:1px solid var(--border-subtle);">
+          <td style="padding:var(--space-3); font-weight:600;">{label}</td>
+          {['textPrimary', 'textSecondary', 'textTertiary', 'borderInteractive'].map((k) => (
+            <td style="padding:var(--space-3); font-family:var(--font-mono); font-size:var(--font-size-2);">
+              step {s[k].step} · {s[k].worstRatio ?? '—'}:1
+            </td>
+          ))}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+
+  <div class="fds-alert" data-variant="warning" style="margin-block-start: var(--space-5);">
+    <div>
+      <p class="fds-alert-title">Strict approval</p>
+      Any text/background pairing not present in <code>contrast.json</code> approval lists is
+      <strong>not approved</strong> for text or icons. Agents: query <code>flavor_get_contrast_pairs</code> before pairing.
+    </div>
+  </div>
+</DocsShell>

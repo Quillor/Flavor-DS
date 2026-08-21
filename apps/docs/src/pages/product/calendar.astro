@@ -1,0 +1,256 @@
+---
+import DocsShell from '../../layouts/DocsShell.astro';
+import TemplateFrame from '../../components/TemplateFrame.astro';
+import { productNav } from '../../product/productNav';
+
+const HOURS = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
+const DAYS = [
+  { key: 'mon', label: 'Mon', date: 2 }, { key: 'tue', label: 'Tue', date: 3 },
+  { key: 'wed', label: 'Wed', date: 4 }, { key: 'thu', label: 'Thu', date: 5 },
+  { key: 'fri', label: 'Fri', date: 6 },
+];
+/* start/span are in hour units from HOURS[0]; the grid maps them to rows, so an
+ * event's position is data, not a hand-placed offset. */
+const EVENTS = [
+  { day: 0, start: 0.5, span: 1,   title: 'Design review',    who: 'MK', tone: 'accent' },
+  { day: 0, start: 3,   span: 1.5, title: 'Token audit',      who: 'JO', tone: 'info' },
+  { day: 1, start: 1,   span: 2,   title: 'Contrast QA',      who: 'AL', tone: 'success' },
+  { day: 2, start: 0.5, span: 1,   title: 'Standup',          who: 'SB', tone: 'accent' },
+  { day: 2, start: 2.5, span: 2,   title: 'RTL workshop',     who: 'RD', tone: 'warning' },
+  { day: 3, start: 1.5, span: 1,   title: '1:1 with Maya',    who: 'MK', tone: 'info' },
+  { day: 3, start: 5,   span: 1.5, title: 'Release planning', who: 'JO', tone: 'accent' },
+  { day: 4, start: 2,   span: 1,   title: 'Retro',            who: 'AL', tone: 'success' },
+];
+const MINI = [
+  [26, 27, 28, 29, 30, 31, 1], [2, 3, 4, 5, 6, 7, 8], [9, 10, 11, 12, 13, 14, 15],
+  [16, 17, 18, 19, 20, 21, 22], [23, 24, 25, 26, 27, 28, 29],
+];
+const extraStrings = {
+  march:   { en: 'March 2026', es: 'Marzo 2026', zh: '2026年3月', de: 'März 2026', ar: 'مارس ٢٠٢٦' },
+  myCals:  { en: 'My calendars', es: 'Mis calendarios', zh: '我的日历', de: 'Meine Kalender', ar: 'تقويماتي' },
+  work:    { en: 'Work', es: 'Trabajo', zh: '工作', de: 'Arbeit', ar: 'العمل' },
+  personal:{ en: 'Personal', es: 'Personal', zh: '个人', de: 'Privat', ar: 'شخصي' },
+  focus:   { en: 'Focus time', es: 'Tiempo de enfoque', zh: '专注时间', de: 'Fokuszeit', ar: 'وقت التركيز' },
+};
+---
+<DocsShell title="Calendar" nav={productNav}>
+  <h1 style="font-family: var(--font-display); font-size: var(--font-size-9);">Calendar</h1>
+  <p style="color: var(--text-secondary); max-inline-size: 640px;">
+    Week grid with a mini month, calendar filters, all-day row, timed events and a current-time
+    indicator. Event chips use contrast-checked tint/ink pairs rather than raw colours, so every
+    label stays legible at AA and AAA across all sixteen hues.
+  </p>
+
+  <TemplateFrame title="calendar" extraStrings={extraStrings}>
+    <div class="fds-statusbar" aria-hidden="true"><span>9:41</span><span>●●●</span></div>
+    <div class="cal">
+      <aside class="cal-side" aria-label="Calendars">
+        <button class="fds-button cal-create" data-variant="primary" data-size="sm">
+          <svg class="fds-icon" data-icon data-variant="outline" aria-hidden="true"><use href="/icons/sprite.svg#hi-plus-outline"></use></svg>
+          <span data-i18n="createEvent">Create</span>
+        </button>
+
+        <div class="cal-mini">
+          <p class="cal-mini-title" data-i18n="march">March 2026</p>
+          <div class="cal-mini-grid">
+            {['M','T','W','T','F','S','S'].map((d) => <span class="cal-mini-dow" aria-hidden="true">{d}</span>)}
+            {MINI.flat().map((n, i) => (
+              <span class={`cal-mini-day${n === 4 ? ' cal-mini-today' : ''}${i < 6 ? ' cal-mini-out' : ''}`} data-numeric>{n}</span>
+            ))}
+          </div>
+        </div>
+
+        <p class="cal-side-group" data-i18n="myCals">My calendars</p>
+        <label class="fds-check cal-cal"><input type="checkbox" checked /><span class="cal-swatch cal-sw-accent" aria-hidden="true"></span><span data-i18n="work">Work</span></label>
+        <label class="fds-check cal-cal"><input type="checkbox" checked /><span class="cal-swatch cal-sw-success" aria-hidden="true"></span><span data-i18n="personal">Personal</span></label>
+        <label class="fds-check cal-cal"><input type="checkbox" /><span class="cal-swatch cal-sw-warning" aria-hidden="true"></span><span data-i18n="focus">Focus time</span></label>
+      </aside>
+
+      <main class="cal-main">
+        <header class="cal-head">
+          <div class="cal-nav">
+            <button class="fds-icon-button" aria-label="Previous week">
+              <svg class="fds-icon" data-icon data-variant="outline" data-directional aria-hidden="true"><use href="/icons/sprite.svg#hi-chevron-left-outline"></use></svg>
+            </button>
+            <button class="fds-icon-button" aria-label="Next week">
+              <svg class="fds-icon" data-icon data-variant="outline" data-directional aria-hidden="true"><use href="/icons/sprite.svg#hi-chevron-right-outline"></use></svg>
+            </button>
+            <h2 class="cal-month" data-i18n="march">March 2026</h2>
+          </div>
+          <div class="fds-segmented cal-views" role="group" aria-label="View">
+            <button class="fds-segment" data-i18n="day">Day</button>
+            <button class="fds-segment" aria-pressed="true" data-i18n="week">Week</button>
+            <button class="fds-segment" data-i18n="month">Month</button>
+          </div>
+        </header>
+
+        <div class="cal-grid-wrap">
+          <div class="cal-dayhead">
+            <span class="cal-gutter" aria-hidden="true"></span>
+            {DAYS.map((d, i) => (
+              <span class={`cal-dh${i === 2 ? ' cal-dh-today' : ''}`}>
+                <span class="cal-dh-name">{d.label}</span>
+                <span class="cal-dh-date" data-numeric>{d.date}</span>
+              </span>
+            ))}
+          </div>
+
+          <div class="cal-scroll">
+            <div class="cal-grid" style={`--hours:${HOURS.length}; --days:${DAYS.length};`}>
+              <div class="cal-gutter-col" aria-hidden="true">
+                {HOURS.map((h) => <span class="cal-hour" data-numeric>{h}:00</span>)}
+              </div>
+              <div class="cal-cols">
+                {DAYS.map((_, di) => (
+                  <div class={`cal-col${di === 2 ? ' cal-col-today' : ''}`}>
+                    {HOURS.map(() => <span class="cal-slot" aria-hidden="true"></span>)}
+                    {EVENTS.filter((e) => e.day === di).map((e) => (
+                      <article
+                        class={`cal-ev cal-ev-${e.tone}`}
+                        style={`--ev-start:${e.start}; --ev-span:${e.span};`}
+                      >
+                        <span class="cal-ev-title">{e.title}</span>
+                        <span class="cal-ev-time" data-numeric>{HOURS[0] + Math.floor(e.start)}:{e.start % 1 ? '30' : '00'}</span>
+                      </article>
+                    ))}
+                    {di === 2 && (
+                      <span class="cal-now" style="--now:2.4" aria-label="Current time"><i aria-hidden="true"></i></span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </TemplateFrame>
+
+  <style>
+    .cal { display: flex; block-size: 620px; background: var(--surface-page); }
+
+    /* On the Media background --surface-page is transparent by design, so the photo
+       shows through. An app shell is not a photo-facing surface: its text is dark ink
+       (the frame is a declared surface), so leaving it transparent puts dark type on a
+       photograph. Paint the shell opaque there — the photo still surrounds the device. */
+    :global([data-bg="media"]) .cal { background: var(--surface-1); }
+    .cal-side {
+      inline-size: 240px; flex-shrink: 0;
+      display: flex; flex-direction: column; gap: var(--space-2);
+      padding: var(--space-4);
+      background: var(--surface-1);
+      border-inline-end: 1px solid var(--border-subtle);
+      overflow-y: auto;
+    }
+    .cal-create { align-self: flex-start; }
+    .cal-create svg { inline-size: 16px; block-size: 16px; }
+    .cal-mini { margin-block: var(--space-4); }
+    .cal-mini-title { margin: 0 0 var(--space-2); font-weight: 600; font-size: var(--font-size-2); }
+    .cal-mini-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px; }
+    .cal-mini-dow { text-align: center; font-size: var(--font-size-1); color: var(--text-tertiary); padding-block-end: var(--space-1); }
+    .cal-mini-day {
+      display: flex; align-items: center; justify-content: center;
+      aspect-ratio: 1; font-size: var(--font-size-1);
+      font-variant-numeric: tabular-nums;
+      border-radius: var(--radius-round);
+    }
+    .cal-mini-out { color: var(--text-disabled); }
+    .cal-mini-today { background: var(--accent-bg); color: var(--accent-fg); font-weight: 700; }
+    .cal-side-group {
+      margin: var(--space-3) 0 var(--space-1);
+      font-size: var(--font-size-1); font-weight: 600; color: var(--text-tertiary);
+      text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .cal-cal { display: flex; align-items: center; gap: var(--space-2); font-size: var(--font-size-2); padding-block: var(--space-1); }
+    .cal-swatch { inline-size: 10px; block-size: 10px; border-radius: var(--radius-round); flex-shrink: 0; }
+    .cal-sw-accent { background: var(--accent-bg); }
+    .cal-sw-success { background: var(--success-solid); }
+    .cal-sw-warning { background: var(--warning-solid); }
+
+    .cal-main { flex: 1; display: flex; flex-direction: column; min-inline-size: 0; }
+    .cal-head {
+      display: flex; align-items: center; justify-content: space-between; gap: var(--space-4);
+      padding: var(--space-4) var(--space-5);
+      border-block-end: 1px solid var(--border-subtle);
+      flex-wrap: wrap;
+    }
+    .cal-nav { display: flex; align-items: center; gap: var(--space-2); }
+    .cal-nav svg { inline-size: 18px; block-size: 18px; }
+    .cal-month { font-family: var(--font-display); font-size: var(--font-size-6); margin: 0 0 0 var(--space-2); }
+
+    .cal-grid-wrap { flex: 1; display: flex; flex-direction: column; min-block-size: 0; }
+    .cal-dayhead {
+      display: flex; flex-shrink: 0;
+      border-block-end: 1px solid var(--border-subtle);
+      background: var(--surface-1);
+    }
+    .cal-gutter, .cal-gutter-col { inline-size: 56px; flex-shrink: 0; }
+    .cal-dh {
+      flex: 1; text-align: center; padding-block: var(--space-2);
+      display: flex; flex-direction: column; gap: 2px;
+    }
+    .cal-dh-name { font-size: var(--font-size-1); color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.05em; }
+    .cal-dh-date { font-size: var(--font-size-5); font-weight: 600; font-variant-numeric: tabular-nums; }
+    .cal-dh-today .cal-dh-name, .cal-dh-today .cal-dh-date { color: var(--text-accent); }
+
+    .cal-scroll { flex: 1; overflow-y: auto; }
+    .cal-grid { display: flex; }
+    .cal-gutter-col { display: flex; flex-direction: column; }
+    .cal-hour {
+      block-size: var(--space-9, 56px); flex-shrink: 0;
+      font-size: var(--font-size-1); color: var(--text-tertiary);
+      text-align: end; padding-inline-end: var(--space-2); padding-block-start: 2px;
+      font-variant-numeric: tabular-nums;
+    }
+    .cal-cols { flex: 1; display: flex; }
+    .cal-col { flex: 1; position: relative; border-inline-start: 1px solid var(--border-subtle); }
+    .cal-col-today { background: var(--surface-tint); }
+    .cal-slot { display: block; block-size: var(--space-9, 56px); border-block-end: 1px solid var(--border-subtle); }
+
+    /* Events are positioned from their data via the same hour unit the gutter uses. */
+    .cal-ev {
+      position: absolute;
+      inset-inline: 2px;
+      inset-block-start: calc(var(--ev-start) * var(--space-9, 56px));
+      block-size: calc(var(--ev-span) * var(--space-9, 56px) - 3px);
+      border-radius: var(--radius-nested-tight);
+      padding: var(--space-2);
+      display: flex; flex-direction: column; gap: 1px;
+      overflow: hidden;
+      font-size: var(--font-size-1); line-height: 1.25;
+      border-inline-start: 3px solid currentColor;
+    }
+    .cal-ev-title { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cal-ev-time { opacity: 0.85; font-variant-numeric: tabular-nums; }
+    /* Contrast-checked tint/ink pairs — the same ones the WCAG QA verifies. */
+    .cal-ev-accent  { background: var(--accent-subtle); color: var(--text-on-accent-subtle); }
+    .cal-ev-info    { background: var(--info-bg);    color: var(--info-text); }
+    .cal-ev-success { background: var(--success-bg); color: var(--success-text); }
+    .cal-ev-warning { background: var(--warning-bg); color: var(--warning-text); }
+
+    .cal-now {
+      position: absolute; inset-inline: 0;
+      inset-block-start: calc(var(--now) * var(--space-9, 56px));
+      border-block-start: 2px solid var(--danger-solid);
+      pointer-events: none;
+    }
+    .cal-now i {
+      position: absolute; inset-inline-start: -4px; inset-block-start: -5px;
+      inline-size: 8px; block-size: 8px;
+      border-radius: var(--radius-round);
+      background: var(--danger-solid);
+    }
+
+    @container (max-width: 767px) {
+      .cal-side { inline-size: 200px; }
+      .cal-mini { display: none; }
+    }
+    @container (max-width: 480px) {
+      .cal { block-size: 560px; }
+      .cal-side { display: none; }
+      .cal-views { display: none; }
+      .cal-gutter, .cal-gutter-col { inline-size: 40px; }
+      .cal-head { padding: var(--space-3) var(--space-4); }
+    }
+  </style>
+</DocsShell>

@@ -1,0 +1,33 @@
+---
+import DocsShell from '../../layouts/DocsShell.astro';
+import { COMPONENT_DOCS, COMPONENT_GROUPS, docsByGroup } from '../../core/componentDocs';
+import '../../styles/cdoc.css';
+---
+<DocsShell title="Components">
+  <h1 style="font-family: var(--font-display); font-size: var(--font-size-9);">Components</h1>
+  <p style="color: var(--text-secondary); max-inline-size: 660px;">
+    The complete Core UI library — {COMPONENT_DOCS.length} components. Every component is CSS-first (<code>fds-*</code> classes, any
+    framework), ships a React wrapper, references only semantic tokens, and responds to all theme
+    axes — hue, saturation, mode, tonal, contrast, density, type pairing, direction. Each component
+    has its own page with a live preview and Content, Design, Code, and Accessibility specs.
+  </p>
+  <nav class="fds-card" style="display:flex; flex-wrap:wrap; gap: var(--space-2) var(--space-4); margin-block-end: var(--space-7); font-size: var(--font-size-2);" aria-label="Component groups">
+    {COMPONENT_GROUPS.map((g) => (
+      <a class="fds-link" href={`#${g.toLowerCase().replace(/\s+/g, '-')}`}>{g} <span style="color: var(--text-tertiary);">({docsByGroup(g).length})</span></a>
+    ))}
+  </nav>
+
+  {COMPONENT_GROUPS.map((g) => (
+    <section aria-labelledby={g.toLowerCase().replace(/\s+/g, '-')}>
+      <h2 class="cdoc-group" id={g.toLowerCase().replace(/\s+/g, '-')}>{g}</h2>
+      <div class="cdoc-grid">
+        {docsByGroup(g).map((d) => (
+          <a class="fds-card cdoc-card" href={`/core/components/${d.id}/`}>
+            <p class="fds-card-title">{d.title}</p>
+            <p class="fds-card-description">{d.summary}</p>
+          </a>
+        ))}
+      </div>
+    </section>
+  ))}
+</DocsShell>

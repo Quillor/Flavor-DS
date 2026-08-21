@@ -1,0 +1,184 @@
+---
+import DocsShell from '../../layouts/DocsShell.astro';
+import TemplateFrame from '../../components/TemplateFrame.astro';
+import { productNav } from '../../product/productNav';
+const extraStrings = {
+  orderFlow:      { en: 'Order flow', es: 'Flujo de pedidos', zh: '订单流程', de: 'Bestellablauf', ar: 'سير الطلبات' },
+  properties:     { en: 'Properties', es: 'Propiedades', zh: '属性', de: 'Eigenschaften', ar: 'الخصائص' },
+  type:           { en: 'Type', es: 'Tipo', zh: '类型', de: 'Typ', ar: 'النوع' },
+  start:          { en: 'Start', es: 'Inicio', zh: '开始', de: 'Start', ar: 'البداية' },
+  process:        { en: 'Process', es: 'Proceso', zh: '流程', de: 'Prozess', ar: 'معالجة' },
+  decision:       { en: 'Decision', es: 'Decisión', zh: '判断', de: 'Entscheidung', ar: 'قرار' },
+  end:            { en: 'End', es: 'Fin', zh: '结束', de: 'Ende', ar: 'النهاية' },
+  yes:            { en: 'Yes', es: 'Sí', zh: '是', de: 'Ja', ar: 'نعم' },
+  no:             { en: 'No', es: 'No', zh: '否', de: 'Nein', ar: 'لا' },
+  newOrder:       { en: 'New order', es: 'Nuevo pedido', zh: '新订单', de: 'Neue Bestellung', ar: 'طلب جديد' },
+  validateOrder:  { en: 'Validate order', es: 'Validar pedido', zh: '验证订单', de: 'Bestellung prüfen', ar: 'التحقق من الطلب' },
+  inStock:        { en: 'In stock?', es: '¿En stock?', zh: '有库存？', de: 'Auf Lager?', ar: 'متوفر في المخزون؟' },
+  shipOrder:      { en: 'Ship order', es: 'Enviar pedido', zh: '发货', de: 'Bestellung versenden', ar: 'شحن الطلب' },
+  notifyCustomer: { en: 'Notify customer', es: 'Notificar al cliente', zh: '通知客户', de: 'Kunden benachrichtigen', ar: 'إشعار العميل' },
+  delivered:      { en: 'Delivered', es: 'Entregado', zh: '已送达', de: 'Zugestellt', ar: 'تم التسليم' },
+};
+---
+<DocsShell title="Canvas / flow builder" nav={productNav}>
+  <h1 style="font-family: var(--font-display); font-size: var(--font-size-9);">Canvas / flow builder</h1>
+  <p style="color: var(--text-secondary); max-inline-size: 640px;">
+    A node-graph editor: tool rail, pannable dotted canvas with typed flow nodes joined by SVG
+    edges, and a properties panel that stacks below the canvas on mobile.
+  </p>
+
+  <TemplateFrame title="canvas" extraStrings={extraStrings}>
+    <div class="fds-statusbar" aria-hidden="true"><span>9:41</span><span>●●●</span></div>
+    <div class="cv-shell">
+      <div class="cv-toolbar" role="toolbar" data-i18n-aria="orderFlow" aria-label="Order flow">
+        <button class="fds-button cv-tool" data-variant="primary" data-size="sm" data-i18n-aria="addNode" aria-label="Add node">
+          <svg class="fds-icon" data-icon data-variant="outline" width="2" aria-hidden="true"><use href="/icons/sprite.svg#hi-plus-outline"></use></svg>
+        </button>
+        <hr class="fds-separator cv-tool-sep" />
+        <button class="fds-button cv-tool" data-variant="ghost" data-size="sm" data-i18n-aria="undo" aria-label="Undo">
+          <svg class="fds-icon" data-icon data-variant="outline" data-directional width="2" aria-hidden="true"><use href="/icons/sprite.svg#hi-arrow-uturn-left-outline"></use></svg>
+        </button>
+        <button class="fds-button cv-tool" data-variant="ghost" data-size="sm" data-i18n-aria="redo" aria-label="Redo">
+          <svg class="fds-icon" data-icon data-variant="outline" data-directional width="2" aria-hidden="true"><use href="/icons/sprite.svg#hi-arrow-uturn-right-outline"></use></svg>
+        </button>
+        <hr class="fds-separator cv-tool-sep" />
+        <button class="fds-button cv-tool" data-variant="ghost" data-size="sm" data-i18n-aria="zoomIn" aria-label="Zoom in">
+          <svg class="fds-icon" data-icon data-variant="outline" width="2" aria-hidden="true"><use href="/icons/sprite.svg#hi-magnifying-glass-plus-outline"></use></svg>
+        </button>
+        <button class="fds-button cv-tool" data-variant="ghost" data-size="sm" data-i18n-aria="zoomOut" aria-label="Zoom out">
+          <svg class="fds-icon" data-icon data-variant="outline" width="2" aria-hidden="true"><use href="/icons/sprite.svg#hi-magnifying-glass-minus-outline"></use></svg>
+        </button>
+      </div>
+
+      <div class="cv-canvas fds-pattern-dots">
+        <div class="cv-scene">
+          <svg class="cv-edges" viewBox="0 0 720 430" width="720" height="430" aria-hidden="true">
+            <defs>
+              <marker id="cv-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 Z" fill="var(--border-strong)" />
+              </marker>
+              <marker id="cv-arrow-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 Z" fill="var(--accent-border)" />
+              </marker>
+            </defs>
+            <path d="M190,92 L252,92" fill="none" stroke="var(--accent-border)" stroke-width="2" marker-end="url(#cv-arrow-accent)" />
+            <path d="M410,92 L472,92" fill="none" stroke="var(--accent-border)" stroke-width="2" marker-end="url(#cv-arrow-accent)" />
+            <path d="M565,130 L565,222" fill="none" stroke="var(--accent-border)" stroke-width="2" marker-end="url(#cv-arrow-accent)" />
+            <path d="M480,100 C390,110 270,150 270,222" fill="none" stroke="var(--border-strong)" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#cv-arrow)" />
+            <path d="M565,294 L565,352" fill="none" stroke="var(--accent-border)" stroke-width="2" marker-end="url(#cv-arrow-accent)" />
+            <path d="M270,294 C270,350 380,390 472,391" fill="none" stroke="var(--border-strong)" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#cv-arrow)" />
+          </svg>
+
+          <span class="cv-edge-label" style="inset-inline-start: 578px; inset-block-start: 158px;"><span class="fds-badge" data-variant="success" data-i18n="yes">Yes</span></span>
+          <span class="cv-edge-label" style="inset-inline-start: 296px; inset-block-start: 128px;"><span class="fds-badge" data-variant="neutral" data-i18n="no">No</span></span>
+
+          <div class="fds-card cv-node" style="inset-inline-start: 40px; inset-block-start: 60px; inline-size: 150px;">
+            <span class="fds-badge" data-variant="accent" data-i18n="start">Start</span>
+            <span class="cv-node-title" data-i18n="newOrder">New order</span>
+          </div>
+          <div class="fds-card cv-node" style="inset-inline-start: 260px; inset-block-start: 60px; inline-size: 150px;">
+            <span class="fds-badge" data-variant="neutral" data-i18n="process">Process</span>
+            <span class="cv-node-title" data-i18n="validateOrder">Validate order</span>
+          </div>
+          <div class="fds-card cv-node cv-node-selected" style="inset-inline-start: 480px; inset-block-start: 50px; inline-size: 170px;">
+            <span class="fds-badge" data-variant="warning" data-i18n="decision">Decision</span>
+            <span class="cv-node-title" data-i18n="inStock">In stock?</span>
+          </div>
+          <div class="fds-card cv-node" style="inset-inline-start: 480px; inset-block-start: 230px; inline-size: 170px;">
+            <span class="fds-badge" data-variant="neutral" data-i18n="process">Process</span>
+            <span class="cv-node-title" data-i18n="shipOrder">Ship order</span>
+          </div>
+          <div class="fds-card cv-node" style="inset-inline-start: 180px; inset-block-start: 230px; inline-size: 180px;">
+            <span class="fds-badge" data-variant="neutral" data-i18n="process">Process</span>
+            <span class="cv-node-title" data-i18n="notifyCustomer">Notify customer</span>
+          </div>
+          <div class="fds-card cv-node" style="inset-inline-start: 480px; inset-block-start: 360px; inline-size: 150px;">
+            <span class="fds-badge" data-variant="success" data-i18n="end">End</span>
+            <span class="cv-node-title" data-i18n="delivered">Delivered</span>
+          </div>
+        </div>
+      </div>
+
+      <aside class="cv-panel">
+        <h2 class="cv-panel-title" data-i18n="properties">Properties</h2>
+        <div class="fds-field">
+          <label class="fds-label" for="cv-name" data-i18n="name">Name</label>
+          <input class="fds-input" id="cv-name" type="text" value="In stock?" />
+        </div>
+        <div class="fds-field">
+          <label class="fds-label" for="cv-type" data-i18n="type">Type</label>
+          <select class="fds-select" id="cv-type">
+            <option data-i18n="start">Start</option>
+            <option data-i18n="process">Process</option>
+            <option selected data-i18n="decision">Decision</option>
+            <option data-i18n="end">End</option>
+          </select>
+        </div>
+        <hr class="fds-separator" />
+        <div class="cv-panel-actions">
+          <button class="fds-button" data-variant="primary" data-size="sm" data-i18n="save">Save</button>
+          <button class="fds-button" data-variant="outline" data-size="sm" data-i18n="delete">Delete</button>
+        </div>
+      </aside>
+    </div>
+  </TemplateFrame>
+
+  <style>
+    .cv-shell { display: flex; min-block-size: 560px; align-items: stretch; }
+
+    .cv-toolbar {
+      display: flex; flex-direction: column; gap: var(--space-2); align-items: center;
+      padding: var(--space-3);
+      background: var(--surface-1);
+      border-inline-end: 1px solid var(--border-subtle);
+      flex-shrink: 0;
+    }
+    .cv-tool { inline-size: var(--control-height-sm); padding-inline: 0; }
+    .cv-tool svg { inline-size: 16px; block-size: 16px; }
+    .cv-tool-sep { inline-size: 100%; margin-block: var(--space-1); }
+
+    .cv-canvas { flex: 1; overflow: auto; background-color: var(--surface-page); }
+    .cv-scene { position: relative; inline-size: 720px; block-size: 430px; }
+    .cv-edges { position: absolute; inset-block-start: 0; inset-inline-start: 0; }
+    [dir="rtl"] .cv-edges { transform: scaleX(-1); }
+
+    .cv-node {
+      position: absolute;
+      display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-2);
+      padding: var(--space-3) var(--space-4);
+      min-block-size: 64px;
+      box-sizing: border-box;
+      cursor: grab;
+    }
+    .cv-node-title { font-weight: 600; font-size: var(--font-size-3); }
+    .cv-node-selected { border-color: var(--accent-border); outline: 2px solid var(--focus-ring); outline-offset: 1px; }
+    .cv-edge-label { position: absolute; }
+
+    .cv-panel {
+      inline-size: 260px; flex-shrink: 0;
+      display: flex; flex-direction: column; gap: var(--space-4);
+      padding: var(--space-5);
+      background: var(--surface-1);
+      border-inline-start: 1px solid var(--border-subtle);
+    }
+    .cv-panel-title { font-family: var(--font-display); font-size: var(--font-size-5); margin: 0; }
+    .cv-panel-actions { display: flex; gap: var(--space-2); }
+
+    @container (max-width: 767px) {
+      .cv-shell { flex-direction: column; min-block-size: auto; }
+      .cv-toolbar {
+        flex-direction: row; justify-content: flex-start;
+        border-inline-end: none; border-block-end: 1px solid var(--border-subtle);
+      }
+      .cv-tool-sep {
+        inline-size: 0; block-size: var(--control-height-sm); align-self: center; margin-block: 0;
+        border-block-start: none; border-inline-start: 1px solid var(--border-default);
+      }
+      .cv-canvas { max-block-size: 380px; }
+      .cv-panel {
+        inline-size: 100%;
+        border-inline-start: none; border-block-start: 1px solid var(--border-subtle);
+      }
+    }
+  </style>
+</DocsShell>

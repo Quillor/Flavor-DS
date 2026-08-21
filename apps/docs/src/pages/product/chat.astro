@@ -1,0 +1,222 @@
+---
+import DocsShell from '../../layouts/DocsShell.astro';
+import TemplateFrame from '../../components/TemplateFrame.astro';
+import { productNav } from '../../product/productNav';
+const extraStrings = {
+  typing: { en: 'typing…', es: 'escribiendo…', zh: '正在输入…', de: 'schreibt…', ar: 'يكتب…' },
+};
+---
+<DocsShell title="Chat" nav={productNav}>
+  <h1 style="font-family: var(--font-display); font-size: var(--font-size-9);">Chat</h1>
+  <p style="color: var(--text-secondary); max-inline-size: 640px;">
+    Messaging app with a conversation list, threaded bubbles, typing indicator, and composer.
+    Mobile shows the thread alone behind an app bar. Try iOS/Android and Arabic (RTL) with the frame controls.
+  </p>
+
+  <TemplateFrame title="chat" extraStrings={extraStrings}>
+    <div class="fds-statusbar" aria-hidden="true"><span>9:41</span><span>●●●</span></div>
+    <div class="ch-layout">
+      <aside class="ch-list" aria-label="Conversations">
+        <header class="ch-list-head">
+          <h2 class="ch-list-title" data-i18n="messages">Messages</h2>
+          <input class="fds-input" type="search" data-i18n-placeholder="search" placeholder="Search" />
+        </header>
+        <button class="ch-convo" data-hit aria-current="true">
+          <span class="ch-avatar-wrap"><span class="fds-avatar">MK</span><span class="ch-dot" aria-hidden="true"></span></span>
+          <span class="ch-convo-meta">
+            <strong>Maya Kim</strong>
+            <span class="ch-preview">Sounds great — sending the tokens now.</span>
+          </span>
+          <span class="ch-convo-side"><span class="ch-time">9:32</span><span class="fds-badge" data-variant="solid">2</span></span>
+        </button>
+        <button class="ch-convo" data-hit>
+          <span class="ch-avatar-wrap"><span class="fds-avatar">JO</span><span class="ch-dot" aria-hidden="true"></span></span>
+          <span class="ch-convo-meta">
+            <strong>Jonas Okafor</strong>
+            <span class="ch-preview">Can you review the dark mode PR?</span>
+          </span>
+          <span class="ch-convo-side"><span class="ch-time">8:47</span></span>
+        </button>
+        <button class="ch-convo" data-hit>
+          <span class="ch-avatar-wrap"><span class="fds-avatar">AL</span></span>
+          <span class="ch-convo-meta">
+            <strong>Ana López</strong>
+            <span class="ch-preview">The RTL flip works perfectly 🎉</span>
+          </span>
+          <span class="ch-convo-side"><span class="ch-time" data-i18n="yesterday">Yesterday</span></span>
+        </button>
+        <button class="ch-convo" data-hit>
+          <span class="ch-avatar-wrap"><span class="fds-avatar">SB</span></span>
+          <span class="ch-convo-meta">
+            <strong>Sam Berger</strong>
+            <span class="ch-preview">Let's sync tomorrow morning.</span>
+          </span>
+          <span class="ch-convo-side"><span class="ch-time" data-i18n="yesterday">Yesterday</span><span class="fds-badge" data-variant="solid">5</span></span>
+        </button>
+        <button class="ch-convo" data-hit>
+          <span class="ch-avatar-wrap"><span class="fds-avatar">RD</span></span>
+          <span class="ch-convo-meta">
+            <strong>Rina Das</strong>
+            <span class="ch-preview">Uploaded the new illustrations.</span>
+          </span>
+          <span class="ch-convo-side"><span class="ch-time">Mon</span></span>
+        </button>
+      </aside>
+
+      <main class="ch-thread">
+        <div class="fds-appbar ch-appbar">
+          <button class="ch-back" data-hit data-i18n-aria="back" aria-label="Back">
+            <svg class="fds-icon" data-icon data-variant="outline" data-directional width="2" aria-hidden="true"><use href="/icons/sprite.svg#hi-chevron-left-outline"></use></svg>
+          </button>
+          <span class="ch-avatar-wrap"><span class="fds-avatar" data-size="sm">MK</span><span class="ch-dot" aria-hidden="true"></span></span>
+          <span class="ch-appbar-meta">
+            <span class="ch-appbar-name">Maya Kim</span>
+            <span class="ch-appbar-status" data-i18n="online">Online</span>
+          </span>
+        </div>
+
+        <div class="ch-scroll">
+          <div class="ch-daysep"><span data-i18n="today">Today</span></div>
+
+          <div class="ch-row">
+            <span class="fds-avatar ch-msg-avatar">MK</span>
+            <div class="ch-bubble ch-in">Morning! Did the semantic token audit finish overnight?</div>
+          </div>
+          <div class="ch-row ch-row-out">
+            <div class="ch-bubble ch-out">It did — zero primitive references left in the app tier. The guard script is wired into CI now.</div>
+          </div>
+          <div class="ch-row ch-row-out">
+            <div class="ch-bubble ch-out">Want me to send you the updated token map?</div>
+          </div>
+          <div class="ch-row">
+            <span class="fds-avatar ch-msg-avatar">MK</span>
+            <div class="ch-bubble ch-in">Yes please. Also — the RTL mirroring worked on every template without a single override. Logical properties for the win.</div>
+          </div>
+          <div class="ch-row">
+            <span class="fds-avatar ch-msg-avatar">MK</span>
+            <div class="ch-bubble ch-in">Sounds great — sending the tokens now.</div>
+          </div>
+
+          <div class="ch-row">
+            <span class="fds-avatar ch-msg-avatar">MK</span>
+            <div class="ch-bubble ch-in ch-typing" aria-label="Maya Kim is typing" data-i18n-aria="typing">
+              <span class="ch-typing-dot"></span><span class="ch-typing-dot"></span><span class="ch-typing-dot"></span>
+            </div>
+          </div>
+        </div>
+
+        <footer class="ch-composer">
+          <input class="fds-input" type="text" data-i18n-placeholder="typeMessage" placeholder="Type a message…" />
+          <button class="fds-button ch-send" data-variant="primary" data-i18n-aria="send" aria-label="Send">
+            <svg class="fds-icon" data-icon data-variant="outline" data-directional width="2" aria-hidden="true"><use href="/icons/sprite.svg#hi-paper-airplane-outline"></use></svg>
+          </button>
+        </footer>
+      </main>
+    </div>
+  </TemplateFrame>
+
+  <style>
+    .ch-layout { display: flex; block-size: 600px; }
+    .ch-list {
+      inline-size: 300px; flex-shrink: 0;
+      display: flex; flex-direction: column;
+      border-inline-end: 1px solid var(--border-subtle);
+      background: var(--surface-1);
+      overflow-y: auto;
+    }
+    .ch-list-head { padding: var(--space-4); display: flex; flex-direction: column; gap: var(--space-3); }
+    .ch-list-title { font-family: var(--font-display); font-size: var(--font-size-6); margin: 0; }
+    .ch-convo {
+      display: flex; align-items: center; gap: var(--space-3);
+      padding: var(--space-3) var(--space-4);
+      background: none; border: none; cursor: pointer;
+      font: inherit; color: var(--text-primary); text-align: start;
+      transition: background-color var(--duration-2) var(--ease-standard);
+    }
+    .ch-convo:hover { background: var(--surface-tint); }
+    .ch-convo[aria-current="true"] { background: var(--accent-subtle); }
+    .ch-avatar-wrap { position: relative; flex-shrink: 0; display: inline-flex; }
+    .ch-dot {
+      position: absolute; inset-block-end: 0; inset-inline-end: 0;
+      inline-size: 10px; block-size: 10px;
+      border-radius: var(--radius-round);
+      background: var(--success-solid);
+      border: 2px solid var(--surface-1);
+    }
+    .ch-convo-meta { display: flex; flex-direction: column; flex: 1; min-inline-size: 0; }
+    .ch-preview {
+      color: var(--text-tertiary); font-size: var(--font-size-2);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .ch-convo-side { display: flex; flex-direction: column; align-items: flex-end; gap: var(--space-1); flex-shrink: 0; }
+    .ch-time { color: var(--text-tertiary); font-size: var(--font-size-1); }
+
+    .ch-thread { flex: 1; display: flex; flex-direction: column; min-inline-size: 0; background: var(--surface-page); }
+    /* On Media the page surface is transparent by design; an app shell is not a
+       photo-facing surface (its text is dark ink), so paint it opaque there. */
+    :global([data-bg="media"]) .ch-thread { background: var(--surface-1); }
+    .ch-appbar { flex-shrink: 0; }
+    .ch-back {
+      display: none; background: none; border: none; cursor: pointer;
+      color: var(--text-primary); padding: var(--space-1);
+    }
+    .ch-back svg { inline-size: 22px; block-size: 22px; display: block; }
+    .ch-appbar-meta { display: flex; flex-direction: column; line-height: 1.2; }
+    .ch-appbar-name { font-weight: 700; font-size: var(--font-size-4); }
+    .ch-appbar-status { font-family: var(--font-text); font-weight: 500; font-size: var(--font-size-1); color: var(--success-text); }
+
+    .ch-scroll { flex: 1; overflow-y: auto; padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-3); }
+    .ch-daysep {
+      display: flex; align-items: center; gap: var(--space-3);
+      color: var(--text-tertiary); font-size: var(--font-size-1); font-weight: 600;
+      margin-block-end: var(--space-2);
+    }
+    .ch-daysep::before, .ch-daysep::after { content: ''; flex: 1; border-block-start: 1px solid var(--border-subtle); }
+
+    .ch-row { display: flex; align-items: flex-end; gap: var(--space-2); }
+    .ch-row-out { justify-content: flex-end; }
+    .ch-msg-avatar { inline-size: var(--control-height-sm); block-size: var(--control-height-sm); font-size: var(--font-size-1); flex-shrink: 0; }
+    .ch-bubble {
+      max-inline-size: 70%;
+      padding: var(--space-3) var(--space-4);
+      font-size: var(--font-size-3); line-height: var(--line-height-3);
+      border-radius: var(--radius-container);
+    }
+    .ch-in { background: var(--surface-2); color: var(--text-primary); border-end-start-radius: min(var(--radius-container), 2px); }
+    .ch-out { background: var(--accent-bg); color: var(--accent-fg); border-end-end-radius: min(var(--radius-container), 2px); }
+
+    .ch-typing { display: inline-flex; gap: var(--space-1); align-items: center; }
+    .ch-typing-dot {
+      inline-size: 7px; block-size: 7px;
+      border-radius: var(--radius-round);
+      background: var(--text-tertiary);
+      animation: ch-bounce calc(var(--duration-4) * 3) var(--ease-standard) infinite;
+    }
+    .ch-typing-dot:nth-child(2) { animation-delay: var(--duration-2); }
+    .ch-typing-dot:nth-child(3) { animation-delay: calc(var(--duration-2) * 2); }
+    @keyframes ch-bounce {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+      30% { transform: translateY(-4px); opacity: 1; }
+    }
+
+    .ch-composer {
+      display: flex; gap: var(--space-3); align-items: center;
+      padding: var(--space-4);
+      border-block-start: 1px solid var(--border-subtle);
+      background: var(--surface-1);
+      flex-shrink: 0;
+    }
+    .ch-send { padding-inline: var(--space-4); }
+    .ch-send svg { inline-size: 20px; block-size: 20px; }
+    :global([dir="rtl"]) .ch-send svg, :global([dir="rtl"]) .ch-back svg { transform: scaleX(-1); }
+
+    @container (max-width: 767px) {
+      .ch-list { inline-size: 240px; }
+    }
+    @container (max-width: 480px) {
+      .ch-layout { block-size: 560px; }
+      .ch-list { display: none; }
+      .ch-back { display: inline-flex; }
+    }
+  </style>
+</DocsShell>

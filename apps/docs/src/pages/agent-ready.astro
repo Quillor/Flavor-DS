@@ -1,0 +1,208 @@
+---
+import DocsShell from '../layouts/DocsShell.astro';
+import { siteNav } from '../siteNav';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+/* Agent Ready — what an AI agent can read from Flavor DS, and how the memory layer decides what
+ * to hand it. Every number on this page comes from the built index, so it cannot drift from the
+ * artefacts it describes. The live demo at the bottom runs the same recall.mjs the MCP server runs. */
+const index = JSON.parse(readFileSync(join(process.cwd(), 'public/agent/index.json'), 'utf8'));
+const byKind = index.chunks.reduce((m: Record<string, number>, c: any) => ((m[c.kind] = (m[c.kind] || 0) + 1), m), {});
+const byPriority = index.chunks.reduce((m: Record<string, number>, c: any) => ((m[c.priority] = (m[c.priority] || 0) + 1), m), {});
+const rules = index.chunks.find((c: any) => c.id === 'rules').text as string;
+const ruleLines = rules.split('\n').filter((l) => /^\d+\. /.test(l)).map((l) => l.replace(/^\d+\.\s*/, '').replace(/\*\*(.+?)\*\*/, '$1').split(' (')[0]);
+
+const SURFACES = [
+  ['MCP tools', '13 tools over Streamable HTTP (`https://flavor-ds.vercel.app/api/mcp`) or stdio — memory, contract, tokens, contrast pairs, components, icons, native, Figma, Canvas feedback.', '/mcp/'],
+  ['`/agent/index.json`', `The memory index: ${index.count} chunks, each with id · kind · priority · tags · summary · source path · text. What flavor_recall ranks.`, '/agent/index.json'],
+  ['`/agent/rules.md`', 'The twelve global rules, each tied to the guard that enforces it. Priority 0 — always returned, never ranked.', '/agent/rules.md'],
+  ['`/llms.txt` · `/llms-full.txt`', 'The llms.txt convention: a short orientation for crawlers and a full dump of every chunk for agents without MCP.', '/llms.txt'],
+  ['DTCG tokens', '`tokens.json` in the W3C Design Tokens format, plus `flavor.css`, `contrast.json` (17,280 computed pairings, +0.05 margin) and `meta.json` (axes + defaults).', '/mcp/'],
+  ['Native exports', '`FlavorTokens.swift` (typechecked against the SwiftUI SDK) and `.kt`, generated from the same source. `platform.css` maps HIG / M3 chrome.', '/native/'],
+  ['Behaviour contracts', '`behaviors.js`: keyboard/focus contracts as `data-fds-*` attributes — 40 asserted key sequences, shared by HTML and React.', '/core/components/menu/'],
+  ['Guards', 'Every rule has a check in `npm test`; an agent verifies rather than assumes. `flavor_canvas_feedback` closes the loop with human review.', '/canvas-demo/'],
+];
+const STEPS = [
+  { n: '1', title: 'Build', body: 'scripts/build-agent-index.mjs runs inside npm run build:tokens. It reads the same sources the site and the MCP read — meta.json, figma.json, TOKENS.md, GOVERNANCE.md, componentDocs.ts, productNav.ts, behaviors.js, the native spec — and emits the index. There is no hand-maintained copy: if a component is added to the docs, it is in the index on the next build; if it is removed, it is gone.' },
+  { n: '2', title: 'Chunk + tag', body: `Each unit of knowledge becomes one chunk with a stable id (component-button, tokens-space, template-projects…), a kind (${Object.keys(byKind).join(', ')}), a one-line summary, and tags: the words in its title/summary plus a small curated alias list — the words people type that a doc summary doesn't contain ("modal" for dialog, "kanban, gantt, asana" for the project template).` },
+  { n: '3', title: 'Prioritise', body: 'Every chunk carries a priority. 0 = the global rules — always returned. 1 = the contract nothing works without (theme axes, setup, token tiers, guards, MCP call order). 2 = tokens and components — returned when the task matches. 3 = worked examples and process (templates, governance, canvas). Priority damps the score (÷ 1 + p × 0.25) so a specific match in a reference chunk still surfaces, but on a tie the contract wins.' },
+  { n: '4', title: 'Recall', body: 'flavor_recall({task}) — same code as the demo below (packages/mcp/src/recall.mjs). The task is split into terms, lightly stemmed, and expanded through a synonym map at 0.4 weight so an expansion never outranks the literal word. score = Σ tag hit ×3 + title ×2 + summary ×1 + text ×0.5, then damped by priority. Tasks that look like they build UI ("build", "screen", "form", "page"…) always also get axes + setup.' },
+  { n: '5', title: 'Budget', body: 'The payload has a token budget (default ≈6k, 4 chars/token). Rules always fit. Ranked chunks are added in score order until the budget is spent. Every chunk that was ranked but not loaded is listed under omitted with its id and one-line summary — the agent sees what it is missing and fetches it explicitly with {ids}. Nothing is silently dropped.' },
+  { n: '6', title: 'Apply, then verify', body: 'The agent builds against the returned chunks — semantic tokens only, the contract\'s nine attributes, the component\'s markup — then runs npm test. The guards falsify the work: lint:tokens, wcag-qa, check-templates, check-polish, test-behaviors, adoption. For reviewed work, flavor_canvas_feedback returns the human review as selector-scoped, token-named tweaks. Recall itself is tested: scripts/test-recall.mjs asserts rules-always, ranking on representative tasks, the budget, and determinism.' },
+];
+const EXAMPLES = ['build a login form with email and password', 'add dark mode to a settings screen', 'kanban board like asana', 'port the button to swiftui', 'which icons are available', 'deprecate a token', 'toast notifications with a11y', 'spacing and padding scale'];
+---
+<DocsShell title="Agent Ready" nav={siteNav}>
+  <span class="fds-badge" data-variant="accent">Agent Ready</span>
+  <h1 style="font-family: var(--font-display); font-size: var(--font-size-9); margin-block: var(--space-2) var(--space-3);">Built to be read by machines</h1>
+  <p style="color: var(--text-secondary); max-inline-size: 680px; font-size: var(--font-size-4);">
+    Flavor DS is delivered to agents, not just to people. Every fact on the site has a machine-readable twin,
+    and a memory layer decides what an agent needs for the task in front of it — while the global rules stay in
+    force no matter what the task is.
+  </p>
+  <div style="display:flex; gap: var(--space-3); flex-wrap: wrap; margin-block: var(--space-5) var(--space-8);">
+    <a class="fds-button" data-variant="primary" href="#recall">Try recall live</a>
+    <a class="fds-button" data-variant="outline" href="/agent/index.json">index.json</a>
+    <a class="fds-button" data-variant="outline" href="/agent/rules.md">rules.md</a>
+    <a class="fds-button" data-variant="outline" href="/llms.txt">llms.txt</a>
+  </div>
+
+  <section class="ar-stats" aria-label="Index at a glance">
+    <div class="fds-stat"><span class="fds-stat-label">Chunks</span><span class="fds-stat-value" data-numeric>{index.count}</span><span class="fds-stat-delta">v{index.version}</span></div>
+    <div class="fds-stat"><span class="fds-stat-label">Components</span><span class="fds-stat-value" data-numeric>{byKind.component}</span><span class="fds-stat-delta">priority 2</span></div>
+    <div class="fds-stat"><span class="fds-stat-label">Templates</span><span class="fds-stat-value" data-numeric>{byKind.template}</span><span class="fds-stat-delta">priority 3</span></div>
+    <div class="fds-stat"><span class="fds-stat-label">Global rules</span><span class="fds-stat-value" data-numeric>{ruleLines.length}</span><span class="fds-stat-delta">priority 0 · always</span></div>
+    <div class="fds-stat"><span class="fds-stat-label">MCP tools</span><span class="fds-stat-value" data-numeric>13</span><span class="fds-stat-delta">2 for memory</span></div>
+  </section>
+
+  <h2 style="font-family: var(--font-display); margin-block-start: var(--space-9);">What is machine-readable</h2>
+  <p style="color: var(--text-secondary); max-inline-size: 680px;">Everything below is generated from one source at build time and served as a static file or an MCP tool. Nothing is a hand-written summary that can drift.</p>
+  <ul class="ar-surfaces">
+    {SURFACES.map(([name, body, href]) => (
+      <li class="fds-card">
+        <a class="fds-link ar-surface-name" href={href} set:html={name.replace(/`([^`]+)`/g, '<code>$1</code>')} />
+        <p class="fds-card-description" set:html={body.replace(/`([^`]+)`/g, '<code>$1</code>')} />
+      </li>
+    ))}
+  </ul>
+
+  <h2 style="font-family: var(--font-display); margin-block-start: var(--space-9);">The global rules</h2>
+  <p style="color: var(--text-secondary); max-inline-size: 680px;">Priority 0. Returned first on every recall — empty task, id fetch, 500-token budget — and each one names the guard that enforces it. An agent cannot get a task-specific answer without them.</p>
+  <ol class="ar-rules">
+    {ruleLines.map((r) => <li>{r}</li>)}
+  </ol>
+  <p style="font-size: var(--font-size-2); color: var(--text-tertiary);">Full text with guard references: <a class="fds-link" href="/agent/rules.md">/agent/rules.md</a>. Source: <code>scripts/build-agent-index.mjs</code>.</p>
+
+  <h2 style="font-family: var(--font-display); margin-block-start: var(--space-9);">How indexing and retrieval work</h2>
+  <p style="color: var(--text-secondary); max-inline-size: 680px;">Six steps, deterministic end to end. No embeddings, no model in the loop — the same task always produces the same recall, so the ranking is testable and the test runs in CI.</p>
+  <ol class="ar-steps">
+    {STEPS.map((s) => (
+      <li class="fds-card ar-step">
+        <span class="ar-n" data-numeric>{s.n}</span>
+        <div>
+          <h3 class="fds-card-title" style="font-size: var(--font-size-5);">{s.title}</h3>
+          <p class="fds-card-description">{s.body}</p>
+        </div>
+      </li>
+    ))}
+  </ol>
+
+  <div class="fds-card ar-priorities">
+    <h3 class="fds-card-title">Priority legend</h3>
+    <table>
+      <thead><tr><th>Priority</th><th>What</th><th>Chunks</th><th>Returned</th></tr></thead>
+      <tbody>
+        {Object.entries(index.priorities).map(([p, desc]) => (
+          <tr><td data-numeric>{p}</td><td>{String(desc).split(' — ')[0]}</td><td data-numeric>{byPriority[p] || 0}</td><td>{String(desc).split(' — ')[1] || 'on match'}</td></tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+  <h2 style="font-family: var(--font-display); margin-block-start: var(--space-9);">The agent's call order</h2>
+  <pre class="fds-card ar-code"><code>{`1. flavor_recall({ task })          → rules (always) + contract (if building UI) + ranked chunks, budgeted
+2. flavor_recall({ ids: [...] })    → anything listed under "omitted" that you actually need
+3. flavor_get_component(id) · flavor_find_icon(q) · flavor_get_theme(axes) · flavor_get_contrast_pairs(hue)
+4. build — semantic tokens only, nine <html> attributes, component markup as documented
+5. npm test                         → the guards falsify the work
+6. flavor_canvas_feedback           → apply the human review, by selector and token`}</code></pre>
+  <p style="color: var(--text-secondary); max-inline-size: 680px;">Root <code>CLAUDE.md</code> / <code>AGENTS.md</code> in the repo say the same thing in two lines, so an agent that opens the folder without MCP still lands on rules.md and the index.</p>
+
+  <h2 id="recall" style="font-family: var(--font-display); margin-block-start: var(--space-9);">Recall, live</h2>
+  <p style="color: var(--text-secondary); max-inline-size: 680px;">This runs <code>packages/mcp/src/recall.mjs</code> in your browser against <code>/agent/index.json</code> — the same function and the same file the MCP server uses. Type a task; watch what is always there, what ranks, and what gets listed as omitted under the budget.</p>
+  <div class="fds-card ar-demo">
+    <div class="ar-demo-controls">
+      <label class="fds-field" style="flex:1; min-inline-size: 240px;">
+        <span class="fds-label">Task</span>
+        <input class="fds-input ar-task" type="text" value="build a login form with email and password" autocomplete="off" spellcheck="false" />
+      </label>
+      <label class="fds-field" style="inline-size: 120px;">
+        <span class="fds-label">Budget</span>
+        <input class="fds-input ar-budget" type="number" min="500" max="40000" step="500" value="3000" />
+      </label>
+      <label class="fds-field" style="inline-size: 90px;">
+        <span class="fds-label">Limit</span>
+        <input class="fds-input ar-limit" type="number" min="1" max="40" value="8" />
+      </label>
+    </div>
+    <div class="ar-examples">
+      {EXAMPLES.map((e) => <button type="button" class="fds-chip ar-example" data-task={e}>{e}</button>)}
+    </div>
+    <div class="ar-result">
+      <div class="ar-col">
+        <h4>Always <span class="fds-badge" data-variant="neutral">priority 0–1</span></h4>
+        <ol class="ar-always"></ol>
+      </div>
+      <div class="ar-col">
+        <h4>Ranked for the task <span class="fds-badge ar-used" data-variant="neutral"></span></h4>
+        <ol class="ar-matches"></ol>
+      </div>
+      <div class="ar-col">
+        <h4>Omitted (fetch by id)</h4>
+        <ol class="ar-omitted"></ol>
+      </div>
+    </div>
+    <details class="ar-raw">
+      <summary>What the agent actually receives (markdown)</summary>
+      <pre><code class="ar-md"></code></pre>
+    </details>
+  </div>
+
+  <style>
+    .ar-stats .fds-stat { padding: var(--space-4); border: 1px solid var(--border-subtle); border-radius: var(--radius-container); background: var(--surface-1); }
+    .ar-stats .fds-stat-delta { color: var(--text-tertiary); font-weight: 500; }
+    .ar-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--space-3); }
+    .ar-surfaces { list-style: none; padding: 0; margin: var(--space-5) 0 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--space-4); }
+    .ar-surfaces .fds-card { padding: var(--space-5); }
+    .ar-surface-name { font-weight: 600; display: block; margin-block-end: var(--space-2); }
+    .ar-surface-name code { font-size: 0.9em; }
+    .ar-rules { columns: 2; column-gap: var(--space-8); padding-inline-start: var(--space-5); margin-block: var(--space-4); }
+    .ar-rules li { break-inside: avoid; margin-block-end: var(--space-2); color: var(--text-secondary); }
+    .ar-rules li::marker { color: var(--text-accent); font-weight: 600; }
+    @media (max-width: 720px) { .ar-rules { columns: 1; } }
+    .ar-steps { list-style: none; padding: 0; margin: var(--space-5) 0 0; display: grid; gap: var(--space-4); }
+    .ar-step { display: grid; grid-template-columns: auto 1fr; gap: var(--space-5); padding: var(--space-6); }
+    .ar-n { font-family: var(--font-display); font-size: var(--font-size-8); line-height: 1; color: var(--text-accent); min-inline-size: 1.2em; }
+    .ar-priorities { margin-block-start: var(--space-4); padding: var(--space-5); overflow-x: auto; }
+    .ar-priorities table { border-collapse: collapse; inline-size: 100%; font-size: var(--font-size-3); margin-block-start: var(--space-3); }
+    .ar-priorities th, .ar-priorities td { text-align: start; padding: var(--space-2) var(--space-3); border-block-end: 1px solid var(--border-subtle); }
+    .ar-priorities th { color: var(--text-tertiary); font-weight: 500; }
+    .ar-code { overflow-x: auto; font-family: var(--font-mono); font-size: var(--font-size-2); padding: var(--space-4); line-height: 1.6; }
+    .ar-demo { padding: var(--space-5); margin-block-start: var(--space-4); }
+    .ar-demo-controls { display: flex; gap: var(--space-4); flex-wrap: wrap; }
+    .ar-examples { display: flex; gap: var(--space-2); flex-wrap: wrap; margin-block: var(--space-4); }
+    .ar-result { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--space-5); }
+    .ar-col h4 { font-size: var(--font-size-2); text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-tertiary); display: flex; align-items: center; gap: var(--space-2); margin: 0 0 var(--space-3); }
+    .ar-col ol { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--space-2); }
+    .ar-col li { border: 1px solid var(--border-subtle); border-radius: var(--radius-container); padding: var(--space-3); font-size: var(--font-size-2); background: var(--surface-1); }
+    .ar-col li b { display: block; color: var(--text-primary); font-weight: 600; }
+    .ar-col li code { display: block; color: var(--text-accent); font-size: var(--font-size-1); font-weight: 400; margin-block: 2px var(--space-1); }
+    .ar-col li span { color: var(--text-tertiary); display: block; }
+    .ar-col li[data-dim] { opacity: 0.7; border-style: dashed; }
+    .ar-raw { margin-block-start: var(--space-5); }
+    .ar-raw summary { cursor: pointer; color: var(--text-secondary); font-size: var(--font-size-2); }
+    .ar-raw pre { overflow: auto; max-block-size: 420px; font-family: var(--font-mono); font-size: var(--font-size-1); background: var(--surface-1); padding: var(--space-4); border-radius: var(--radius-container); margin-block-start: var(--space-3); white-space: pre-wrap; }
+  </style>
+
+  <script>
+    import { recall, render } from '../../../../packages/mcp/src/recall.mjs';
+    const $ = (s: string) => document.querySelector(s) as HTMLElement;
+    const task = $('.ar-task') as HTMLInputElement, budget = $('.ar-budget') as HTMLInputElement, limit = $('.ar-limit') as HTMLInputElement;
+    const always = $('.ar-always'), matches = $('.ar-matches'), omitted = $('.ar-omitted'), used = $('.ar-used'), md = $('.ar-md');
+    let index: any = null;
+    const esc = (s: string) => String(s ?? '').replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' } as any)[c]);
+    const item = (c: any, extra = '') => `<li ${extra}><b>${esc(c.title)} <code>${esc(c.id)}</code></b><span>${esc(c.summary || '')}${c.score != null ? ` · score ${c.score}` : ''}${c.priority != null ? ` · p${c.priority}` : ''}</span></li>`;
+    const run = () => {
+      if (!index) return;
+      const r = recall(index, { task: task.value, budget: Number(budget.value) || 3000, limit: Number(limit.value) || 8 });
+      always.innerHTML = item({ id: 'rules', title: r.rules.title, summary: 'Twelve global rules — always first', priority: 0 }) + r.always.map((c: any) => item(c)).join('');
+      matches.innerHTML = r.matches.length ? r.matches.map((c: any) => item(c)).join('') : '<li data-dim><span>No chunk matched — the rules still apply.</span></li>';
+      omitted.innerHTML = r.omitted.length ? r.omitted.map((o: any) => item({ id: o.id, title: o.title || o.id, summary: o.why }, 'data-dim')).join('') : '<li data-dim><span>Nothing omitted — everything that matched fit the budget.</span></li>';
+      used.textContent = `~${r.used} / ${r.budget} tokens`;
+      md.textContent = render(r);
+    };
+    fetch('/agent/index.json').then((r) => r.json()).then((j) => { index = j; run(); });
+    for (const el of [task, budget, limit]) el.addEventListener('input', run);
+    document.querySelectorAll<HTMLButtonElement>('.ar-example').forEach((b) => b.addEventListener('click', () => { task.value = b.dataset.task!; run(); task.focus(); }));
+  </script>
+</DocsShell>

@@ -1,0 +1,259 @@
+---
+import DocsShell from '../../layouts/DocsShell.astro';
+import TemplateFrame from '../../components/TemplateFrame.astro';
+import { productNav } from '../../product/productNav';
+
+const illos = import.meta.glob('../../assets/illustrations/*.svg', { query: '?raw', import: 'default', eager: true });
+const illo = (name: string) => illos[`../../assets/illustrations/${name}.svg`] as string;
+
+const extraStrings = {
+  heroTitle:   { en: 'Ship product, not pixels.', es: 'Lanza productos, no píxeles.', zh: '交付产品，而非像素。', de: 'Produkte liefern, nicht Pixel.', ar: 'أطلق المنتجات، لا البكسلات.' },
+  heroSub:     { en: 'One design system that themes itself across web, iOS, and Android — so your team builds features instead of rebuilding buttons.', es: 'Un sistema de diseño que se adapta a web, iOS y Android, para que tu equipo cree funciones en lugar de reconstruir botones.', zh: '一套设计系统，自动适配 Web、iOS 和 Android——让团队专注于功能，而不是重造按钮。', de: 'Ein Designsystem, das sich selbst über Web, iOS und Android hinweg anpasst — damit Ihr Team Features baut statt Buttons.', ar: 'نظام تصميم واحد يتكيّف تلقائياً عبر الويب وiOS وأندرويد — ليبني فريقك الميزات بدلاً من إعادة بناء الأزرار.' },
+  trustedBy:   { en: 'Trusted by teams at', es: 'Con la confianza de equipos de', zh: '深受以下团队信赖', de: 'Im Einsatz bei Teams von', ar: 'موثوق من فرق في' },
+  feat1Title:  { en: 'Fast onboarding', es: 'Incorporación rápida', zh: '快速上手', de: 'Schnelles Onboarding', ar: 'انطلاقة سريعة' },
+  feat1Desc:   { en: 'Drop in tokens and components; your first themed screen ships in an afternoon.', es: 'Integra tokens y componentes; tu primera pantalla temática está lista en una tarde.', zh: '接入令牌与组件，一个下午就能交付第一个主题化界面。', de: 'Tokens und Komponenten einbinden — der erste Screen steht an einem Nachmittag.', ar: 'أضف الرموز والمكوّنات؛ وستجهز أول شاشة بطابعك في ظهيرة واحدة.' },
+  feat2Title:  { en: 'Focus on your brand', es: 'Céntrate en tu marca', zh: '专注你的品牌', de: 'Fokus auf Ihre Marke', ar: 'ركّز على علامتك' },
+  feat2Desc:   { en: 'Semantic tokens keep every surface on brand across hue, density, and dark mode.', es: 'Los tokens semánticos mantienen cada superficie fiel a la marca en tono, densidad y modo oscuro.', zh: '语义令牌让每个界面在色相、密度与深色模式下都保持品牌一致。', de: 'Semantische Tokens halten jede Oberfläche markentreu — über Farbton, Dichte und Dunkelmodus.', ar: 'تحافظ الرموز الدلالية على هوية علامتك عبر الألوان والكثافة والوضع الداكن.' },
+  feat3Title:  { en: 'Measurable progress', es: 'Progreso medible', zh: '可衡量的进展', de: 'Messbarer Fortschritt', ar: 'تقدّم قابل للقياس' },
+  feat3Desc:   { en: 'Adoption dashboards show token coverage climbing with every release.', es: 'Los paneles de adopción muestran cómo crece la cobertura de tokens con cada versión.', zh: '采用度仪表盘展示每次发布后令牌覆盖率的提升。', de: 'Adoption-Dashboards zeigen, wie die Token-Abdeckung mit jedem Release steigt.', ar: 'تعرض لوحات التبنّي ارتفاع تغطية الرموز مع كل إصدار.' },
+  statComponents: { en: 'Components', es: 'Componentes', zh: '组件', de: 'Komponenten', ar: 'مكوّن' },
+  statPlatforms:  { en: 'Platforms', es: 'Plataformas', zh: '平台', de: 'Plattformen', ar: 'منصات' },
+  statUptime:     { en: 'Token coverage', es: 'Cobertura de tokens', zh: '令牌覆盖率', de: 'Token-Abdeckung', ar: 'تغطية الرموز' },
+  perMonth:    { en: '/month', es: '/mes', zh: '/月', de: '/Monat', ar: '/شهرياً' },
+  tierStarterDesc: { en: 'For side projects and early prototypes.', es: 'Para proyectos personales y prototipos.', zh: '适合个人项目与早期原型。', de: 'Für Nebenprojekte und frühe Prototypen.', ar: 'للمشاريع الجانبية والنماذج الأولية.' },
+  tierProDesc:     { en: 'For product teams shipping every week.', es: 'Para equipos de producto que lanzan cada semana.', zh: '适合每周发布的产品团队。', de: 'Für Produktteams mit wöchentlichen Releases.', ar: 'لفرق المنتجات التي تُطلق أسبوعياً.' },
+  tierEnterpriseDesc: { en: 'For organizations with many brands.', es: 'Para organizaciones con varias marcas.', zh: '适合拥有多个品牌的企业。', de: 'Für Organisationen mit vielen Marken.', ar: 'للمؤسسات متعددة العلامات التجارية.' },
+  contactSales: { en: 'Contact sales', es: 'Contactar con ventas', zh: '联系销售', de: 'Vertrieb kontaktieren', ar: 'تواصل مع المبيعات' },
+  testimonial: { en: '“We rethemed three products in a week. Our designers stopped filing color bugs entirely.”', es: '«Retematizamos tres productos en una semana. Nuestros diseñadores dejaron de reportar errores de color por completo.»', zh: '“我们一周内为三款产品换了主题。设计师再也不用提交颜色相关的问题了。”', de: '„Wir haben drei Produkte in einer Woche umgestylt. Unsere Designer melden schlicht keine Farb-Bugs mehr.“', ar: '«أعدنا تصميم ثلاثة منتجات في أسبوع واحد. توقف مصممونا تماماً عن الإبلاغ عن أخطاء الألوان.»' },
+  testimonialName: { en: 'Maya Lindholm', es: 'Maya Lindholm', zh: 'Maya Lindholm', de: 'Maya Lindholm', ar: 'مايا ليندهولم' },
+  testimonialRole: { en: 'Head of Design, Northwind', es: 'Directora de Diseño, Northwind', zh: 'Northwind 设计负责人', de: 'Design-Leiterin, Northwind', ar: 'رئيسة التصميم، نورث ويند' },
+  footProduct: { en: 'Product', es: 'Producto', zh: '产品', de: 'Produkt', ar: 'المنتج' },
+  footCompany: { en: 'Company', es: 'Empresa', zh: '公司', de: 'Unternehmen', ar: 'الشركة' },
+  footResources: { en: 'Resources', es: 'Recursos', zh: '资源', de: 'Ressourcen', ar: 'الموارد' },
+  footDocs:    { en: 'Documentation', es: 'Documentación', zh: '文档', de: 'Dokumentation', ar: 'التوثيق' },
+  footBlog:    { en: 'Blog', es: 'Blog', zh: '博客', de: 'Blog', ar: 'المدونة' },
+  footCareers: { en: 'Careers', es: 'Empleo', zh: '招聘', de: 'Karriere', ar: 'الوظائف' },
+  footChangelog: { en: 'Changelog', es: 'Novedades', zh: '更新日志', de: 'Änderungsprotokoll', ar: 'سجل التغييرات' },
+  copyright:   { en: '© 2026 Flavor. All rights reserved.', es: '© 2026 Flavor. Todos los derechos reservados.', zh: '© 2026 Flavor。保留所有权利。', de: '© 2026 Flavor. Alle Rechte vorbehalten.', ar: '© 2026 فلافور. جميع الحقوق محفوظة.' },
+};
+const features = [
+  { illo: 'onboarding', title: 'Fast onboarding',       tKey: 'feat1Title', dKey: 'feat1Desc', desc: 'Drop in tokens and components; your first themed screen ships in an afternoon.' },
+  { illo: 'focus',      title: 'Focus on your brand',   tKey: 'feat2Title', dKey: 'feat2Desc', desc: 'Semantic tokens keep every surface on brand across hue, density, and dark mode.' },
+  { illo: 'progress',   title: 'Measurable progress',   tKey: 'feat3Title', dKey: 'feat3Desc', desc: 'Adoption dashboards show token coverage climbing with every release.' },
+];
+const logos = ['Northwind', 'Acme Corp', 'Globex', 'Initech', 'Umbra Labs'];
+---
+<DocsShell title="Landing page" nav={productNav}>
+  <h1 style="font-family: var(--font-display); font-size: var(--font-size-9);">Landing page</h1>
+  <p style="color: var(--text-secondary); max-inline-size: 640px;">
+    Marketing page with hero, logo cloud, illustrated feature cards, stats band, three-tier
+    pricing, testimonial, and footer — fully responsive and translated.
+  </p>
+
+  <TemplateFrame title="landing" extraStrings={extraStrings}>
+    <div class="fds-statusbar" aria-hidden="true"><span>9:41</span><span>●●●</span></div>
+
+    <header class="fds-navbar ld-nav">
+      <a href="#" class="fds-navbar-brand" data-hit>
+        <img src="/brand/logo-square-color.svg" alt="" width="28" height="28" />
+        <span data-i18n="appName">Flavor</span>
+      </a>
+      <nav class="fds-navbar-links ld-nav-links" aria-label="Main">
+        <a href="#" class="fds-nav-link" data-i18n="features">Features</a>
+        <a href="#" class="fds-nav-link" data-i18n="pricing">Pricing</a>
+        <a href="#" class="fds-nav-link" data-i18n="about">About</a>
+        <button class="fds-button" data-variant="primary" data-i18n="getStarted">Get started</button>
+      </nav>
+    </header>
+
+    <section class="ld-hero">
+      <div class="ld-hero-copy">
+        <h1 data-i18n="heroTitle">Ship product, not pixels.</h1>
+        <p data-i18n="heroSub">One design system that themes itself across web, iOS, and Android — so your team builds features instead of rebuilding buttons.</p>
+        <div class="ld-hero-ctas">
+          <button class="fds-button" data-variant="primary" data-size="lg" data-i18n="getStarted">Get started</button>
+          <button class="fds-button" data-variant="outline" data-size="lg" data-i18n="learnMore">Learn more</button>
+        </div>
+      </div>
+      <div class="ld-hero-media">
+        <img src="/photography/hero.jpg" alt="" loading="lazy" />
+      </div>
+    </section>
+
+    <section class="ld-logos">
+      <p class="ld-logos-label" data-i18n="trustedBy">Trusted by teams at</p>
+      <ul class="ld-logos-row">
+        {logos.map((l) => <li>{l}</li>)}
+      </ul>
+    </section>
+
+    <section class="ld-features">
+      <h2 class="ld-section-title" data-i18n="features">Features</h2>
+      <div class="ld-feature-grid">
+        {features.map((f) => (
+          <article class="fds-card ld-feature">
+            <div class="ld-illo" aria-hidden="true" set:html={illo(f.illo)} />
+            <h3 data-i18n={f.tKey}>{f.title}</h3>
+            <p data-i18n={f.dKey}>{f.desc}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="ld-stats fds-pattern-diagonal">
+      <div class="ld-stat"><span class="ld-stat-num">48</span><span class="ld-stat-label" data-i18n="statComponents">Components</span></div>
+      <div class="ld-stat"><span class="ld-stat-num">3</span><span class="ld-stat-label" data-i18n="statPlatforms">Platforms</span></div>
+      <div class="ld-stat"><span class="ld-stat-num">98%</span><span class="ld-stat-label" data-i18n="statUptime">Token coverage</span></div>
+    </section>
+
+    <section class="ld-pricing">
+      <h2 class="ld-section-title" data-i18n="pricing">Pricing</h2>
+      <div class="ld-tiers">
+        <article class="fds-card ld-tier">
+          <h3>Starter</h3>
+          <p class="ld-tier-desc" data-i18n="tierStarterDesc">For side projects and early prototypes.</p>
+          <p class="ld-tier-price">$0<span class="ld-per" data-i18n="perMonth">/month</span></p>
+          <button class="fds-button" data-variant="outline" style="inline-size:100%" data-i18n="getStarted">Get started</button>
+        </article>
+        <article class="fds-card ld-tier ld-tier-popular">
+          <span class="fds-badge ld-tier-badge" data-variant="solid" data-i18n="popular">Popular</span>
+          <h3>Pro</h3>
+          <p class="ld-tier-desc" data-i18n="tierProDesc">For product teams shipping every week.</p>
+          <p class="ld-tier-price">$29<span class="ld-per" data-i18n="perMonth">/month</span></p>
+          <button class="fds-button" data-variant="primary" style="inline-size:100%" data-i18n="getStarted">Get started</button>
+        </article>
+        <article class="fds-card ld-tier">
+          <h3>Enterprise</h3>
+          <p class="ld-tier-desc" data-i18n="tierEnterpriseDesc">For organizations with many brands.</p>
+          <p class="ld-tier-price">$99<span class="ld-per" data-i18n="perMonth">/month</span></p>
+          <button class="fds-button" data-variant="outline" style="inline-size:100%" data-i18n="contactSales">Contact sales</button>
+        </article>
+      </div>
+    </section>
+
+    <section class="ld-quote-wrap">
+      <figure class="fds-card ld-quote" data-elevation="2">
+        <blockquote data-i18n="testimonial">“We rethemed three products in a week. Our designers stopped filing color bugs entirely.”</blockquote>
+        <figcaption>
+          <span class="fds-avatar" aria-hidden="true">ML</span>
+          <span class="ld-quote-who">
+            <span class="ld-quote-name" data-i18n="testimonialName">Maya Lindholm</span>
+            <span class="fds-hint" data-i18n="testimonialRole">Head of Design, Northwind</span>
+          </span>
+        </figcaption>
+      </figure>
+    </section>
+
+    <footer class="ld-footer">
+      <div class="ld-footer-cols">
+        <div class="ld-footer-col">
+          <h4 data-i18n="footProduct">Product</h4>
+          <a href="#" data-hit data-i18n="features">Features</a>
+          <a href="#" data-hit data-i18n="pricing">Pricing</a>
+          <a href="#" data-hit data-i18n="footChangelog">Changelog</a>
+        </div>
+        <div class="ld-footer-col">
+          <h4 data-i18n="footCompany">Company</h4>
+          <a href="#" data-hit data-i18n="about">About</a>
+          <a href="#" data-hit data-i18n="footCareers">Careers</a>
+          <a href="#" data-hit data-i18n="contact">Contact</a>
+        </div>
+        <div class="ld-footer-col">
+          <h4 data-i18n="footResources">Resources</h4>
+          <a href="#" data-hit data-i18n="footDocs">Documentation</a>
+          <a href="#" data-hit data-i18n="footBlog">Blog</a>
+          <a href="#" data-hit data-i18n="help">Help</a>
+        </div>
+      </div>
+      <p class="ld-copyright" data-i18n="copyright">© 2026 Flavor. All rights reserved.</p>
+    </footer>
+  </TemplateFrame>
+
+  <style>
+    .ld-nav-links { flex-wrap: wrap; justify-content: flex-end; }
+    .ld-hero {
+      display: grid; grid-template-columns: 1.1fr 1fr; gap: var(--space-8);
+      align-items: center;
+      padding: var(--space-10) var(--space-8);
+    }
+    .ld-hero-copy { display: flex; flex-direction: column; gap: var(--space-5); }
+    .ld-hero-copy h1 {
+      font-family: var(--font-display);
+      font-size: var(--font-size-10); line-height: var(--line-height-10);
+      margin: 0;
+    }
+    .ld-hero-copy p { margin: 0; color: var(--text-secondary); font-size: var(--font-size-5); line-height: var(--line-height-5); max-inline-size: 46ch; }
+    .ld-hero-ctas { display: flex; gap: var(--space-3); flex-wrap: wrap; }
+    .ld-hero-media img {
+      inline-size: 100%; block-size: 100%; min-block-size: 280px; object-fit: cover;
+      border-radius: var(--radius-container);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--elevation-2);
+    }
+    .ld-logos { padding: var(--space-6) var(--space-8); border-block: 1px solid var(--border-subtle); text-align: center; }
+    .ld-logos-label { margin: 0 0 var(--space-4); color: var(--text-tertiary); font-size: var(--font-size-2); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; }
+    .ld-logos-row {
+      list-style: none; margin: 0; padding: 0;
+      display: flex; justify-content: center; gap: var(--space-8); flex-wrap: wrap;
+      color: var(--text-tertiary); font-family: var(--font-display); font-weight: 700; font-size: var(--font-size-5);
+    }
+    .ld-section-title { font-family: var(--font-display); font-size: var(--font-size-8); line-height: var(--line-height-8); text-align: center; margin: 0 0 var(--space-7); }
+    .ld-features { padding: var(--space-10) var(--space-8); }
+    .ld-feature-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-5); }
+    .ld-feature { text-align: center; }
+    .ld-feature h3 { font-family: var(--font-display); font-size: var(--font-size-5); margin: var(--space-4) 0 var(--space-2); }
+    .ld-feature p { margin: 0; color: var(--text-secondary); }
+    .ld-illo :global(svg) { max-inline-size: 160px; block-size: auto; margin-inline: auto; display: block; }
+    .ld-stats {
+      display: flex; justify-content: space-evenly; gap: var(--space-6); flex-wrap: wrap;
+      padding: var(--space-9) var(--space-8);
+      border-block: 1px solid var(--border-subtle);
+      background-color: var(--surface-1);
+    }
+    .ld-stat { display: flex; flex-direction: column; align-items: center; gap: var(--space-1); }
+    .ld-stat-num { font-family: var(--font-display); font-weight: 700; font-size: var(--font-size-10); line-height: var(--line-height-10); color: var(--text-accent); }
+    .ld-stat-label { color: var(--text-secondary); font-weight: 600; }
+    .ld-pricing { padding: var(--space-10) var(--space-8); }
+    .ld-tiers { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-5); align-items: stretch; }
+    .ld-tier { display: flex; flex-direction: column; gap: var(--space-3); position: relative; }
+    .ld-tier h3 { font-family: var(--font-display); font-size: var(--font-size-6); margin: 0; }
+    .ld-tier-desc { margin: 0; color: var(--text-secondary); font-size: var(--font-size-3); }
+    .ld-tier-price { font-family: var(--font-display); font-weight: 700; font-size: var(--font-size-9); line-height: var(--line-height-9); margin: var(--space-2) 0 var(--space-4); }
+    .ld-per { font-size: var(--font-size-3); font-weight: 500; color: var(--text-tertiary); font-family: var(--font-text); }
+    .ld-tier-popular { border: 2px solid var(--accent-bg); box-shadow: var(--elevation-2); }
+    .ld-tier-badge { position: absolute; inset-block-start: calc(-1 * var(--space-3)); inset-inline-start: 50%; transform: translateX(-50%); }
+    [dir="rtl"] .ld-tier-badge { transform: translateX(50%); }
+    .ld-quote-wrap { padding: 0 var(--space-8) var(--space-10); display: flex; justify-content: center; }
+    .ld-quote { max-inline-size: 640px; margin: 0; }
+    .ld-quote blockquote {
+      margin: 0 0 var(--space-5);
+      font-family: var(--font-display); font-size: var(--font-size-6); line-height: var(--line-height-6);
+    }
+    .ld-quote figcaption { display: flex; align-items: center; gap: var(--space-3); }
+    .ld-quote-who { display: flex; flex-direction: column; }
+    .ld-quote-name { font-weight: 700; }
+    .ld-footer { background: var(--surface-1); border-block-start: 1px solid var(--border-subtle); padding: var(--space-8); }
+    .ld-footer-cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-6); max-inline-size: 720px; }
+    .ld-footer-col { display: flex; flex-direction: column; gap: var(--space-2); }
+    .ld-footer-col h4 { margin: 0 0 var(--space-1); font-size: var(--font-size-2); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-tertiary); }
+    .ld-footer-col a { color: var(--text-secondary); text-decoration: none; font-size: var(--font-size-3); }
+    .ld-footer-col a:hover { color: var(--text-primary); }
+    .ld-copyright { margin: var(--space-7) 0 0; color: var(--text-tertiary); font-size: var(--font-size-2); }
+
+    @container (max-width: 767px) {
+      .ld-hero { grid-template-columns: 1fr; padding: var(--space-7) var(--space-5); gap: var(--space-6); }
+      .ld-hero-copy h1 { font-size: var(--font-size-9); line-height: var(--line-height-9); }
+      .ld-feature-grid, .ld-tiers { grid-template-columns: 1fr; }
+      .ld-features, .ld-pricing { padding: var(--space-8) var(--space-5); }
+      .ld-logos, .ld-stats { padding-inline: var(--space-5); }
+      .ld-quote-wrap { padding-inline: var(--space-5); }
+      .ld-footer { padding: var(--space-6) var(--space-5); }
+    }
+    @container (max-width: 480px) {
+      .ld-nav-links .fds-nav-link { display: none; }
+      .ld-hero-copy h1 { font-size: var(--font-size-8); line-height: var(--line-height-8); }
+      .ld-stat-num { font-size: var(--font-size-9); line-height: var(--line-height-9); }
+      .ld-footer-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+  </style>
+  </DocsShell>

@@ -1,0 +1,308 @@
+---
+import DocsShell from '../../layouts/DocsShell.astro';
+import TemplateFrame from '../../components/TemplateFrame.astro';
+import { productNav } from '../../product/productNav';
+
+const TRACKS = [
+  { n: 1, title: 'Equal Luminance',   artist: 'The Ramps',      album: 'Twelve Steps', len: '3:42', plays: '1,284,003', active: true },
+  { n: 2, title: 'Chroma Clamp',      artist: 'The Ramps',      album: 'Twelve Steps', len: '4:18', plays: '982,441' },
+  { n: 3, title: 'Tonal Shift',       artist: 'Muted Family',   album: 'Surfaces',     len: '2:57', plays: '774,120' },
+  { n: 4, title: 'Semantic Tier',     artist: 'Token Bureau',   album: 'Three Tiers',  len: '5:03', plays: '640,887' },
+  { n: 5, title: 'Logical Property',  artist: 'RTL Collective', album: 'Both Ways',    len: '3:11', plays: '512,006' },
+  { n: 6, title: 'Density Comfy',     artist: 'Spacing Ramp',   album: 'Regular',      len: '3:48', plays: '445,930' },
+];
+const extraStrings = {
+  album:      { en: 'Album', es: 'Álbum', zh: '专辑', de: 'Album', ar: 'الألبوم' },
+  plays:      { en: 'Plays', es: 'Reproducciones', zh: '播放量', de: 'Wiedergaben', ar: 'مرات التشغيل' },
+  yourLibrary:{ en: 'Your library', es: 'Tu biblioteca', zh: '你的音乐库', de: 'Deine Bibliothek', ar: 'مكتبتك' },
+  madeFor:    { en: 'Made for you', es: 'Hecho para ti', zh: '为你打造', de: 'Für dich', ar: 'مصمم لك' },
+  playlists:  { en: 'Playlists', es: 'Listas', zh: '播放列表', de: 'Playlists', ar: 'قوائم التشغيل' },
+};
+---
+<DocsShell title="Music player" nav={productNav}>
+  <h1 style="font-family: var(--font-display); font-size: var(--font-size-9);">Music player</h1>
+  <p style="color: var(--text-secondary); max-inline-size: 640px;">
+    Library sidebar, album header, track list and a persistent now-playing bar. Cover art is
+    generated from accent tokens rather than fixed imagery, so the artwork re-themes with the hue
+    instead of clashing with it. Durations and play counts use tabular numerals so nothing shifts.
+  </p>
+
+  <TemplateFrame title="music" extraStrings={extraStrings}>
+    <div class="fds-statusbar" aria-hidden="true"><span>9:41</span><span>●●●</span></div>
+    <div class="mu">
+      <aside class="mu-side" aria-label="Library">
+        <nav class="mu-nav">
+          <a class="mu-nav-item" data-hit href="#" aria-current="page">
+            <svg class="fds-icon" data-icon data-variant="outline" aria-hidden="true"><use href="/icons/sprite.svg#hi-home-outline"></use></svg>
+            <span data-i18n="home">Home</span>
+          </a>
+          <a class="mu-nav-item" data-hit href="#">
+            <svg class="fds-icon" data-icon data-variant="outline" aria-hidden="true"><use href="/icons/sprite.svg#hi-magnifying-glass-outline"></use></svg>
+            <span data-i18n="search">Search</span>
+          </a>
+          <a class="mu-nav-item" data-hit href="#">
+            <svg class="fds-icon" data-icon data-variant="outline" aria-hidden="true"><use href="/icons/sprite.svg#hi-queue-list-outline"></use></svg>
+            <span data-i18n="yourLibrary">Your library</span>
+          </a>
+        </nav>
+        <p class="mu-side-group" data-i18n="playlists">Playlists</p>
+        <ul class="mu-pl">
+          {['Focus tokens', 'Dark mode drive', 'RTL road trip', 'Comfy density', 'AAA all night'].map((p, i) => (
+            <li><button class="mu-pl-item" data-hit><span class={`mu-pl-art mu-art-${i % 4}`} aria-hidden="true"></span>{p}</button></li>
+          ))}
+        </ul>
+      </aside>
+
+      <main class="mu-main">
+        <header class="mu-hero">
+          <span class="mu-cover mu-art-0" aria-hidden="true"></span>
+          <div class="mu-hero-meta">
+            <span class="mu-kicker" data-i18n="album">Album</span>
+            <h2 class="mu-album">Twelve Steps</h2>
+            <p class="mu-credits">The Ramps · 2026 · <span data-numeric>12</span> tracks · <span data-numeric>44</span> min</p>
+            <div class="mu-hero-actions">
+              <button class="fds-button" data-variant="primary">
+                <svg class="fds-icon" data-icon data-variant="solid" aria-hidden="true"><use href="/icons/sprite.svg#hi-play-solid"></use></svg>
+                <span data-i18n="play">Play</span>
+              </button>
+              <button class="fds-button" data-variant="ghost">
+                <svg class="fds-icon" data-icon data-variant="outline" aria-hidden="true"><use href="/icons/sprite.svg#hi-arrows-right-left-outline"></use></svg>
+                <span data-i18n="shuffle">Shuffle</span>
+              </button>
+            </div>
+          </div>
+        </header>
+
+        <table class="fds-table mu-tracks">
+          <thead>
+            <tr>
+              <th scope="col" class="mu-c-n">#</th>
+              <th scope="col">Title</th>
+              <th scope="col" class="mu-c-album" data-i18n="album">Album</th>
+              <th scope="col" class="mu-c-plays" data-i18n="plays">Plays</th>
+              <th scope="col" class="mu-c-len" aria-label="Duration">
+                <svg class="fds-icon" data-icon data-variant="outline" aria-hidden="true"><use href="/icons/sprite.svg#hi-clock-outline"></use></svg>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {TRACKS.map((t) => (
+              <tr class={t.active ? 'mu-row mu-row-active' : 'mu-row'}>
+                <td class="mu-c-n">
+                  {t.active
+                    ? <span class="mu-eq" aria-label="Now playing"><i></i><i></i><i></i></span>
+                    : <span data-numeric>{t.n}</span>}
+                </td>
+                <td>
+                  <span class="mu-t-title">{t.title}</span>
+                  <span class="mu-t-artist">{t.artist}</span>
+                </td>
+                <td class="mu-c-album">{t.album}</td>
+                <td class="mu-c-plays" data-numeric>{t.plays}</td>
+                <td class="mu-c-len" data-numeric>{t.len}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </main>
+    </div>
+
+    <!-- now playing bar -->
+    <div class="mu-bar">
+      <div class="mu-np">
+        <span class="mu-np-art mu-art-0" aria-hidden="true"></span>
+        <span class="mu-np-meta">
+          <span class="mu-np-title">Equal Luminance</span>
+          <span class="mu-np-artist">The Ramps</span>
+        </span>
+      </div>
+
+      <div class="mu-transport">
+        <div class="mu-buttons">
+          <button class="fds-icon-button" aria-label="Shuffle">
+            <svg class="fds-icon" data-icon data-variant="outline" aria-hidden="true"><use href="/icons/sprite.svg#hi-arrows-right-left-outline"></use></svg>
+          </button>
+          <button class="fds-icon-button" aria-label="Previous">
+            <svg class="fds-icon" data-icon data-variant="solid" data-directional aria-hidden="true"><use href="/icons/sprite.svg#hi-backward-solid"></use></svg>
+          </button>
+          <button class="mu-play" aria-label="Pause">
+            <svg class="fds-icon" data-icon data-variant="solid" aria-hidden="true"><use href="/icons/sprite.svg#hi-pause-solid"></use></svg>
+          </button>
+          <button class="fds-icon-button" aria-label="Next">
+            <svg class="fds-icon" data-icon data-variant="solid" data-directional aria-hidden="true"><use href="/icons/sprite.svg#hi-forward-solid"></use></svg>
+          </button>
+          <button class="fds-icon-button" aria-label="Repeat">
+            <svg class="fds-icon" data-icon data-variant="outline" aria-hidden="true"><use href="/icons/sprite.svg#hi-arrow-path-rounded-square-outline"></use></svg>
+          </button>
+        </div>
+        <div class="mu-scrub">
+          <span class="mu-time" data-numeric>1:24</span>
+          <span class="mu-track" role="slider" aria-label="Seek" aria-valuemin="0" aria-valuemax="222" aria-valuenow="84" tabindex="0">
+            <span class="mu-fill"><span class="mu-knob" aria-hidden="true"></span></span>
+          </span>
+          <span class="mu-time" data-numeric>3:42</span>
+        </div>
+      </div>
+
+      <div class="mu-vol">
+        <svg class="fds-icon" data-icon data-variant="outline" data-directional aria-hidden="true"><use href="/icons/sprite.svg#hi-speaker-wave-outline"></use></svg>
+        <span class="mu-track mu-track-vol"><span class="mu-fill mu-fill-vol"></span></span>
+      </div>
+    </div>
+  </TemplateFrame>
+
+  <style>
+    .mu { display: flex; block-size: 540px; background: var(--surface-page); }
+
+    /* On the Media background --surface-page is transparent by design, so the photo
+       shows through. An app shell is not a photo-facing surface: its text is dark ink
+       (the frame is a declared surface), so leaving it transparent puts dark type on a
+       photograph. Paint the shell opaque there — the photo still surrounds the device. */
+    :global([data-bg="media"]) .mu { background: var(--surface-1); }
+    .mu-side {
+      inline-size: 240px; flex-shrink: 0;
+      padding: var(--space-4);
+      background: var(--surface-1);
+      border-inline-end: 1px solid var(--border-subtle);
+      overflow-y: auto;
+    }
+    .mu-nav { display: flex; flex-direction: column; gap: var(--space-1); }
+    .mu-nav-item {
+      display: flex; align-items: center; gap: var(--space-3);
+      padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-control);
+      color: var(--text-secondary); text-decoration: none;
+      font-size: var(--font-size-3); font-weight: 600;
+    }
+    .mu-nav-item:hover { background: var(--surface-tint); color: var(--text-primary); }
+    .mu-nav-item[aria-current="page"] { background: var(--accent-subtle); color: var(--text-on-accent-subtle); }
+    .mu-nav-item svg { inline-size: 20px; block-size: 20px; }
+    .mu-side-group {
+      margin: var(--space-5) 0 var(--space-2);
+      font-size: var(--font-size-1); font-weight: 600; color: var(--text-tertiary);
+      text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .mu-pl { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-1); }
+    .mu-pl-item {
+      inline-size: 100%;
+      display: flex; align-items: center; gap: var(--space-3);
+      background: none; border: none; cursor: pointer; font: inherit;
+      color: var(--text-secondary); text-align: start;
+      font-size: var(--font-size-2);
+      padding: var(--space-1) var(--space-2);
+      border-radius: var(--radius-control);
+    }
+    .mu-pl-item:hover { background: var(--surface-tint); color: var(--text-primary); }
+    .mu-pl-art { inline-size: 32px; block-size: 32px; border-radius: var(--radius-media); flex-shrink: 0; }
+
+    /* Cover art is generated from accent + feedback tokens, so it re-themes with the
+       hue instead of sitting as a fixed image that clashes with it. */
+    .mu-art-0 { background: linear-gradient(135deg, var(--accent-bg), var(--accent-bg-active)); }
+    .mu-art-1 { background: linear-gradient(135deg, var(--info-solid), var(--accent-bg)); }
+    .mu-art-2 { background: linear-gradient(135deg, var(--success-solid), var(--info-solid)); }
+    .mu-art-3 { background: linear-gradient(135deg, var(--warning-solid), var(--danger-solid)); }
+
+    .mu-main { flex: 1; overflow-y: auto; min-inline-size: 0; }
+    .mu-hero { display: flex; gap: var(--space-6); padding: var(--space-6); align-items: flex-end; }
+    .mu-cover {
+      inline-size: 156px; block-size: 156px; flex-shrink: 0;
+      border-radius: var(--radius-media);
+      box-shadow: var(--elevation-3);
+    }
+    .mu-hero-meta { min-inline-size: 0; }
+    .mu-kicker { font-size: var(--font-size-1); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-tertiary); }
+    .mu-album { font-family: var(--font-display); font-size: var(--font-size-10); margin: var(--space-1) 0 var(--space-2); line-height: 1.05; }
+    .mu-credits { margin: 0 0 var(--space-4); color: var(--text-secondary); font-size: var(--font-size-2); }
+    .mu-hero-actions { display: flex; gap: var(--space-3); }
+    .mu-hero-actions svg { inline-size: 18px; block-size: 18px; }
+
+    .mu-tracks { inline-size: 100%; }
+    .mu-c-n { inline-size: 40px; text-align: center; font-variant-numeric: tabular-nums; color: var(--text-tertiary); }
+    .mu-c-len, .mu-c-plays { text-align: end; font-variant-numeric: tabular-nums; color: var(--text-tertiary); }
+    .mu-c-len svg { inline-size: 15px; block-size: 15px; }
+    .mu-t-title { display: block; font-weight: 600; }
+    .mu-t-artist { display: block; font-size: var(--font-size-1); color: var(--text-tertiary); }
+    .mu-row:hover { background: var(--surface-tint); }
+    .mu-row-active .mu-t-title { color: var(--text-accent); }
+
+    .mu-eq { display: inline-flex; align-items: flex-end; gap: 2px; block-size: 14px; }
+    .mu-eq i {
+      inline-size: 3px; background: var(--text-accent);
+      animation: mu-eq calc(var(--duration-4) * 2) var(--ease-standard) infinite;
+    }
+    .mu-eq i:nth-child(1) { block-size: 60%; }
+    .mu-eq i:nth-child(2) { block-size: 100%; animation-delay: var(--duration-1); }
+    .mu-eq i:nth-child(3) { block-size: 40%; animation-delay: var(--duration-2); }
+    @keyframes mu-eq { 0%, 100% { transform: scaleY(0.4); } 50% { transform: scaleY(1); } }
+
+    .mu-bar {
+      display: flex; align-items: center; justify-content: space-between; gap: var(--space-5);
+      padding: var(--space-3) var(--space-5);
+      background: var(--surface-1);
+      border-block-start: 1px solid var(--border-subtle);
+    }
+    .mu-np { display: flex; align-items: center; gap: var(--space-3); inline-size: 220px; min-inline-size: 0; }
+    .mu-np-art { inline-size: 44px; block-size: 44px; border-radius: var(--radius-media); flex-shrink: 0; }
+    .mu-np-meta { display: flex; flex-direction: column; min-inline-size: 0; }
+    .mu-np-title { font-weight: 600; font-size: var(--font-size-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .mu-np-artist { font-size: var(--font-size-1); color: var(--text-tertiary); }
+
+    .mu-transport { flex: 1; display: flex; flex-direction: column; align-items: center; gap: var(--space-2); min-inline-size: 0; }
+    .mu-buttons { display: flex; align-items: center; gap: var(--space-2); }
+    .mu-buttons svg { inline-size: 18px; block-size: 18px; }
+    .mu-play {
+      inline-size: max(var(--control-height-md), 40px); block-size: max(var(--control-height-md), 40px);
+      display: inline-flex; align-items: center; justify-content: center;
+      border: none; cursor: pointer;
+      border-radius: var(--radius-round);        /* always circular, every radius mode */
+      background: var(--accent-bg); color: var(--accent-fg);
+      transition-property: scale, background-color;
+      transition-duration: var(--duration-2);
+      transition-timing-function: var(--ease-standard);
+    }
+    .mu-play:active { scale: var(--press-scale); }
+    .mu-play svg { inline-size: 20px; block-size: 20px; }
+
+    .mu-scrub { display: flex; align-items: center; gap: var(--space-3); inline-size: 100%; max-inline-size: 420px; }
+    .mu-time { font-size: var(--font-size-1); color: var(--text-tertiary); font-variant-numeric: tabular-nums; }
+    .mu-track {
+      flex: 1; block-size: 4px;
+      background: var(--border-default);
+      border-radius: var(--radius-round);
+      position: relative; cursor: pointer;
+    }
+    .mu-fill {
+      display: block; block-size: 100%; inline-size: 38%;
+      background: var(--accent-bg);
+      border-radius: var(--radius-round);
+      position: relative;
+    }
+    .mu-knob {
+      position: absolute; inset-inline-end: -5px; inset-block-start: 50%;
+      translate: 0 -50%;
+      inline-size: 10px; block-size: 10px;
+      border-radius: var(--radius-round);
+      background: var(--accent-bg);
+      box-shadow: var(--shadow-border);
+    }
+    .mu-vol { display: flex; align-items: center; gap: var(--space-2); inline-size: 140px; color: var(--text-tertiary); }
+    .mu-vol svg { inline-size: 18px; block-size: 18px; flex-shrink: 0; }
+    .mu-fill-vol { inline-size: 65%; }
+
+    @container (max-width: 767px) {
+      .mu-side { inline-size: 180px; }
+      .mu-c-plays, .mu-c-album { display: none; }
+      .mu-vol { display: none; }
+    }
+    @container (max-width: 480px) {
+      .mu { block-size: 440px; }
+      .mu-side { display: none; }
+      .mu-hero { flex-direction: column; align-items: flex-start; gap: var(--space-4); padding: var(--space-4); }
+      .mu-cover { inline-size: 120px; block-size: 120px; }
+      .mu-album { font-size: var(--font-size-8); }
+      .mu-np { inline-size: auto; }
+      .mu-np-meta { display: none; }
+      .mu-bar { gap: var(--space-3); padding-inline: var(--space-3); }
+    }
+  </style>
+</DocsShell>

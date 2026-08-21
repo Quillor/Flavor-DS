@@ -1,0 +1,526 @@
+{
+  "name": "Flavor DS",
+  "version": "0.3.0",
+  "axes": {
+    "hue": [
+      "brand",
+      "brand2",
+      "neutral",
+      "red",
+      "scarlet",
+      "orange",
+      "tangerine",
+      "yellow",
+      "lime",
+      "green",
+      "teal",
+      "cyan",
+      "blue",
+      "violet",
+      "purple",
+      "magenta"
+    ],
+    "sat": [
+      "muted",
+      "regular",
+      "bold"
+    ],
+    "mode": [
+      "light",
+      "dark"
+    ],
+    "contrast": [
+      "aa",
+      "aaa"
+    ],
+    "bg": [
+      "primary",
+      "secondary",
+      "dark-primary",
+      "dark-secondary",
+      "accent",
+      "media"
+    ],
+    "radius": [
+      "square",
+      "rounded",
+      "pill"
+    ],
+    "density": [
+      "compact",
+      "regular",
+      "comfy"
+    ],
+    "font": [
+      "flavor",
+      "editorial",
+      "reading",
+      "geometric",
+      "expressive"
+    ],
+    "dir": [
+      "ltr",
+      "rtl"
+    ]
+  },
+  "defaults": {
+    "hue": "brand",
+    "sat": "regular",
+    "mode": "light",
+    "contrast": "aa",
+    "bg": "primary",
+    "radius": "rounded",
+    "density": "regular",
+    "font": "flavor",
+    "dir": "ltr"
+  },
+  "fontPairs": {
+    "flavor": {
+      "label": "Flavor (default)",
+      "display": "'Space Grotesk', 'Helvetica Neue', system-ui, sans-serif",
+      "text": "'Inter', system-ui, -apple-system, sans-serif",
+      "googleCss": "https://fonts.googleapis.com/css2?family=Space%20Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&display=swap"
+    },
+    "editorial": {
+      "label": "Editorial",
+      "display": "'Fraunces', Georgia, serif",
+      "text": "'Libre Franklin', system-ui, sans-serif",
+      "googleCss": "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Libre%20Franklin:wght@400;500;600;700&display=swap"
+    },
+    "reading": {
+      "label": "Reading",
+      "display": "'Source Serif 4', Georgia, serif",
+      "text": "'Source Sans 3', system-ui, sans-serif",
+      "was": "Classic Serif",
+      "googleCss": "https://fonts.googleapis.com/css2?family=Source%20Serif%204:opsz,wght@8..60,600;8..60,700&family=Source%20Sans%203:wght@400;500;600;700&display=swap"
+    },
+    "geometric": {
+      "label": "Geometric",
+      "display": "'Jost', system-ui, sans-serif",
+      "text": "'DM Sans', system-ui, sans-serif",
+      "googleCss": "https://fonts.googleapis.com/css2?family=Jost:wght@500;700&family=DM%20Sans:wght@400;500;700&display=swap"
+    },
+    "expressive": {
+      "label": "Expressive",
+      "display": "'Syne', system-ui, sans-serif",
+      "text": "'Archivo', system-ui, sans-serif",
+      "was": "Atomic Age",
+      "googleCss": "https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Archivo:wght@400;500;600;700&display=swap"
+    }
+  },
+  "surfaceModel": {
+    "note": "Surfaces resolve from the ACTIVE hue ramp. regular = tonal tint; muted/bold = accent-colored surfaces. data-tonal makes the page the ramp's MOST-SATURATED step (per hue) with ink chosen per contrast; data-media forces white UI on a photo regardless of mode.",
+    "surfaces": {
+      "primary": {
+        "light": {
+          "regular": {
+            "page": 2,
+            "surface1": 1,
+            "surface2": 1,
+            "surface3": 1
+          },
+          "muted": {
+            "page": 3,
+            "surface1": 2,
+            "surface2": 2,
+            "surface3": 1
+          },
+          "bold": {
+            "page": 3,
+            "surface1": 2,
+            "surface2": 2,
+            "surface3": 1
+          }
+        },
+        "dark": {
+          "regular": {
+            "page": 1,
+            "surface1": 2,
+            "surface2": 3,
+            "surface3": 4
+          },
+          "muted": {
+            "page": 2,
+            "surface1": 3,
+            "surface2": 4,
+            "surface3": 5
+          },
+          "bold": {
+            "page": 2,
+            "surface1": 3,
+            "surface2": 4,
+            "surface3": 5
+          }
+        }
+      },
+      "secondary": {
+        "light": {
+          "regular": {
+            "page": 3,
+            "surface1": 2,
+            "surface2": 2,
+            "surface3": 2
+          },
+          "muted": {
+            "page": 4,
+            "surface1": 3,
+            "surface2": 3,
+            "surface3": 2
+          },
+          "bold": {
+            "page": 4,
+            "surface1": 3,
+            "surface2": 3,
+            "surface3": 2
+          }
+        },
+        "dark": {
+          "regular": {
+            "page": 2,
+            "surface1": 3,
+            "surface2": 4,
+            "surface3": 5
+          },
+          "muted": {
+            "page": 3,
+            "surface1": 4,
+            "surface2": 5,
+            "surface3": 6
+          },
+          "bold": {
+            "page": 3,
+            "surface1": 4,
+            "surface2": 5,
+            "surface3": 6
+          }
+        }
+      },
+      "dark-primary": {
+        "light": {
+          "regular": {
+            "page": 1,
+            "surface1": 2,
+            "surface2": 3,
+            "surface3": 4
+          },
+          "muted": {
+            "page": 2,
+            "surface1": 3,
+            "surface2": 4,
+            "surface3": 5
+          },
+          "bold": {
+            "page": 2,
+            "surface1": 3,
+            "surface2": 4,
+            "surface3": 5
+          }
+        },
+        "dark": {
+          "regular": {
+            "page": "black",
+            "surface1": 1,
+            "surface2": 2,
+            "surface3": 3
+          },
+          "muted": {
+            "page": "black",
+            "surface1": 2,
+            "surface2": 3,
+            "surface3": 4
+          },
+          "bold": {
+            "page": "black",
+            "surface1": 2,
+            "surface2": 3,
+            "surface3": 4
+          }
+        }
+      },
+      "dark-secondary": {
+        "light": {
+          "regular": {
+            "page": 2,
+            "surface1": 3,
+            "surface2": 4,
+            "surface3": 5
+          },
+          "muted": {
+            "page": 3,
+            "surface1": 4,
+            "surface2": 5,
+            "surface3": 6
+          },
+          "bold": {
+            "page": 3,
+            "surface1": 4,
+            "surface2": 5,
+            "surface3": 6
+          }
+        },
+        "dark": {
+          "regular": {
+            "page": "black",
+            "surface1": 2,
+            "surface2": 3,
+            "surface3": 4
+          },
+          "muted": {
+            "page": "black",
+            "surface1": 3,
+            "surface2": 4,
+            "surface3": 5
+          },
+          "bold": {
+            "page": "black",
+            "surface1": 3,
+            "surface2": 4,
+            "surface3": 5
+          }
+        }
+      }
+    },
+    "radius": {
+      "square": {
+        "control": 0,
+        "field": 0,
+        "container": 0,
+        "media": 0
+      },
+      "rounded": {
+        "control": 6,
+        "field": 6,
+        "container": 12,
+        "media": 8
+      },
+      "pill": {
+        "control": 9999,
+        "field": 20,
+        "container": 20,
+        "media": 12
+      }
+    },
+    "accentBgPeakStep": {
+      "neutral": {
+        "muted": {
+          "light": 9,
+          "dark": 9
+        },
+        "regular": {
+          "light": 9,
+          "dark": 9
+        },
+        "bold": {
+          "light": 9,
+          "dark": 9
+        }
+      },
+      "red": {
+        "muted": {
+          "light": 6,
+          "dark": 9
+        },
+        "regular": {
+          "light": 8,
+          "dark": 9
+        },
+        "bold": {
+          "light": 9,
+          "dark": 8
+        }
+      },
+      "scarlet": {
+        "muted": {
+          "light": 6,
+          "dark": 9
+        },
+        "regular": {
+          "light": 8,
+          "dark": 9
+        },
+        "bold": {
+          "light": 8,
+          "dark": 9
+        }
+      },
+      "orange": {
+        "muted": {
+          "light": 6,
+          "dark": 9
+        },
+        "regular": {
+          "light": 7,
+          "dark": 9
+        },
+        "bold": {
+          "light": 8,
+          "dark": 10
+        }
+      },
+      "tangerine": {
+        "muted": {
+          "light": 6,
+          "dark": 9
+        },
+        "regular": {
+          "light": 6,
+          "dark": 10
+        },
+        "bold": {
+          "light": 7,
+          "dark": 10
+        }
+      },
+      "yellow": {
+        "muted": {
+          "light": 6,
+          "dark": 9
+        },
+        "regular": {
+          "light": 6,
+          "dark": 10
+        },
+        "bold": {
+          "light": 5,
+          "dark": 11
+        }
+      },
+      "lime": {
+        "muted": {
+          "light": 6,
+          "dark": 9
+        },
+        "regular": {
+          "light": 6,
+          "dark": 9
+        },
+        "bold": {
+          "light": 5,
+          "dark": 11
+        }
+      },
+      "green": {
+        "muted": {
+          "light": 6,
+          "dark": 9
+        },
+        "regular": {
+          "light": 6,
+          "dark": 9
+        },
+        "bold": {
+          "light": 6,
+          "dark": 10
+        }
+      },
+      "teal": {
+        "muted": {
+          "light": 6,
+          "dark": 9
+        },
+        "regular": {
+          "light": 6,
+          "dark": 10
+        },
+        "bold": {
+          "light": 5,
+          "dark": 11
+        }
+      },
+      "cyan": {
+        "muted": {
+          "light": 6,
+          "dark": 9
+        },
+        "regular": {
+          "light": 7,
+          "dark": 10
+        },
+        "bold": {
+          "light": 7,
+          "dark": 10
+        }
+      },
+      "blue": {
+        "muted": {
+          "light": 6,
+          "dark": 9
+        },
+        "regular": {
+          "light": 8,
+          "dark": 9
+        },
+        "bold": {
+          "light": 9,
+          "dark": 9
+        }
+      },
+      "violet": {
+        "muted": {
+          "light": 6,
+          "dark": 9
+        },
+        "regular": {
+          "light": 8,
+          "dark": 9
+        },
+        "bold": {
+          "light": 10,
+          "dark": 8
+        }
+      },
+      "purple": {
+        "muted": {
+          "light": 6,
+          "dark": 9
+        },
+        "regular": {
+          "light": 8,
+          "dark": 9
+        },
+        "bold": {
+          "light": 9,
+          "dark": 8
+        }
+      },
+      "magenta": {
+        "muted": {
+          "light": 6,
+          "dark": 9
+        },
+        "regular": {
+          "light": 7,
+          "dark": 9
+        },
+        "bold": {
+          "light": 9,
+          "dark": 9
+        }
+      }
+    }
+  },
+  "brands": {
+    "brand": {
+      "primary": "blue",
+      "secondary": "orange",
+      "label": "Brand (Blue + Orange)"
+    },
+    "brand2": {
+      "primary": "magenta",
+      "secondary": "cyan",
+      "label": "Brand 2 (Magenta + Cyan)"
+    }
+  },
+  "themeCount": 1152,
+  "htmlAttributes": [
+    "data-hue",
+    "data-sat",
+    "data-mode",
+    "data-contrast",
+    "data-bg",
+    "data-radius",
+    "data-density",
+    "data-font",
+    "dir"
+  ]
+}

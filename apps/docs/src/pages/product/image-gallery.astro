@@ -1,0 +1,145 @@
+---
+import DocsShell from '../../layouts/DocsShell.astro';
+import TemplateFrame from '../../components/TemplateFrame.astro';
+import { productNav } from '../../product/productNav';
+
+const illusFiles = import.meta.glob('../../assets/illustrations/*.svg', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
+const illus = (name: string) => illusFiles[`../../assets/illustrations/${name}.svg`];
+
+const extraStrings = {
+  galleryBio:       { en: 'Selected work in photography, illustration & pattern design.', es: 'Trabajos seleccionados de fotografía, ilustración y diseño de patrones.', zh: '摄影、插画与图案设计精选作品。', de: 'Ausgewählte Arbeiten aus Fotografie, Illustration und Musterdesign.', ar: 'أعمال مختارة في التصوير والرسم التوضيحي وتصميم الأنماط.' },
+  filterAll:        { en: 'All', es: 'Todo', zh: '全部', de: 'Alle', ar: 'الكل' },
+  filterPhoto:      { en: 'Photography', es: 'Fotografía', zh: '摄影', de: 'Fotografie', ar: 'التصوير' },
+  filterIllus:      { en: 'Illustration', es: 'Ilustración', zh: '插画', de: 'Illustration', ar: 'الرسم التوضيحي' },
+  filterPatterns:   { en: 'Patterns', es: 'Patrones', zh: '图案', de: 'Muster', ar: 'الأنماط' },
+  loadMore:         { en: 'Load more', es: 'Cargar más', zh: '加载更多', de: 'Mehr laden', ar: 'تحميل المزيد' },
+  tMorningLight:    { en: 'Morning light', es: 'Luz de la mañana', zh: '晨光', de: 'Morgenlicht', ar: 'ضوء الصباح' },
+  tStudioSession:   { en: 'Studio session', es: 'Sesión de estudio', zh: '工作室时光', de: 'Studiosession', ar: 'جلسة استوديو' },
+  tStillLife:       { en: 'Still life', es: 'Naturaleza muerta', zh: '静物', de: 'Stillleben', ar: 'طبيعة صامتة' },
+  tSurfaceStudy:    { en: 'Surface study', es: 'Estudio de superficie', zh: '质感研究', de: 'Oberflächenstudie', ar: 'دراسة سطح' },
+  tGoldenHour:      { en: 'Golden hour', es: 'Hora dorada', zh: '黄金时刻', de: 'Goldene Stunde', ar: 'الساعة الذهبية' },
+  tTexturesUpClose: { en: 'Textures up close', es: 'Texturas de cerca', zh: '近观纹理', de: 'Texturen aus der Nähe', ar: 'الملمس عن قرب' },
+  tWeightless:      { en: 'Weightless', es: 'Ingravidez', zh: '失重', de: 'Schwerelos', ar: 'انعدام الوزن' },
+  tInFlow:          { en: 'In flow', es: 'En fluidez', zh: '心流', de: 'Im Flow', ar: 'في تدفق' },
+  tSmallWins:       { en: 'Small wins', es: 'Pequeñas victorias', zh: '小小胜利', de: 'Kleine Erfolge', ar: 'انتصارات صغيرة' },
+};
+
+const tiles = [
+  { kind: 'photo', src: '/photography/hero.jpg',          h: 'm', key: 'tMorningLight' },
+  { kind: 'photo', src: '/photography/product.jpg',       h: 'l', key: 'tStillLife' },
+  { kind: 'illus', svg: illus('focus'),                   key: 'tInFlow' },
+  { kind: 'photo', src: '/photography/collaboration.jpg', h: 's', key: 'tStudioSession' },
+  { kind: 'photo', src: '/photography/texture.jpg',       h: 'm', key: 'tSurfaceStudy' },
+  { kind: 'illus', svg: illus('break'),                   key: 'tWeightless' },
+  { kind: 'photo', src: '/photography/hero.jpg',          h: 's', key: 'tGoldenHour' },
+  { kind: 'photo', src: '/photography/texture.jpg',       h: 'l', key: 'tTexturesUpClose' },
+  { kind: 'illus', svg: illus('success'),                 key: 'tSmallWins' },
+  { kind: 'photo', src: '/photography/collaboration.jpg', h: 'm', key: 'tStudioSession' },
+];
+---
+<DocsShell title="Image gallery" nav={productNav}>
+  <h1 style="font-family: var(--font-display); font-size: var(--font-size-9);">Image gallery</h1>
+  <p style="color: var(--text-secondary); max-inline-size: 640px;">
+    A portfolio grid mixing photography and themed illustrations in a masonry layout, with
+    filter chips and hover overlays. Columns collapse from three to two to one as the frame narrows.
+  </p>
+
+  <TemplateFrame title="image-gallery" extraStrings={extraStrings}>
+    <div class="fds-statusbar" aria-hidden="true"><span>9:41</span><span>●●●</span></div>
+    <div class="ig-page">
+      <header class="ig-header">
+        <span class="fds-avatar" aria-hidden="true">AL</span>
+        <div>
+          <h1 class="ig-name">Ava Lindqvist</h1>
+          <p class="ig-bio" data-i18n="galleryBio">Selected work in photography, illustration &amp; pattern design.</p>
+        </div>
+      </header>
+
+      <div class="ig-chips" role="group" data-i18n-aria="filter" aria-label="Filter">
+        <button class="fds-button" data-size="sm" data-variant="primary" aria-pressed="true" data-i18n="filterAll">All</button>
+        <button class="fds-button" data-size="sm" data-variant="outline" aria-pressed="false" data-i18n="filterPhoto">Photography</button>
+        <button class="fds-button" data-size="sm" data-variant="outline" aria-pressed="false" data-i18n="filterIllus">Illustration</button>
+        <button class="fds-button" data-size="sm" data-variant="outline" aria-pressed="false" data-i18n="filterPatterns">Patterns</button>
+      </div>
+
+      <div class="ig-masonry">
+        {tiles.map((t) => (
+          <figure class={`ig-tile ${t.kind === 'illus' ? 'ig-illus fds-pattern-dots' : ''}`}>
+            {t.kind === 'photo'
+              ? <img src={t.src} alt="" class={`ig-img ig-h-${t.h}`} loading="lazy" />
+              : <div class="ig-illus-art" set:html={t.svg} />}
+            <figcaption class="ig-overlay">
+              <span class="ig-overlay-title" data-i18n={t.key}>{(extraStrings as any)[t.key].en}</span>
+              <span class="ig-zoom" aria-hidden="true">
+                <svg class="fds-icon" data-icon data-variant="outline" width="2"><use href="/icons/sprite.svg#hi-magnifying-glass-plus-outline"></use></svg>
+              </span>
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+
+      <div class="ig-more">
+        <button class="fds-button" data-variant="outline" data-i18n="loadMore">Load more</button>
+      </div>
+    </div>
+  </TemplateFrame>
+
+  <style>
+    .ig-page { padding: var(--space-7); }
+    .ig-header { display: flex; align-items: center; gap: var(--space-4); margin-block-end: var(--space-5); }
+    .ig-name { font-family: var(--font-display); font-size: var(--font-size-7); margin: 0; }
+    .ig-bio { color: var(--text-secondary); font-size: var(--font-size-3); margin: var(--space-1) 0 0; }
+    .ig-chips { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-block-end: var(--space-6); }
+
+    .ig-masonry { columns: 3; column-gap: var(--space-4); }
+    .ig-tile {
+      position: relative;
+      break-inside: avoid;
+      margin: 0 0 var(--space-4);
+      border-radius: var(--radius-media);
+      overflow: hidden;
+      background: var(--surface-1);
+      border: 1px solid var(--border-subtle);
+    }
+    .ig-img { display: block; inline-size: 100%; object-fit: cover; }
+    .ig-h-s { block-size: 160px; }
+    .ig-h-m { block-size: 240px; }
+    .ig-h-l { block-size: 340px; }
+    .ig-illus-art { padding: var(--space-4); }
+    .ig-illus-art :global(svg) { inline-size: 100%; block-size: auto; display: block; }
+
+    .ig-overlay {
+      position: absolute; inset: 0;
+      display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-3);
+      padding: var(--space-4);
+      margin: 0;
+      background: linear-gradient(
+        transparent 45%,
+        color-mix(in srgb, var(--surface-page) 92%, transparent)
+      );
+      opacity: 0;
+      transition: opacity var(--duration-2) var(--ease-standard);
+    }
+    .ig-tile:hover .ig-overlay, .ig-tile:focus-within .ig-overlay { opacity: 1; }
+    .ig-overlay-title { font-weight: 700; font-size: var(--font-size-3); color: var(--text-primary); }
+    .ig-zoom {
+      display: inline-flex; align-items: center; justify-content: center;
+      inline-size: var(--control-height-sm); block-size: var(--control-height-sm);
+      border-radius: var(--radius-round);
+      background: var(--accent-bg); color: var(--accent-fg);
+      flex-shrink: 0;
+    }
+    .ig-zoom svg { inline-size: 16px; block-size: 16px; }
+
+    .ig-more { display: flex; justify-content: center; margin-block-start: var(--space-4); }
+
+    @container (max-width: 767px) {
+      .ig-page { padding: var(--space-5); }
+      .ig-masonry { columns: 2; }
+    }
+    @container (max-width: 480px) {
+      .ig-masonry { columns: 1; }
+      .ig-name { font-size: var(--font-size-6); }
+    }
+  </style>
+</DocsShell>

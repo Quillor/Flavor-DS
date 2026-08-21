@@ -1,0 +1,219 @@
+---
+import DocsShell from '../../layouts/DocsShell.astro';
+import TemplateFrame from '../../components/TemplateFrame.astro';
+import { productNav } from '../../product/productNav';
+const extraStrings = {
+  thinking:   { en: 'Thinking…', es: 'Pensando…', zh: '思考中…', de: 'Denkt nach…', ar: 'يفكر…' },
+  today:      { en: 'Today', es: 'Hoy', zh: '今天', de: 'Heute', ar: 'اليوم' },
+  previous:   { en: 'Previous 7 days', es: 'Últimos 7 días', zh: '过去 7 天', de: 'Letzte 7 Tage', ar: 'آخر ٧ أيام' },
+  disclaimer: { en: 'Responses may be inaccurate — verify important information.', es: 'Las respuestas pueden ser inexactas: verifica la información importante.', zh: '回答可能不准确，请核实重要信息。', de: 'Antworten können ungenau sein — wichtige Angaben prüfen.', ar: 'قد تكون الإجابات غير دقيقة — تحقق من المعلومات المهمة.' },
+};
+---
+<DocsShell title="AI chat" nav={productNav}>
+  <h1 style="font-family: var(--font-display); font-size: var(--font-size-9);">AI chat</h1>
+  <p style="color: var(--text-secondary); max-inline-size: 640px;">
+    Assistant conversation with a session sidebar, streaming response, inline code block, and
+    message actions. The prose column is capped for readability and the code block scrolls inside
+    itself, so neither breaks the layout at Compact density or in RTL.
+  </p>
+
+  <TemplateFrame title="ai-chat" extraStrings={extraStrings}>
+    <div class="fds-statusbar" aria-hidden="true"><span>9:41</span><span>●●●</span></div>
+    <div class="ai">
+      <aside class="ai-side" aria-label="Sessions">
+        <button class="fds-button ai-new" data-variant="secondary" data-size="sm">
+          <svg class="fds-icon" data-icon data-variant="outline" aria-hidden="true"><use href="/icons/sprite.svg#hi-plus-outline"></use></svg>
+          <span data-i18n="newChat">New chat</span>
+        </button>
+        <p class="ai-side-group" data-i18n="today">Today</p>
+        <button class="ai-session" data-hit aria-current="true">Contrast ratios in OKLCH</button>
+        <button class="ai-session" data-hit>Density scale rationale</button>
+        <p class="ai-side-group" data-i18n="previous">Previous 7 days</p>
+        <button class="ai-session" data-hit>RTL logical properties</button>
+        <button class="ai-session" data-hit>Naming semantic tokens</button>
+        <button class="ai-session" data-hit>Figma variable modes</button>
+      </aside>
+
+      <main class="ai-main">
+        <header class="fds-appbar ai-bar">
+          <span class="ai-model">Flavor Assistant</span>
+          <span class="fds-badge" data-variant="subtle">v1.0</span>
+        </header>
+
+        <div class="ai-scroll">
+          <!-- user turn -->
+          <article class="ai-turn ai-turn-user">
+            <span class="fds-avatar ai-av">TR</span>
+            <div class="ai-body">
+              <p>How do I keep text legible when the background changes with the theme?</p>
+            </div>
+          </article>
+
+          <!-- assistant turn -->
+          <article class="ai-turn ai-turn-bot">
+            <span class="ai-av ai-av-bot" aria-hidden="true">
+              <svg class="fds-icon" data-icon data-variant="outline"><use href="/icons/sprite.svg#hi-sparkles-outline"></use></svg>
+            </span>
+            <div class="ai-body">
+              <p>Pair the foreground and background as one decision instead of picking them separately. Define the pair once, compute its contrast at build time, and expose only the pair:</p>
+              <pre class="ai-code"><code>{`--text-on-accent-subtle: /* computed */
+--accent-subtle:          /* computed */
+/* 5.67:1 — passes AA at every hue */`}</code></pre>
+              <p>That way an inaccessible combination is never expressible: the token that fails is simply not emitted.</p>
+              <div class="ai-actions">
+                <button class="ai-act" data-hit type="button">
+                  <svg class="fds-icon" data-icon data-variant="outline" aria-hidden="true"><use href="/icons/sprite.svg#hi-clipboard-document-outline"></use></svg>
+                  <span data-i18n="copy">Copy</span>
+                </button>
+                <button class="ai-act" data-hit type="button">
+                  <svg class="fds-icon" data-icon data-variant="outline" aria-hidden="true"><use href="/icons/sprite.svg#hi-arrow-path-outline"></use></svg>
+                  <span data-i18n="regenerate">Regenerate</span>
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <!-- streaming turn -->
+          <article class="ai-turn ai-turn-bot">
+            <span class="ai-av ai-av-bot" aria-hidden="true">
+              <svg class="fds-icon" data-icon data-variant="outline"><use href="/icons/sprite.svg#hi-sparkles-outline"></use></svg>
+            </span>
+            <div class="ai-body">
+              <p class="ai-streaming">
+                The same idea extends to elevation<span class="ai-caret" aria-hidden="true"></span>
+              </p>
+              <p class="fds-hint ai-think" data-i18n="thinking">Thinking…</p>
+            </div>
+          </article>
+        </div>
+
+        <footer class="ai-composer">
+          <div class="ai-input-wrap">
+            <textarea class="fds-textarea ai-input" rows="1" data-i18n-placeholder="askAnything" placeholder="Ask anything"></textarea>
+            <button class="fds-button ai-send" data-variant="primary" data-size="sm" data-icon-only aria-label="Send">
+              <svg class="fds-icon" data-icon data-variant="outline" data-directional aria-hidden="true"><use href="/icons/sprite.svg#hi-arrow-right-outline"></use></svg>
+            </button>
+          </div>
+          <p class="fds-hint ai-disclaimer" data-i18n="disclaimer">Responses may be inaccurate — verify important information.</p>
+        </footer>
+      </main>
+    </div>
+  </TemplateFrame>
+
+  <style>
+    .ai { display: flex; block-size: 620px; background: var(--surface-page); }
+
+    /* On the Media background --surface-page is transparent by design, so the photo
+       shows through. An app shell is not a photo-facing surface: its text is dark ink
+       (the frame is a declared surface), so leaving it transparent puts dark type on a
+       photograph. Paint the shell opaque there — the photo still surrounds the device. */
+    :global([data-bg="media"]) .ai { background: var(--surface-1); }
+    .ai-side {
+      inline-size: 240px; flex-shrink: 0;
+      display: flex; flex-direction: column; gap: var(--space-1);
+      padding: var(--space-4);
+      background: var(--surface-1);
+      border-inline-end: 1px solid var(--border-subtle);
+      overflow-y: auto;
+    }
+    .ai-new { justify-content: flex-start; margin-block-end: var(--space-3); }
+    .ai-new svg { inline-size: 16px; block-size: 16px; }
+    .ai-side-group {
+      margin: var(--space-3) 0 var(--space-1);
+      font-size: var(--font-size-1); font-weight: 600;
+      color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .ai-session {
+      background: none; border: none; cursor: pointer; font: inherit;
+      color: var(--text-secondary); text-align: start;
+      font-size: var(--font-size-2);
+      padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-control);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .ai-session:hover { background: var(--surface-tint); color: var(--text-primary); }
+    .ai-session[aria-current="true"] { background: var(--accent-subtle); color: var(--text-on-accent-subtle); }
+
+    .ai-main { flex: 1; display: flex; flex-direction: column; min-inline-size: 0; }
+    .ai-bar { flex-shrink: 0; gap: var(--space-3); }
+    .ai-model { font-weight: 700; font-size: var(--font-size-4); }
+    .ai-scroll { flex: 1; overflow-y: auto; padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-6); }
+
+    .ai-turn { display: flex; gap: var(--space-4); }
+    .ai-av {
+      inline-size: var(--control-height-sm); block-size: var(--control-height-sm);
+      font-size: var(--font-size-1); flex-shrink: 0;
+    }
+    .ai-av-bot {
+      display: inline-flex; align-items: center; justify-content: center;
+      background: var(--accent-subtle); color: var(--text-on-accent-subtle);
+      border-radius: var(--radius-round);
+    }
+    .ai-av-bot svg { inline-size: 18px; block-size: 18px; }
+    /* Prose is capped by measure, not by container width, so it stays readable at
+       every density and type pairing. */
+    .ai-body { min-inline-size: 0; max-inline-size: 62ch; }
+    .ai-body p { margin: 0 0 var(--space-3); line-height: var(--line-height-4); }
+    .ai-turn-user .ai-body {
+      background: var(--surface-2);
+      padding: var(--space-4) var(--space-5);
+      border-radius: var(--radius-container);
+    }
+    .ai-turn-user .ai-body p { margin: 0; }
+
+    .ai-code {
+      margin: 0 0 var(--space-3);
+      padding: var(--space-4);
+      background: var(--surface-2);
+      border-radius: var(--radius-nested-tight);
+      overflow-x: auto;                       /* long lines scroll here, never the page */
+      font-family: var(--font-mono);
+      font-size: var(--font-size-2); line-height: var(--line-height-2);
+      color: var(--text-secondary);
+      /* code is direction-neutral: it stays LTR even when the UI flips */
+      direction: ltr; text-align: start;
+    }
+    .ai-code code { white-space: pre; }
+
+    .ai-actions { display: flex; gap: var(--space-2); }
+    .ai-act {
+      display: inline-flex; align-items: center; gap: var(--space-2);
+      background: none; border: none; cursor: pointer; font: inherit;
+      font-size: var(--font-size-1); color: var(--text-tertiary);
+      padding: var(--space-1) var(--space-2);
+      border-radius: var(--radius-control);
+    }
+    .ai-act:hover { background: var(--surface-tint); color: var(--text-primary); }
+    .ai-act svg { inline-size: 14px; block-size: 14px; }
+
+    .ai-streaming { margin-block-end: var(--space-2) !important; }
+    .ai-caret {
+      display: inline-block; inline-size: 2px; block-size: 1em;
+      vertical-align: text-bottom; margin-inline-start: 2px;
+      background: var(--text-accent);
+      animation: ai-blink calc(var(--duration-4) * 2.5) step-end infinite;
+    }
+    @keyframes ai-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    .ai-think { margin: 0; }
+
+    .ai-composer {
+      flex-shrink: 0;
+      padding: var(--space-4) var(--space-6) var(--space-5);
+      border-block-start: 1px solid var(--border-subtle);
+      background: var(--surface-1);
+    }
+    .ai-input-wrap { position: relative; display: flex; align-items: flex-end; gap: var(--space-3); }
+    .ai-input { flex: 1; min-block-size: var(--control-height-md); resize: none; }
+    .ai-send { flex-shrink: 0; }
+    .ai-send svg { inline-size: 18px; block-size: 18px; }
+    .ai-disclaimer { margin: var(--space-2) 0 0; text-align: center; }
+
+    @container (max-width: 767px) { .ai-side { inline-size: 200px; } }
+    @container (max-width: 480px) {
+      .ai { block-size: 560px; }
+      .ai-side { display: none; }
+      .ai-scroll { padding: var(--space-4); gap: var(--space-5); }
+      .ai-composer { padding: var(--space-3) var(--space-4) var(--space-4); }
+    }
+  </style>
+</DocsShell>

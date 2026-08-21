@@ -1,0 +1,46 @@
+{
+  "name": "flavor-ds",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Flavor DS — an agent-ready design system delivered via MCP",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "build:tokens": "node packages/tokens/build.mjs && node packages/tokens/figma-export.mjs && node packages/tokens/i18n-export.mjs && node packages/tokens/native-export.mjs && node scripts/build-agent-index.mjs",
+    "lint:tokens": "node scripts/check-tokens.mjs",
+    "build:mcp": "npm run build -w @flavor-ds/mcp",
+    "dev:docs": "npm run dev -w @flavor-ds/docs",
+    "build:docs": "npm run build -w @flavor-ds/docs",
+    "test": "node scripts/test-tokens.mjs && node scripts/wcag-qa.mjs && node scripts/test-figma-sync.mjs && node scripts/check-polish.mjs && node scripts/check-templates.mjs && node scripts/test-native.mjs && node scripts/check-canvas-utilities.mjs && node scripts/test-recall.mjs && node scripts/adoption.mjs --check",
+    "test:update": "node scripts/test-tokens.mjs --update",
+    "qa:wcag": "node scripts/wcag-qa.mjs",
+    "figma:plan": "node packages/tokens/figma-sync/plan.mjs",
+    "screens": "node scripts/screenshot-matrix.mjs",
+    "ci": "npm run build:tokens && npm run build:icons && npm run lint:tokens && npm test && npm run build:docs",
+    "test:figma": "node scripts/test-figma-sync.mjs",
+    "lint:polish": "node scripts/check-polish.mjs",
+    "lint:templates": "node scripts/check-templates.mjs",
+    "check:layout": "node scripts/check-template-layout.mjs",
+    "test:behaviors": "node scripts/test-behaviors.mjs",
+    "build:icons": "node packages/ui/scripts/build-icons.mjs",
+    "adoption": "node scripts/adoption.mjs",
+    "adoption:check": "node scripts/adoption.mjs --check",
+    "test:native": "node scripts/test-native.mjs",
+    "test:recall": "node scripts/test-recall.mjs",
+    "build:agent": "node scripts/build-agent-index.mjs",
+    "check:responsive": "node scripts/check-responsive.mjs",
+    "release:check": "node scripts/test-behaviors.mjs && node scripts/check-template-layout.mjs && node scripts/check-responsive.mjs && node scripts/screenshot-matrix.mjs"
+  },
+  "devDependencies": {
+    "heroicons": "^2.2.0",
+    "pixelmatch": "^7.2.0",
+    "playwright": "^1.62.1",
+    "pngjs": "^7.0.0"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "zod": "^3.24.0"
+  }
+}

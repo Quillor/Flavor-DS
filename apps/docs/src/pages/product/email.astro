@@ -1,0 +1,241 @@
+---
+import DocsShell from '../../layouts/DocsShell.astro';
+import TemplateFrame from '../../components/TemplateFrame.astro';
+import { productNav } from '../../product/productNav';
+const extraStrings = {
+  forward:     { en: 'Forward', es: 'Reenviar', zh: '转发', de: 'Weiterleiten', ar: 'إعادة توجيه' },
+  to:          { en: 'To', es: 'Para', zh: '收件人', de: 'An', ar: 'إلى' },
+  attachments: { en: 'Attachments', es: 'Adjuntos', zh: '附件', de: 'Anhänge', ar: 'المرفقات' },
+  folders:     { en: 'Folders', es: 'Carpetas', zh: '文件夹', de: 'Ordner', ar: 'المجلدات' },
+};
+---
+<DocsShell title="Email client" nav={productNav}>
+  <h1 style="font-family: var(--font-display); font-size: var(--font-size-9);">Email client</h1>
+  <p style="color: var(--text-secondary); max-inline-size: 640px;">
+    Three-pane email client — folders, message list, and reading pane — dropping the reading pane
+    on tablet and collapsing to the list plus a tab bar on mobile. Try iOS/Android and Arabic (RTL)
+    with the frame controls.
+  </p>
+
+  <TemplateFrame title="email" extraStrings={extraStrings}>
+    <div class="fds-statusbar" aria-hidden="true"><span>9:41</span><span>●●●</span></div>
+    <div class="em-layout">
+      <aside class="em-folders">
+        <button class="fds-button" data-variant="primary" style="inline-size:100%; margin-block-end: var(--space-4);" data-i18n="compose">Compose</button>
+        <div class="fds-sidenav-group" data-i18n="folders">Folders</div>
+        <a href="#" class="em-folder" data-hit aria-current="page">
+          <svg class="fds-icon" data-icon data-variant="outline" width="1.8" aria-hidden="true"><use href="/icons/sprite.svg#hi-inbox-outline"></use></svg>
+          <span data-i18n="inbox">Inbox</span>
+          <span class="fds-badge" data-variant="solid">12</span>
+        </a>
+        <a href="#" class="em-folder" data-hit>
+          <svg class="fds-icon" data-icon data-variant="outline" data-directional width="1.8" aria-hidden="true"><use href="/icons/sprite.svg#hi-paper-airplane-outline"></use></svg>
+          <span data-i18n="sent">Sent</span>
+        </a>
+        <a href="#" class="em-folder" data-hit>
+          <svg class="fds-icon" data-icon data-variant="outline" width="1.8" aria-hidden="true"><use href="/icons/sprite.svg#hi-document-text-outline"></use></svg>
+          <span data-i18n="drafts">Drafts</span>
+          <span class="fds-badge" data-variant="neutral">3</span>
+        </a>
+        <a href="#" class="em-folder" data-hit>
+          <svg class="fds-icon" data-icon data-variant="outline" width="1.8" aria-hidden="true"><use href="/icons/sprite.svg#hi-archive-box-outline"></use></svg>
+          <span data-i18n="archive">Archive</span>
+        </a>
+      </aside>
+
+      <section class="em-list" aria-label="Message list">
+        <header class="em-list-head">
+          <input class="fds-input" type="search" data-i18n-placeholder="search" placeholder="Search" />
+        </header>
+        <button class="em-row em-unread" data-hit>
+          <span class="em-accent-dot" aria-hidden="true"></span>
+          <span class="em-row-main">
+            <span class="em-row-top"><strong>Maya Kim</strong><span class="em-row-time">9:32</span></span>
+            <span class="em-row-subject">Token audit results</span>
+            <span class="em-row-snippet">Zero primitive references left in the app tier — the guard script is now wired into CI and…</span>
+          </span>
+        </button>
+        <button class="em-row em-selected" data-hit aria-current="true">
+          <span class="em-row-main">
+            <span class="em-row-top"><strong>Jonas Okafor</strong><span class="em-row-time">8:47</span></span>
+            <span class="em-row-subject">Q3 design system roadmap</span>
+            <span class="em-row-snippet">Attached is the draft roadmap for next quarter. Headline items: density modes, motion tokens…</span>
+          </span>
+        </button>
+        <button class="em-row" data-hit>
+          <span class="em-row-main">
+            <span class="em-row-top"><strong>Ana López</strong><span class="em-row-time" data-i18n="yesterday">Yesterday</span></span>
+            <span class="em-row-subject">RTL review complete</span>
+            <span class="em-row-snippet">Every template mirrored correctly with zero overrides. Logical properties paid off — full notes…</span>
+          </span>
+        </button>
+        <button class="em-row" data-hit>
+          <span class="em-row-main">
+            <span class="em-row-top"><strong>Sam Berger</strong><span class="em-row-time" data-i18n="yesterday">Yesterday</span></span>
+            <span class="em-row-subject">Sync tomorrow?</span>
+            <span class="em-row-snippet">Would love 30 minutes to walk through the checkout flow before it ships. I have a few thoughts on…</span>
+          </span>
+        </button>
+        <button class="em-row" data-hit>
+          <span class="em-row-main">
+            <span class="em-row-top"><strong>Rina Das</strong><span class="em-row-time">Mon</span></span>
+            <span class="em-row-subject">New illustrations uploaded</span>
+            <span class="em-row-snippet">The Open Doodles set is now tokenized — accent fills resolve to --illustration-accent so they…</span>
+          </span>
+        </button>
+      </section>
+
+      <main class="em-read" aria-label="Reading pane">
+        <header class="em-read-head">
+          <h2 class="em-read-subject">Q3 design system roadmap</h2>
+          <div class="em-read-meta">
+            <span class="fds-avatar">JO</span>
+            <div class="em-read-who">
+              <strong>Jonas Okafor</strong>
+              <span class="em-read-to"><span data-i18n="to">To</span>: hello@timrosenberg.com</span>
+            </div>
+            <span class="em-read-time">8:47</span>
+          </div>
+        </header>
+        <div class="em-body">
+          <p>Hi Tim,</p>
+          <p>Attached is the draft roadmap for next quarter. Headline items: density modes across every
+            component, a motion token tier with duration and easing scales, and template coverage for the
+            remaining product surfaces.</p>
+          <p>The theming engine work from last sprint unblocked most of this — semantic tokens mean each
+            new axis lands everywhere at once. I would like your eyes on the sequencing before Thursday's
+            planning session.</p>
+          <p>Best,<br />Jonas</p>
+        </div>
+        <div class="em-attach">
+          <span class="em-attach-label" data-i18n="attachments">Attachments</span>
+          <div class="em-attach-row">
+            <span class="em-chip">
+              <svg class="fds-icon" data-icon data-variant="outline" width="1.8" aria-hidden="true"><use href="/icons/sprite.svg#hi-paper-clip-outline"></use></svg>
+              roadmap-q3.pdf <span class="em-chip-size">1.2 MB</span>
+            </span>
+            <span class="em-chip">
+              <svg class="fds-icon" data-icon data-variant="outline" width="1.8" aria-hidden="true"><use href="/icons/sprite.svg#hi-paper-clip-outline"></use></svg>
+              sequencing.xlsx <span class="em-chip-size">84 KB</span>
+            </span>
+          </div>
+        </div>
+        <footer class="em-read-actions">
+          <button class="fds-button" data-variant="secondary" data-i18n="reply">Reply</button>
+          <button class="fds-button" data-variant="outline" data-i18n="forward">Forward</button>
+        </footer>
+      </main>
+    </div>
+
+    <nav class="fds-tabbar em-tabbar" aria-label="Mail navigation">
+      <button class="fds-tabbar-item" data-active>
+        <svg class="fds-icon" data-icon data-variant="outline" width="1.8" aria-hidden="true"><use href="/icons/sprite.svg#hi-inbox-outline"></use></svg>
+        <span data-i18n="inbox">Inbox</span>
+      </button>
+      <button class="fds-tabbar-item">
+        <svg class="fds-icon" data-icon data-variant="outline" data-directional width="1.8" aria-hidden="true"><use href="/icons/sprite.svg#hi-paper-airplane-outline"></use></svg>
+        <span data-i18n="sent">Sent</span>
+      </button>
+      <button class="fds-tabbar-item">
+        <svg class="fds-icon" data-icon data-variant="outline" width="1.8" aria-hidden="true"><use href="/icons/sprite.svg#hi-plus-outline"></use></svg>
+        <span data-i18n="compose">Compose</span>
+      </button>
+      <button class="fds-tabbar-item">
+        <svg class="fds-icon" data-icon data-variant="outline" width="1.8" aria-hidden="true"><use href="/icons/sprite.svg#hi-archive-box-outline"></use></svg>
+        <span data-i18n="archive">Archive</span>
+      </button>
+    </nav>
+  </TemplateFrame>
+
+  <style>
+    .em-layout { display: flex; block-size: 620px; }
+    .em-folders {
+      inline-size: 200px; flex-shrink: 0;
+      padding: var(--space-4);
+      background: var(--surface-1);
+      border-inline-end: 1px solid var(--border-subtle);
+      display: flex; flex-direction: column; gap: var(--space-1);
+    }
+    .em-folders .fds-sidenav-group { margin-inline: var(--space-2); }
+    .em-folder {
+      display: flex; align-items: center; gap: var(--space-3);
+      color: var(--text-secondary); text-decoration: none; font-weight: 500; font-size: var(--font-size-3);
+      padding: var(--space-2) var(--space-3); border-radius: var(--radius-control);
+      transition: background-color var(--duration-2) var(--ease-standard), color var(--duration-2) var(--ease-standard);
+    }
+    .em-folder:hover { background: var(--surface-tint); color: var(--text-primary); }
+    .em-folder[aria-current="page"] { background: var(--accent-subtle); color: var(--text-on-accent-subtle); font-weight: 600; }
+    .em-folder svg { inline-size: 18px; block-size: 18px; flex-shrink: 0; }
+    .em-folder .fds-badge { margin-inline-start: auto; }
+
+    .em-list {
+      inline-size: 320px; flex-shrink: 0;
+      display: flex; flex-direction: column;
+      border-inline-end: 1px solid var(--border-subtle);
+      background: var(--surface-1);
+      overflow-y: auto;
+    }
+    .em-list-head { padding: var(--space-4); border-block-end: 1px solid var(--border-subtle); }
+    .em-row {
+      display: flex; align-items: flex-start; gap: var(--space-2);
+      padding: var(--space-3) var(--space-4);
+      background: none; border: none; border-block-end: 1px solid var(--border-subtle);
+      cursor: pointer; font: inherit; color: var(--text-primary); text-align: start;
+      transition: background-color var(--duration-2) var(--ease-standard);
+    }
+    .em-row:hover { background: var(--surface-tint); }
+    .em-selected { background: var(--accent-subtle); }
+    .em-selected:hover { background: var(--accent-subtle); }
+    .em-accent-dot {
+      inline-size: 8px; block-size: 8px; flex-shrink: 0;
+      border-radius: var(--radius-round);
+      background: var(--accent-bg);
+      margin-block-start: var(--space-2);
+    }
+    .em-row-main { display: flex; flex-direction: column; gap: 2px; min-inline-size: 0; flex: 1; }
+    .em-row-top { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-2); }
+    .em-row-time { color: var(--text-tertiary); font-size: var(--font-size-1); flex-shrink: 0; }
+    .em-row-subject { font-size: var(--font-size-3); }
+    .em-unread .em-row-subject, .em-unread strong { font-weight: 700; }
+    .em-row-snippet {
+      color: var(--text-tertiary); font-size: var(--font-size-2);
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+
+    .em-read { flex: 1; min-inline-size: 0; display: flex; flex-direction: column; overflow-y: auto; padding: var(--space-6); gap: var(--space-5); }
+    .em-read-subject { font-family: var(--font-display); font-size: var(--font-size-6); margin: 0 0 var(--space-4); }
+    .em-read-meta { display: flex; align-items: center; gap: var(--space-3); }
+    .em-read-who { display: flex; flex-direction: column; flex: 1; min-inline-size: 0; }
+    .em-read-to { color: var(--text-tertiary); font-size: var(--font-size-2); }
+    .em-read-time { color: var(--text-tertiary); font-size: var(--font-size-2); }
+    .em-body { color: var(--text-primary); line-height: var(--line-height-4); display: flex; flex-direction: column; gap: var(--space-3); }
+    .em-body p { margin: 0; }
+
+    .em-attach { display: flex; flex-direction: column; gap: var(--space-2); }
+    .em-attach-label { font-size: var(--font-size-1); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-tertiary); }
+    .em-attach-row { display: flex; gap: var(--space-3); flex-wrap: wrap; }
+    .em-chip {
+      display: inline-flex; align-items: center; gap: var(--space-2);
+      font-size: var(--font-size-2); font-weight: 600;
+      padding: var(--space-2) var(--space-4);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-round);
+      background: var(--surface-2);
+    }
+    .em-chip svg { inline-size: 16px; block-size: 16px; color: var(--text-accent); }
+    .em-chip-size { color: var(--text-tertiary); font-weight: 500; }
+    .em-read-actions { display: flex; gap: var(--space-3); margin-block-start: auto; padding-block-start: var(--space-4); border-block-start: 1px solid var(--border-subtle); }
+
+    .em-tabbar { display: none; }
+
+    @container (max-width: 767px) {
+      .em-read { display: none; }
+      .em-list { flex: 1; inline-size: auto; border-inline-end: none; }
+    }
+    @container (max-width: 480px) {
+      .em-layout { block-size: 560px; }
+      .em-folders { display: none; }
+      .em-tabbar { display: flex; position: sticky; inset-block-end: 0; }
+    }
+  </style>
+</DocsShell>

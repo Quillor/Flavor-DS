@@ -1,0 +1,50 @@
+---
+import DocsShell from '../../layouts/DocsShell.astro';
+import { coreNav } from '../../coreNav';
+import meta from '@flavor-ds/tokens/dist/meta.json';
+---
+<DocsShell title="Core UI" nav={coreNav}>
+  <h1 style="font-family: var(--font-display); font-size: var(--font-size-9);">Core UI</h1>
+  <p style="color: var(--text-secondary); max-inline-size: 640px;">
+    The themeable infrastructure every product consumes: color ramps, semantic tokens,
+    elevation, typography, spacing, motion, and the core component library.
+  </p>
+
+  <div style="display:grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap: var(--space-4);">
+    <div class="fds-card">
+      <h2 class="fds-card-title">Theme axes</h2>
+      <p class="fds-card-description">
+        {meta.axes.hue.length} hues · {meta.axes.sat.length} saturations · light/dark · AA/AAA ·
+        {meta.axes.density.length} densities · LTR/RTL. Total: <strong>{meta.themeCount} color themes</strong>.
+      </p>
+    </div>
+    <div class="fds-card">
+      <h2 class="fds-card-title">Equal-luminosity ramps</h2>
+      <p class="fds-card-description">
+        Every hue shares identical OKLCH lightness per step, so swapping hue never changes
+        hierarchy or contrast approval.
+      </p>
+    </div>
+    <div class="fds-card">
+      <h2 class="fds-card-title">Elevation that respects dark mode</h2>
+      <p class="fds-card-description">
+        Light mode separates layers with shadow; dark mode <em>lightens</em> each layer
+        (page → surface → drawer → modal). Not a pure inversion.
+      </p>
+    </div>
+  </div>
+
+  <h2 style="font-family: var(--font-display);">Live sample</h2>
+  <div class="fds-card" data-elevation="2" style="display:flex; flex-direction:column; gap: var(--space-4);">
+    <div style="display:flex; gap: var(--space-3); flex-wrap:wrap;">
+      <button class="fds-button" data-variant="primary">Primary</button>
+      <button class="fds-button" data-variant="secondary">Secondary</button>
+      <button class="fds-button" data-variant="outline">Outline</button>
+      <button class="fds-button" data-variant="ghost">Ghost</button>
+      <button class="fds-button" data-variant="danger">Danger</button>
+    </div>
+    <div class="fds-alert" data-variant="success">
+      <div><p class="fds-alert-title">Theme-proof</p>Switch any axis in the Theme control — this card stays legible in all 96 combinations.</div>
+    </div>
+  </div>
+</DocsShell>

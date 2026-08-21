@@ -1,0 +1,151 @@
+---
+import DocsShell from '../../layouts/DocsShell.astro';
+const nav = [{ group: 'Marketing DS', items: [{ label: 'Social formats', href: '/marketing/' }] }];
+---
+<DocsShell title="Marketing" nav={nav}>
+  <h1 style="font-family: var(--font-display); font-size: var(--font-size-9);">Marketing DS</h1>
+  <p style="color: var(--text-secondary); max-inline-size: 660px;">
+    Social graphic formats composed entirely from the system — tokens, patterns, brand assets,
+    and photography. Switch any theme axis and every format re-brands itself. Export by
+    screenshotting at the native size noted on each card.
+  </p>
+
+  <h2 style="font-family: var(--font-display);">LinkedIn — 1200 × 627</h2>
+  <div class="mk-row">
+    <figure class="mk-format" style="--w: 1200; --h: 627;">
+      <div class="mk-canvas mk-linkedin-announce">
+        <div class="mk-li-copy">
+          <img src="/brand/logo-horizontal-color.svg" alt="" class="mk-logo mk-logo-light" /><img src="/brand/logo-horizontal-white.svg" alt="" class="mk-logo mk-logo-dark" />
+          <p class="mk-kicker">Product update</p>
+          <p class="mk-headline">96 themes.<br/>One import.</p>
+          <p class="mk-sub">The agent-ready design system, delivered over MCP.</p>
+          <span class="mk-cta">flavor.design</span>
+        </div>
+        <div class="mk-li-art fds-pattern-starburst">
+          <img src="/photography/product.jpg" alt="Chrome atomic-age gadget in hand" class="mk-photo" />
+        </div>
+      </div>
+      <figcaption class="fds-hint">Announcement · photography + starburst pattern</figcaption>
+    </figure>
+
+    <figure class="mk-format" style="--w: 1200; --h: 627;">
+      <div class="mk-canvas mk-linkedin-quote fds-pattern-dots">
+        <p class="mk-quote">“Contrast is computed,<br/>not promised.”</p>
+        <div class="mk-quote-attrib">
+          <img src="/brand/logo-square-color.svg" alt="" width="40" height="40" />
+          <div>
+            <p class="mk-attrib-name">Flavor DS</p>
+            <p class="mk-attrib-role">Design system principles, №2</p>
+          </div>
+        </div>
+      </div>
+      <figcaption class="fds-hint">Quote card · dot pattern surface</figcaption>
+    </figure>
+  </div>
+
+  <h2 style="font-family: var(--font-display);">Instagram — 1080 × 1080</h2>
+  <div class="mk-row">
+    <figure class="mk-format" style="--w: 1080; --h: 1080;">
+      <div class="mk-canvas mk-ig-photo">
+        <img src="/photography/hero.jpg" alt="Retro-futurist skyline" class="mk-photo" />
+        <div class="mk-ig-band">
+          <p class="mk-headline" style="font-size: var(--font-size-8);">The future,<br/>as designed in 1955.</p>
+          <span class="mk-cta">New photography direction →</span>
+        </div>
+      </div>
+      <figcaption class="fds-hint">Photo post · duotone band overlay</figcaption>
+    </figure>
+
+    <figure class="mk-format" style="--w: 1080; --h: 1080;">
+      <div class="mk-canvas mk-ig-tokens fds-pattern-grid">
+        <p class="mk-kicker" style="margin-block-start: var(--space-6);">Swatch drop</p>
+        <div class="mk-swatches">
+          {[9, 7, 5, 3].map((s) => <div class="mk-swatch" style={`background: var(--ramp-${s});`}></div>)}
+        </div>
+        <p class="mk-headline" style="font-size: var(--font-size-7); text-align:center;">Every hue.<br/>Twelve steps.</p>
+        <img src="/brand/logo-horizontal-color.svg" alt="" class="mk-logo mk-logo-light" style="margin-block-end: var(--space-6);" /><img src="/brand/logo-horizontal-white.svg" alt="" class="mk-logo mk-logo-dark" style="margin-block-end: var(--space-6);" />
+      </div>
+      <figcaption class="fds-hint">Token showcase · re-themes with the switcher</figcaption>
+    </figure>
+  </div>
+
+  <h2 style="font-family: var(--font-display);">Instagram Story — 1080 × 1920</h2>
+  <div class="mk-row">
+    <figure class="mk-format mk-story" style="--w: 1080; --h: 1920;">
+      <div class="mk-canvas mk-ig-story">
+        <img src="/photography/collaboration.jpg" alt="1950s team at a futuristic console" class="mk-photo" />
+        <div class="mk-story-copy">
+          <p class="mk-kicker">Behind the system</p>
+          <p class="mk-headline" style="font-size: var(--font-size-8);">Built for humans and agents</p>
+          <span class="mk-cta">Swipe up</span>
+        </div>
+      </div>
+      <figcaption class="fds-hint">Story · photo + gradient scrim</figcaption>
+    </figure>
+    <figure class="mk-format mk-story" style="--w: 1080; --h: 1920;">
+      <div class="mk-canvas mk-ig-story mk-story-type fds-pattern-diagonal">
+        <img src="/brand/logo-square-color.svg" alt="" width="64" height="64" />
+        <p class="mk-headline" style="font-size: var(--font-size-9); line-height: var(--line-height-9);">AA by default.<br/>AAA on demand.</p>
+        <span class="mk-cta">flavor.design/contrast</span>
+      </div>
+      <figcaption class="fds-hint">Story · typographic on pattern</figcaption>
+    </figure>
+  </div>
+
+  <style>
+    .mk-row { display: flex; gap: var(--space-5); flex-wrap: wrap; margin-block-end: var(--space-7); }
+    .mk-format { margin: 0; flex: 1; min-inline-size: 280px; max-inline-size: 460px; }
+    .mk-story { max-inline-size: 260px; }
+    .mk-canvas {
+      aspect-ratio: var(--w) / var(--h);
+      border-radius: var(--radius-4);
+      overflow: hidden;
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--elevation-2);
+      background: var(--surface-1);
+      position: relative;
+      display: flex;
+      margin-block-end: var(--space-2);
+    }
+    .mk-logo { block-size: 28px; inline-size: auto; align-self: start; }
+    .mk-logo-dark { display: none; }
+    :global([data-mode="dark"]) .mk-logo-light { display: none; }
+    :global([data-mode="dark"]) .mk-logo-dark { display: block; }
+    .mk-kicker { font-size: var(--font-size-1); font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-accent); margin: 0; }
+    .mk-headline { font-family: var(--font-display); font-weight: 700; font-size: var(--font-size-7); line-height: 1.1; color: var(--text-primary); margin: 0; }
+    .mk-sub { color: var(--text-secondary); font-size: var(--font-size-2); margin: 0; }
+    .mk-cta { display: inline-block; background: var(--accent-bg); color: var(--accent-fg); font-weight: 700; font-size: var(--font-size-1); padding: var(--space-2) var(--space-4); border-radius: var(--radius-full); }
+    .mk-photo { inline-size: 100%; block-size: 100%; object-fit: cover; }
+
+    .mk-linkedin-announce .mk-li-copy { flex: 1.1; display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-6); justify-content: center; align-items: start; }
+    .mk-linkedin-announce .mk-li-art { flex: 0.9; position: relative; }
+
+    .mk-linkedin-quote { flex-direction: column; justify-content: center; align-items: center; gap: var(--space-5); text-align: center; padding: var(--space-6); }
+    .mk-quote { font-family: var(--font-display); font-size: var(--font-size-7); font-weight: 700; margin: 0; color: var(--text-primary); }
+    .mk-quote-attrib { display: flex; gap: var(--space-3); align-items: center; }
+    .mk-attrib-name { font-weight: 700; margin: 0; font-size: var(--font-size-2); text-align: start; }
+    .mk-attrib-role { color: var(--text-tertiary); margin: 0; font-size: var(--font-size-1); text-align: start; }
+
+    .mk-ig-photo { flex-direction: column; }
+    .mk-ig-photo .mk-photo { position: absolute; inset: 0; }
+    .mk-ig-band {
+      position: relative; margin-block-start: auto;
+      background: var(--surface-1); opacity: 0.96;
+      padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-3); align-items: start;
+      border-block-start: 4px solid var(--accent-bg);
+    }
+    .mk-ig-tokens { flex-direction: column; align-items: center; justify-content: space-between; padding: var(--space-5); }
+    .mk-swatches { display: flex; gap: var(--space-2); }
+    .mk-swatch { inline-size: 44px; block-size: 44px; border-radius: var(--radius-3); border: 1px solid var(--border-subtle); }
+
+    .mk-ig-story { flex-direction: column; }
+    .mk-ig-story .mk-photo { position: absolute; inset: 0; }
+    .mk-story-copy {
+      position: relative; margin-block-start: auto; padding: var(--space-6);
+      display: flex; flex-direction: column; gap: var(--space-3); align-items: start;
+      background: linear-gradient(transparent, var(--surface-page) 55%);
+      padding-block-start: var(--space-10);
+    }
+    .mk-story-type { justify-content: center; align-items: center; gap: var(--space-6); text-align: center; padding: var(--space-6); }
+  </style>
+</DocsShell>

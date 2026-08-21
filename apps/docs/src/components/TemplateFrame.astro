@@ -1,0 +1,162 @@
+---
+/**
+ * Wraps a product template with device / platform / language controls.
+ * - Device: container width (desktop 100%, tablet 768px, mobile 390px);
+ *   templates adapt via @container queries (the frame is a container).
+ * - Platform: data-platform="web|ios|android" on the frame; components.css
+ *   restyles type, radius, and navigation idioms per platform.
+ * - Language: swaps [data-i18n] strings (en/es/zh/de/ar) and flips the frame
+ *   to RTL for Arabic. The site chrome keeps its own direction.
+ */
+import { STRINGS, LANGS } from '../product/i18n';
+interface Props {
+  title: string;
+  extraStrings?: Record<string, Record<string, string>>;
+  native?: boolean; // show iOS/Android toggles
+}
+const { title, extraStrings = {}, native = true } = Astro.props;
+const strings = { ...STRINGS, ...extraStrings };
+const frameId = `tpl-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+---
+<div class="tpl-wrap" id={frameId}>
+  <div class="tpl-toolbar">
+    <div class="tpl-group" role="radiogroup" aria-label="Device">
+      <button class="fds-button" data-size="sm" data-variant="primary" data-device="desktop" role="radio" aria-checked="true">Desktop</button>
+      <button class="fds-button" data-size="sm" data-variant="ghost" data-device="tablet" role="radio" aria-checked="false">Tablet</button>
+      <button class="fds-button" data-size="sm" data-variant="ghost" data-device="mobile" role="radio" aria-checked="false">Mobile</button>
+    </div>
+    {native && (
+      <div class="tpl-group" role="radiogroup" aria-label="Platform">
+        <button class="fds-button" data-size="sm" data-variant="primary" data-platform-btn="web" role="radio" aria-checked="true">Web</button>
+        <button class="fds-button" data-size="sm" data-variant="ghost" data-platform-btn="ios" role="radio" aria-checked="false">iOS</button>
+        <button class="fds-button" data-size="sm" data-variant="ghost" data-platform-btn="android" role="radio" aria-checked="false">Android</button>
+      </div>
+    )}
+    {native && (
+      <div class="tpl-group tpl-type" hidden>
+        <label style="display:inline-flex; align-items:center; gap: var(--space-2);">
+          <span class="fds-hint tpl-type-name">Text size</span>
+          <input class="fds-slider tpl-type-range" type="range" min="0" max="11" step="1" value="3" aria-label="OS text size" style="inline-size: 140px;" />
+        </label>
+        <span class="fds-badge tpl-type-val" data-variant="neutral" aria-live="polite">Large (default)</span>
+      </div>
+    )}
+    <label class="tpl-group" style="display:inline-flex; align-items:center; gap: var(--space-2);">
+      <span class="fds-hint">Language</span>
+      <select class="fds-select tpl-lang" style="inline-size:auto; block-size: var(--control-height-sm);">
+        {LANGS.map((l) => <option value={l.code} data-dir={l.dir}>{l.label}</option>)}
+      </select>
+    </label>
+  </div>
+  <div class="tpl-viewport">
+    <div class="tpl-frame fds-app" data-platform="web" data-lang="en" dir="ltr">
+      <slot />
+    </div>
+  </div>
+</div>
+
+<style>
+  .tpl-wrap { margin-block: var(--space-5); }
+  .tpl-toolbar {
+    display: flex; flex-wrap: wrap; gap: var(--space-4); align-items: center;
+    margin-block-end: var(--space-4);
+  }
+  .tpl-group { display: inline-flex; gap: var(--space-1); }
+  .tpl-viewport {
+    background: var(--surface-tint);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-5);
+    padding: var(--space-6);
+    display: flex; justify-content: center;
+    overflow-x: auto;
+  }
+  .tpl-frame {
+    container-type: inline-size;
+    inline-size: 100%;
+    max-inline-size: 100%;
+    background: var(--surface-page);
+    border-radius: var(--radius-4);
+    box-shadow: var(--elevation-2);
+    overflow: hidden;
+    transition: inline-size var(--duration-3) var(--ease-standard);
+  }
+  /* Real device metrics, in CSS px = pt/dp. Web tablet 768 / mobile 390; iOS = iPhone 15
+     (393×852) / iPad mini (744×1133); Android = Pixel 8 (412×915) / Pixel Tablet (800×1280).
+     Heights let the native chrome (status bar, tab bar, home indicator) sit where it does. */
+  .tpl-frame[data-device="tablet"] { inline-size: 768px; }
+  .tpl-frame[data-device="mobile"] { inline-size: 390px; }
+  .tpl-frame[data-platform="ios"][data-device="mobile"] { inline-size: 393px; }
+  .tpl-frame[data-platform="ios"][data-device="tablet"] { inline-size: 744px; }
+  .tpl-frame[data-platform="android"][data-device="mobile"] { inline-size: 412px; }
+  .tpl-frame[data-platform="android"][data-device="tablet"] { inline-size: 800px; }
+  /* Device bezel — physical hardware facts, not theme values, so they are --device-* rather
+     than tokens: iPhone 15 continuous 55pt corner + Dynamic Island 126×37; Pixel 8 28dp
+     corner + hole punch; tablets 24. Decoration AROUND the frame, never UI inside it. */
+  .tpl-frame[data-platform="ios"][data-device="mobile"] { --device-corner: 55px; --device-bezel: 8px; --device-cutout-w: 126px; --device-cutout-h: 37px; --device-cutout-r: 20px; }
+  .tpl-frame[data-platform="android"][data-device="mobile"] { --device-corner: 28px; --device-bezel: 6px; --device-cutout-w: 12px; --device-cutout-h: 12px; --device-cutout-r: 50%; }
+  .tpl-frame[data-platform="ios"][data-device="tablet"], .tpl-frame[data-platform="android"][data-device="tablet"] { --device-corner: 24px; --device-bezel: 10px; }
+  .tpl-frame[data-platform="ios"][data-device="mobile"], .tpl-frame[data-platform="android"][data-device="mobile"],
+  .tpl-frame[data-platform="ios"][data-device="tablet"], .tpl-frame[data-platform="android"][data-device="tablet"] {
+    border-radius: var(--device-corner); border: var(--device-bezel) solid var(--text-primary); position: relative;
+  }
+  .tpl-frame[data-platform="ios"][data-device="mobile"]::before, .tpl-frame[data-platform="android"][data-device="mobile"]::before {
+    content: ''; position: absolute; inset-block-start: 11px; inset-inline-start: 50%; translate: -50% 0; z-index: 5;
+    inline-size: var(--device-cutout-w); block-size: var(--device-cutout-h); border-radius: var(--device-cutout-r); background: var(--text-primary);
+  }
+</style>
+
+<script define:vars={{ frameId, strings }}>
+  const root = document.getElementById(frameId);
+  const frame = root.querySelector('.tpl-frame');
+  // Dynamic type: OS text-size setting per platform (iOS Dynamic Type categories / Android font scale).
+  // The module writes --type-scale-1..12 on the frame; every token font-size re-resolves.
+  const typeMod = window.FlavorTypeScale ? Promise.resolve(window.FlavorTypeScale) : new Promise((r) => document.addEventListener('fds:type-scale', () => r(window.FlavorTypeScale), { once: true }));
+  const typeBox = root.querySelector('.tpl-type'), typeRange = root.querySelector('.tpl-type-range'), typeVal = root.querySelector('.tpl-type-val'), typeName = root.querySelector('.tpl-type-name');
+  const setTypeUI = async (platform) => {
+    if (!typeBox) return;
+    const m = await typeMod; const steps = m.stepsFor(platform);
+    if (!steps.length) { typeBox.hidden = true; m.clearTypeScale(frame); return; }
+    typeBox.hidden = false; typeRange.max = String(steps.length - 1);
+    const def = Math.max(0, steps.findIndex((x) => x.default)); typeRange.value = String(def);
+    typeName.textContent = platform === 'ios' ? 'Dynamic Type' : 'Font scale';
+    applyType(platform);
+  };
+  const applyType = async (platform = frame.dataset.platform) => {
+    const m = await typeMod; const steps = m.stepsFor(platform); if (!steps.length) return;
+    const st = steps[Number(typeRange.value)] || steps[0];
+    m.applyTypeScale(frame, { platform, step: st.id });
+    typeVal.textContent = st.label; typeRange.setAttribute('aria-valuetext', st.label);
+  };
+  typeRange?.addEventListener('input', () => applyType());
+
+  const radios = (attr, apply) => {
+    const btns = [...root.querySelectorAll(`[${attr}]`)];
+    btns.forEach((b) => b.addEventListener('click', () => {
+      btns.forEach((x) => { x.dataset.variant = 'ghost'; x.setAttribute('aria-checked', 'false'); });
+      b.dataset.variant = 'primary'; b.setAttribute('aria-checked', 'true');
+      apply(b.getAttribute(attr));
+    }));
+  };
+  radios('data-device', (v) => { if (v === 'desktop') delete frame.dataset.device; else frame.dataset.device = v; });
+  radios('data-platform-btn', (v) => { frame.dataset.platform = v; setTypeUI(v); });
+
+  const langSel = root.querySelector('.tpl-lang');
+  langSel?.addEventListener('change', () => {
+    const lang = langSel.value;
+    const dir = langSel.selectedOptions[0].dataset.dir || 'ltr';
+    frame.dataset.lang = lang;
+    frame.setAttribute('dir', dir);
+    frame.querySelectorAll('[data-i18n]').forEach((el) => {
+      const t = strings[el.dataset.i18n]?.[lang];
+      if (t) el.textContent = t;
+    });
+    frame.querySelectorAll('[data-i18n-placeholder]').forEach((el) => {
+      const t = strings[el.dataset.i18nPlaceholder]?.[lang];
+      if (t) el.setAttribute('placeholder', t);
+    });
+    frame.querySelectorAll('[data-i18n-aria]').forEach((el) => {
+      const t = strings[el.dataset.i18nAria]?.[lang];
+      if (t) el.setAttribute('aria-label', t);
+    });
+  });
+</script>

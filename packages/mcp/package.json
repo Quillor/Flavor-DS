@@ -1,0 +1,22 @@
+{
+  "name": "@flavor-ds/mcp",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Flavor DS MCP server \u2014 serves tokens, themes, components, and adaptation guidance to agents.",
+  "bin": {
+    "flavor-ds-mcp": "src/server.mjs"
+  },
+  "scripts": {
+    "build": "node --check src/server.mjs",
+    "start": "node src/server.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "zod": "^3.24.0",
+    "@flavor-ds/tokens": "*",
+    "@flavor-ds/ui": "*"
+  },
+  "files": [
+    "src"
+  ]
+}
