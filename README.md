@@ -85,6 +85,6 @@ node packages/mcp/src/server.mjs   # MCP server (stdio)
 - Illustrations: [Open Doodles](https://www.opendoodles.com) — CC0. Tokenized (see `assets/illustrations/LICENSE.md`).
 - Icons: [Heroicons](https://heroicons.com) v2 — MIT. Full set (324) as a sprite + per-file SVGs; outline/solid/mini/micro. `<Icon>` in React, `.fds-icon` + `<use>` in HTML, `flavor_find_icon` over MCP.
 - Photography: generated (Higgsfield), owned by this project.
-- Fonts (all OFL): Space Grotesk + Inter (Flavor, default) · Fraunces + Libre Franklin (Editorial) ·
-  Source Serif 4 + Source Sans 3 (Reading) · Jost + DM Sans (Geometric) · Syne + Archivo (Expressive) ·
+- Fonts (all OFL): Syne + Archivo (Expressive, default) · Space Grotesk + Inter (Flavor) · Fraunces + Libre Franklin (Editorial) ·
+  Source Serif 4 + Source Sans 3 (Reading) · Jost + DM Sans (Geometric) ·
   IBM Plex Mono (code, all pairings).

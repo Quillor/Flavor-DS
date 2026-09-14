@@ -71,12 +71,12 @@
     "bg": "primary",
     "radius": "rounded",
     "density": "regular",
-    "font": "flavor",
+    "font": "expressive",
     "dir": "ltr"
   },
   "fontPairs": {
     "flavor": {
-      "label": "Flavor (default)",
+      "label": "Flavor",
       "display": "'Space Grotesk', 'Helvetica Neue', system-ui, sans-serif",
       "text": "'Inter', system-ui, -apple-system, sans-serif",
       "googleCss": "https://fonts.googleapis.com/css2?family=Space%20Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&display=swap"
@@ -101,7 +101,7 @@
       "googleCss": "https://fonts.googleapis.com/css2?family=Jost:wght@500;700&family=DM%20Sans:wght@400;500;700&display=swap"
     },
     "expressive": {
-      "label": "Expressive",
+      "label": "Expressive (default)",
       "display": "'Syne', system-ui, sans-serif",
       "text": "'Archivo', system-ui, sans-serif",
       "was": "Atomic Age",

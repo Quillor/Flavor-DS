@@ -98,7 +98,7 @@ These are not preferences. Each one is enforced by a check in `npm test`; a viol
 
 1. **Semantic tokens only.** Components, templates and product code reference `--surface-*`, `--text-*`, `--border-*`, `--accent-*`, `--success|warning|danger|info-*`, `--space-N`, `--radius-control|field|container|media|round`, `--font-*`, `--duration-N`, `--ease-*`. Never a primitive (`--flavor-*`, `--ramp-*`) and never a literal colour or px for a themable property. (lint:tokens, check-templates, adoption)
 2. **Contrast is computed, never asserted.** Every text/background pairing in the semantic tier already clears WCAG AA (or AAA under `data-contrast="aaa"`); use pairings as designed — `--text-primary` on `--surface-*`, `--accent-fg` on `--accent-bg`, `--{status}-text` on `--{status}-bg`. Do not invent a pairing. (wcag-qa: 34,560 pairings, +0.05 safety margin)
-3. **Theme is nine attributes on `<html>`**, nothing else: `data-hue data-sat data-mode data-contrast data-bg data-radius data-density data-font dir`. Set them; do not fork stylesheets. Defaults: hue=brand sat=regular mode=light contrast=aa bg=primary radius=rounded density=regular font=flavor dir=ltr.
+3. **Theme is nine attributes on `<html>`**, nothing else: `data-hue data-sat data-mode data-contrast data-bg data-radius data-density data-font dir`. Set them; do not fork stylesheets. Defaults: hue=brand sat=regular mode=light contrast=aa bg=primary radius=rounded density=regular font=expressive dir=ltr.
 4. **Radius follows the axis.** `--radius-control` (buttons, chips, tabs), `--radius-field` (inputs), `--radius-container` (cards, dialogs), `--radius-media` (imagery). Anything that must stay a circle uses `--radius-round`. Numeric `--radius-1..6` do not re-resolve and are not for product code.
 5. **Logical properties only** (`inline-start`, `block-end`, `padding-inline`) so `dir="rtl"` flips layout for free. Icons that carry direction take `data-directional`.
 6. **Icons come from the sprite.** `<svg class="fds-icon" data-icon><use href="/icons/sprite.svg#hi-NAME-outline"></use></svg>` (or `<Icon name>`). Never draw a glyph by hand; outline is the default state, solid marks active. Find names with `flavor_find_icon`.
@@ -123,7 +123,7 @@ data-density: compact | regular | comfy
 data-font: flavor | editorial | reading | geometric | expressive
 data-dir: ltr | rtl
 dir: ltr | rtl
-Defaults: {"hue":"brand","sat":"regular","mode":"light","contrast":"aa","bg":"primary","radius":"rounded","density":"regular","font":"flavor","dir":"ltr"}
+Defaults: {"hue":"brand","sat":"regular","mode":"light","contrast":"aa","bg":"primary","radius":"rounded","density":"regular","font":"expressive","dir":"ltr"}
 Set on <html>. Every semantic token re-resolves per combination; nothing else changes.
 data-bg: primary | secondary (light or dark with the mode) · dark-primary | dark-secondary (ALWAYS dark — dark surface steps in light mode, one step deeper in dark mode; use for headers, players, code panes that must stay dark) · accent (the hue's most-saturated step is the page) · media (white UI on a photo).
 Brand themes are hue PAIRS: brand = blue (accent) + orange (--secondary-*, focus ring) · brand2 = magenta (accent) + cyan (--secondary-*, focus ring). Single hues use the neutral ramp as secondary.
@@ -133,12 +133,12 @@ Contrast: every pairing is computed with a +0.05 margin over WCAG (AA ≥ 4.55, 
 
 ## [contract] Adopt Flavor in a project (id: setup, priority 1)
 1. flavor.css (tokens, all themes) as the first stylesheet; components.css second; platform.css if previewing iOS/Android.
-2. <html data-hue="brand" data-sat="regular" data-mode="light" data-contrast="aa" data-bg="primary" data-radius="rounded" data-density="regular" data-font="flavor" dir="ltr">
+2. <html data-hue="brand" data-sat="regular" data-mode="light" data-contrast="aa" data-bg="primary" data-radius="rounded" data-density="regular" data-font="expressive" dir="ltr">
 3. Root element carries class fds-app.
 4. import { upgrade } from '@flavor-ds/ui/behaviors'; upgrade(document) — or the React wrappers, which call it.
 5. Serve packages/ui/dist/icons/sprite.svg at /icons/sprite.svg.
 6. Native: FlavorTokens.swift / FlavorTokens.kt from packages/tokens/dist/native.
-MCP: flavor_adapt_project(stack) returns these steps tailored to a stack.
+MCP: flavor_adapt_project(stack) returns these steps tailored to a stack. Register the MCP: hosted Streamable HTTP https://flavor-ds.vercel.app/api/mcp (claude mcp add --transport http flavor-ds <url>) or local stdio node packages/mcp/src/server.mjs.
 
 ---
 
@@ -322,7 +322,7 @@ Label/M: --font-text Medium, size/2 (12px / 16px)
 Label/S: --font-text Semi Bold, size/1 (11px / 16px)
 Mono/M: --font-mono Regular, size/3 (14px / 20px)
 Mono/S: --font-mono Regular, size/2 (12px / 16px)
-Pairings (data-font): flavor=Flavor (default) · editorial=Editorial · reading=Reading · geometric=Geometric · expressive=Expressive
+Pairings (data-font): flavor=Flavor · editorial=Editorial · reading=Reading · geometric=Geometric · expressive=Expressive (default)
 
 ---
 

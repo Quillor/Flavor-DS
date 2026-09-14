@@ -1,11 +1,14 @@
 ---
 import meta from '@flavor-ds/tokens/dist/meta.json';
-import '@fontsource/space-grotesk/500.css';
-import '@fontsource/space-grotesk/700.css';
-import '@fontsource/inter/400.css';
-import '@fontsource/inter/500.css';
-import '@fontsource/inter/600.css';
-import '@fontsource/inter/700.css';
+// Default pairing (Expressive: Syne + Archivo) is self-hosted so first paint never waits on
+// Google Fonts; the other pairings load from Google when selected.
+import '@fontsource/syne/600.css';
+import '@fontsource/syne/700.css';
+import '@fontsource/syne/800.css';
+import '@fontsource/archivo/400.css';
+import '@fontsource/archivo/500.css';
+import '@fontsource/archivo/600.css';
+import '@fontsource/archivo/700.css';
 import '@fontsource/ibm-plex-mono/400.css';
 import '@flavor-ds/tokens/dist/flavor.css';
 import '@flavor-ds/ui/css';
@@ -28,7 +31,7 @@ const groupActive = (g: { items: { href: string }[] }) =>
     <link rel="icon" href="/brand/logo-square-color.svg" type="image/svg+xml" />
     <title>{title} · Flavor DS</title>
     <meta name="description" content={description} />
-    <script is:inline define:vars={{ fontPairs: meta.fontPairs }}>
+    <script is:inline define:vars={{ fontPairs: meta.fontPairs, defaultFont: meta.defaults.font }}>
       // Apply saved theme (incl. Google Fonts pair) before first paint.
       try {
         const s = JSON.parse(localStorage.getItem('flavor-theme') || 'null');
@@ -41,7 +44,7 @@ const groupActive = (g: { items: { href: string }[] }) =>
           for (const [k, attr] of [['hue','data-hue'],['sat','data-sat'],['mode','data-mode'],['contrast','data-contrast'],['density','data-density'],['font','data-font'],['bg','data-bg'],['radius','data-radius'],['dir','dir']]) {
             if (s[k]) el.setAttribute(attr, s[k]);
           }
-          if (s.font && s.font !== 'flavor' && fontPairs[s.font]) {
+          if (s.font && s.font !== defaultFont && fontPairs[s.font]) {
             const link = document.createElement('link');
             link.id = 'flavor-font-' + s.font;
             link.rel = 'stylesheet';

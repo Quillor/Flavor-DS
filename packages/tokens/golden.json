@@ -1913,7 +1913,7 @@
     "bg": "primary",
     "radius": "rounded",
     "density": "regular",
-    "font": "flavor",
+    "font": "expressive",
     "dir": "ltr"
   },
   "tokenNames": [

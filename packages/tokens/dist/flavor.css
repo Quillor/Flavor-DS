@@ -6,7 +6,7 @@
  *   data-tonal:    (present = the hue's most-saturated step is the page)
  *   data-media:    (present = photo background, solid white UI, ignores mode)
  *   data-density:  compact | regular | comfy
- *   data-font:     flavor | editorial | reading | geometric | expressive
+ *   data-font:     flavor | editorial | reading | geometric | expressive   (default: expressive)
  *   dir:           ltr | rtl
  */
 
@@ -34653,8 +34653,8 @@
 }
 
 :root {
-  --font-display: 'Space Grotesk', 'Helvetica Neue', system-ui, sans-serif;
-  --font-text: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Syne', system-ui, sans-serif;
+  --font-text: 'Archivo', system-ui, sans-serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
   --type-scale: 1;
 }
@@ -34708,6 +34708,10 @@
   --icon-stroke-strong: 2px;
   --icon-stroke-bold: 2.5px;
 }
+:root[data-font="flavor"] {
+  --font-display: 'Space Grotesk', 'Helvetica Neue', system-ui, sans-serif;
+  --font-text: 'Inter', system-ui, -apple-system, sans-serif;
+}
 :root[data-font="editorial"] {
   --font-display: 'Fraunces', Georgia, serif;
   --font-text: 'Libre Franklin', system-ui, sans-serif;
@@ -34719,10 +34723,6 @@
 :root[data-font="geometric"] {
   --font-display: 'Jost', system-ui, sans-serif;
   --font-text: 'DM Sans', system-ui, sans-serif;
-}
-:root[data-font="expressive"] {
-  --font-display: 'Syne', system-ui, sans-serif;
-  --font-text: 'Archivo', system-ui, sans-serif;
 }
 @media (prefers-reduced-motion: reduce) {
   :root { --duration-1: 0ms; --duration-2: 0ms; --duration-3: 0ms; --duration-4: 0ms; --duration-5: 0ms; }
